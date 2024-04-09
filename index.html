@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html>
+<!-- <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script> -->
+<script src="aframe-master.js"></script>
+<script src="aframe-html.js"></script>
+<script src="https://unpkg.com/aframe-cubemap-component@2.1.1/dist/aframe-cubemap-component.min.js"></script>
+<script src="./aframe-stereocam-component.js"></script>
+<script src="https://unpkg.com/super-hands@^3.0.3/dist/super-hands.min.js"></script>
+<script src="https://unpkg.com/aframe-event-set-component@^4.1.1/dist/aframe-event-set-component.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<style>
+  body {
+    background-color: powderblue;
+  }
+
+  /* h1   {color: blue;} */
+  p {
+    color: red;
+  }
+
+  section {
+    
+    display: inline-block; background: lavenderblush; color: #333333; border-radius: 1em; padding: 1em; margin:0; accent-color: hotpink;width: 350px;
+ 
+
+}
+  .flex-container {
+    width: 50px;
+    /* or whatever width you want. */
+    /* max-width: 50px; */
+    min-height: 50px;
+    display: flex;
+    /* background-color: DodgerBlue; */
+  }
+
+  .flex-container>div {
+    background-color: #f1f1f1;
+    margin: 10px;
+    padding: 20px;
+    font-size: 30px;
+  }
+
+  button {
+    min-width: 100px;
+    width: 100px;
+    /* or whatever width you want. */
+   /* // max-width: 50px; */
+    /* or whatever width you want. */
+    display: inline-block;
+    overflow: hidden;
+  }
+
+
+  label {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+
+  }
+
+  .btn{
+    background-color: orange;
+    display: inline-block;
+    color:black;
+    border-radius: 1em;
+    accent-color: black;padding: 1em; margin:0;
+    border-style: dashed;
+    border-color: black;
+
+  }
+</style>
+
+<body>
+  <a-scene webxr="overlayElement:#dom-overlay;">
+    <a-assets>
+
+    </a-assets>
+
+    <!-- <a-box onclick="document.getElementById('imgInput').click()"id="a" position="-1 0.5 -3" rotation="0 45 0" color="red"></a-box> -->
+
+    <a-entity id="user">
+      <a-camera stereocam="eye:left;">
+        <a-entity id="cursor" class="raycasting" cursor="rayOrigin:mouse" raycaster=""></a-entity>
+      </a-camera>
+      <a-entity raycaster="objects: .ui" super-hands laser-controls hand-controls="hand: left"></a-entity>
+      <a-entity raycaster="objects: .ui" super-hands laser-controls hand-controls="hand: right"></a-entity>
+    </a-entity>
+
+    <a-entity id="htmlPanel" shadow position="0.25 1.5 -0.5"></a-entity>
+
+    <!-- default scene -->
+    <a-entity id="layers">
+
+
+
+
+    </a-entity>
+
+
+  </a-scene>
+  <!-- style="display: inline-block; background: lavenderblush; color: #333333; border-radius: 1em; padding: 1em; margin:0; accent-color: hotpink;" -->
+  <div id="dom-overlay">
+    <section  id="my-interface">
+
+
+      <h2>Upload 360 Images</h2>
+      <label for="imgInput" class="btn">Select Image Folder</label>
+      <input class="input" style="visibility:hidden;" type="file" id="imgInput" webkitdirectory multiple />
+  </div>
+
+
+</body>
+
+</html>
+
+<script src="./generateObjects.js"></script>
+<script src="./uicontrols.js"></script>
+
+
+
+
+
+
+<!-- the point is to accurately classify images as the following 360 formats-->
+<!-- cubemaps (6:1, Horizontal Cross, Reverse Horizontal Cross, Vertical Cross, Horizontal Capital T)-->
+<!-- stereocubemaps (12:1, ?)-->
+<!-- stereoSpherical (Left:Right,Top:Bottom, ?)-->
+<!-- -->
+<!-- -->
+
+<script>
+  const scene = document.querySelector("a-scene")
+  var buttonsToEnable = []
+  let imagesLoading = 0
+  let imagesLoaded = 0
+
+  //img upload
+  document.getElementById('imgInput').onchange = function (e) {
+
+
+    console.log(activeButtons.length)
+    for (let key of activeButtons) document.getElementById("button" + key).setAttribute("disabled", true), buttonsToEnable.push("button" + key)  //disabling all existing ui buttons untill new images load in
+
+
+    const files = this.files;
+
+//unflatter dir input
+    //let flatArray = files
+    //const dir = new Map();
+    // for(i = 0; i < flatArray.length; i++){
+    // 	var path = flatArray[i].substring(0, flatArray[i].lastIndexOf("/") + 1);
+    // 	var file = flatArray[i].substring(flatArray[i].lastIndexOf("/") + 1, flatArray[i].length);
+    //   //console.log(path)
+      
+    //   if(dir.has(path)){
+    // 			dir.get(path).push(file)
+    // } else{
+    // 		dir.set(path, [file]);
+    // }
+
+    // }
+    // //console.log(dir.get('folder/'))
+    // dir.forEach((values, keys) => {
+    //     console.log(keys, values);
+    // });
+
+
+
+
+    imagesLoading = files.length
+    console.log(imagesLoading)
+    for (let i = 0; i < files.length; i++) {
+      var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+
+      img.name = this.files[i].name  //generate id for parent object, current bug when dealing with duplicate image names
+
+      // if (activeButtons.has(img.name)) {
+      //   img.name = img.name + "as"
+
+      //   }
+
+
+         while(activeButtons.has(img.name)) {
+          img.name = img.name + "_"
+
+        }
+
+        activeButtons.add(img.name)
+      // if (activeButtons.has(img.name)) {
+      //   while (fileMap.get(name)) {
+      //     name = name + "f"
+
+      //   }
+
+      // } else {
+      //   activeButtons.add(img.name)
+
+      // }
+
+      img.src = URL.createObjectURL(this.files[i]);
+      img.onload = findformat // find the 360 format that best fits this image 
+
+      addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+
+    }
+  }
+
+  //get image dimensions & and match to image format -> then transform image into 3d object
+  function findformat() {
+    let ratio = Math.round((this.width / this.height) * 10) / 10 // the ratio of the image will indicate the 360 format of the image
+
+    let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
+    parent.setAttribute("id", this.name)
+    layers.appendChild(parent)
+
+    switch (ratio) {
+      case 12: watch(this.name, "stereoCube"); createStereoCube(this, parent); break;
+      case 6: watch(this.name, "CubeStrip"); processCubeStrip(this, parent); break;
+      case 2: watch(this.name, "Sphere"); createSphere(this, parent); break;
+      case 1.3: watch(this.name, "t cubemap" ); processCubeMap(this, parent); break;
+      case 1: watch(this.name, "stereo spherical"); createStereoSphere(this, parent); break;
+      default: console.log("NA"); imagesLoading--; if (imagesLoaded == imagesLoading) { setupLayers() };  document.getElementById("label" + this.name).innerHTML =  "no format detected"
+    }
+  }
+
+
+  function watch(name, label) {
+    buttonsToEnable.push("button" + name)
+    document.getElementById("label" + name).innerHTML = label
+
+  }
+
+</script>
+
+
+<script>
+  $(function () {
+    $("#dom-overlay ").draggable();
+  });
+</script>
