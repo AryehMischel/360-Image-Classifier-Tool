@@ -91,6 +91,7 @@ function removeLayer(layerID){
     let layer = document.getElementById(layerID)
     let button = document.getElementById("button" + layerID)
     layer.parentNode.removeChild(layer)
+    globalImageFiles.delete(layerID)
 //    console.log(button.parentNode.parentNode.children.indexOf(button.parentNode));
 
 // for(i = 0; i < button.parentNode.parentNode.children.length; i++){
