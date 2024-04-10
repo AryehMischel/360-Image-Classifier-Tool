@@ -71,6 +71,58 @@ function createSphere(img, parent) {
 }
 
 
+function createTest(px, nx,py, ny, pz, nz, parent) {
+
+    // const textureImage = require('../assets/images/image.png');
+
+       const geometry = new THREE.BoxGeometry(20, 20, 20);
+       const loader = new THREE.TextureLoader();
+   
+       const cubeMaterials = [
+   
+        new THREE.MeshBasicMaterial({ map: loader.load(px), side: THREE.BackSide }), //left side
+        new THREE.MeshBasicMaterial({ map: loader.load(nx), side: THREE.BackSide }), //left side
+        new THREE.MeshBasicMaterial({ map: loader.load(py), side: THREE.BackSide }), //left side
+        new THREE.MeshBasicMaterial({ map: loader.load(ny), side: THREE.BackSide }), //left side
+        new THREE.MeshBasicMaterial({ map: loader.load(pz), side: THREE.BackSide }), //left side
+        new THREE.MeshBasicMaterial({ map: loader.load(nz), side: THREE.BackSide }), //left side
+
+       ];
+   
+       cubeMaterials.BackSide = true;
+   
+   
+   
+       //create material, color, or image texture
+       let cube = new THREE.Mesh(geometry, cubeMaterials);
+       parent.object3D.add(cube) //append cubes to parent element
+       layers.appendChild(parent)
+    imagesLoaded += 1;
+    if(imagesLoaded == imagesLoading){
+        setupLayers()
+    }
+
+
+
+
+    // const texture = new THREE.TextureLoader().load(img.src);
+
+    // const material = new THREE.MeshPhongMaterial();
+    // material.side = THREE.BackSide
+    // material.map = texture;
+
+    // const geo = new THREE.SphereGeometry(30, 64, 32);
+    // const mesh = new THREE.Mesh(geo, material);
+
+    // parent.object3D.add(mesh)
+    // imagesLoaded += 1;
+    // if(imagesLoaded == imagesLoading){
+    //     setupLayers()
+    // }
+}
+
+
+
 function createStereoCube(img, parent) {
     console.log(performance.now())
 

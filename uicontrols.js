@@ -74,6 +74,7 @@ function setupLayers(){
 
 
 function enableButtons(){
+    
     for(i =0; i < buttonsToEnable.length; i++){
         let b = document.getElementById(buttonsToEnable[i])
         b.disabled = false;

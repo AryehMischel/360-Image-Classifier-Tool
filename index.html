@@ -21,11 +21,19 @@
   }
 
   section {
-    
-    display: inline-block; background: lavenderblush; color: #333333; border-radius: 1em; padding: 1em; margin:0; accent-color: hotpink;width: 350px;
- 
 
-}
+    display: inline-block;
+    background: lavenderblush;
+    color: #333333;
+    border-radius: 1em;
+    padding: 1em;
+    margin: 0;
+    accent-color: hotpink;
+    width: 350px;
+
+
+  }
+
   .flex-container {
     width: 50px;
     /* or whatever width you want. */
@@ -46,7 +54,7 @@
     min-width: 100px;
     width: 100px;
     /* or whatever width you want. */
-   /* // max-width: 50px; */
+    /* // max-width: 50px; */
     /* or whatever width you want. */
     display: inline-block;
     overflow: hidden;
@@ -60,12 +68,14 @@
 
   }
 
-  .btn{
+  .btn {
     background-color: orange;
     display: inline-block;
-    color:black;
+    color: black;
     border-radius: 1em;
-    accent-color: black;padding: 1em; margin:0;
+    accent-color: black;
+    padding: 1em;
+    margin: 0;
     border-style: dashed;
     border-color: black;
 
@@ -102,7 +112,7 @@
   </a-scene>
   <!-- style="display: inline-block; background: lavenderblush; color: #333333; border-radius: 1em; padding: 1em; margin:0; accent-color: hotpink;" -->
   <div id="dom-overlay">
-    <section  id="my-interface">
+    <section id="my-interface">
 
 
       <h2>Upload 360 Images</h2>
@@ -145,66 +155,146 @@
 
 
     const files = this.files;
-
-//unflatter dir input
-    //let flatArray = files
-    //const dir = new Map();
-    // for(i = 0; i < flatArray.length; i++){
-    // 	var path = flatArray[i].substring(0, flatArray[i].lastIndexOf("/") + 1);
-    // 	var file = flatArray[i].substring(flatArray[i].lastIndexOf("/") + 1, flatArray[i].length);
-    //   //console.log(path)
-      
-    //   if(dir.has(path)){
-    // 			dir.get(path).push(file)
-    // } else{
-    // 		dir.set(path, [file]);
-    // }
-
-    // }
-    // //console.log(dir.get('folder/'))
-    // dir.forEach((values, keys) => {
-    //     console.log(keys, values);
-    // });
-
-
-
-
     imagesLoading = files.length
     console.log(imagesLoading)
-    for (let i = 0; i < files.length; i++) {
-      var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
-
-      img.name = this.files[i].name  //generate id for parent object, current bug when dealing with duplicate image names
-
-      // if (activeButtons.has(img.name)) {
-      //   img.name = img.name + "as"
-
-      //   }
+    //unflatter dir input
+    let flatArray = files
+    const dir = new Map();
+    console.log(flatArray.length)
+    console.log(files[0])
 
 
-         while(activeButtons.has(img.name)) {
-          img.name = img.name + "_"
+    for (i = 0; i < flatArray.length; i++) {
+      var path = flatArray[i].webkitRelativePath.substring(0, flatArray[i].webkitRelativePath.lastIndexOf("/")) // flatArray[i].webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1, flatArray[i].webkitRelativePath.length)
+      var file = flatArray[i]//.webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1)//);
+      var filename = flatArray[i].webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1, flatArray[i].webkitRelativePath.lastIndexOf("."))
+      //console.log(path)
 
-        }
-
-        activeButtons.add(img.name)
-      // if (activeButtons.has(img.name)) {
-      //   while (fileMap.get(name)) {
-      //     name = name + "f"
-
-      //   }
-
-      // } else {
-      //   activeButtons.add(img.name)
-
-      // }
-
-      img.src = URL.createObjectURL(this.files[i]);
-      img.onload = findformat // find the 360 format that best fits this image 
-
-      addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+      if (dir.has(path)) {
+        dir.get(path).set(filename, file)
+      } else {
+        let imgMap = new Map()
+        imgMap.set(filename, file)
+        dir.set(path, imgMap);//[file]
+      }
 
     }
+    //console.log(dir.get('folder/'))
+    dir.forEach((values, keys) => {
+      //   console.log(keys, values.length);
+      // values.forEach((values, keys) => {
+      //  console.log(keys, values)
+      // })
+      console.log(keys, values.size)
+      if (values.size == 6) {
+        console.log("cubemaps folder")
+        
+        activeButtons.add(keys)
+        addButton(setLayer, keys);
+        buttonsToEnable.push("button" + keys)
+
+        let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
+        console.log("keys = " + keys)
+        parent.setAttribute("id",keys )
+        imagesLoading = imagesLoading - 5 
+        // layers.appendChild(parent)
+        let px = URL.createObjectURL(values.get("px"));
+        let nx = URL.createObjectURL(values.get("nx"));
+        let py = URL.createObjectURL(values.get("py"));
+        let ny = URL.createObjectURL(values.get("ny"));
+        let pz = URL.createObjectURL(values.get("pz"));
+        let nz = URL.createObjectURL(values.get("nz"));
+       // watch(keys, "folder map")
+        createTest(px, nx, py, ny, pz, nz, parent)
+
+
+      } else {
+
+        values.forEach((values, keys) => {
+
+          var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+
+          img.name = values.name  //generate id for parent object, current bug when dealing with duplicate image names
+
+          while (activeButtons.has(img.name)) {
+            img.name = img.name + "_"
+
+          }
+
+          activeButtons.add(img.name)
+
+
+          img.src = URL.createObjectURL(values);
+          img.onload = findformat // find the 360 format that best fits this image 
+
+          addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+
+        })
+        //   for (let i = files.length; i < files.length; i++) { //let i = 0 
+        //     var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+
+        //     img.name = this.files[i].name  //generate id for parent object, current bug when dealing with duplicate image names
+
+        //        while(activeButtons.has(img.name)) {
+        //         img.name = img.name + "_"
+
+        //       }
+
+        //       activeButtons.add(img.name)
+
+
+        //     img.src = URL.createObjectURL(this.files[i]);
+        //     img.onload = findformat // find the 360 format that best fits this image 
+
+        //     addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+
+        //   }
+
+      }
+      // values.forEach((values, keys) => {
+      // //  console.log(values.length)
+      //   if (values.length == 6) {
+      //     //skip validation testing for now
+      //     //handle folder cubemap 
+      //     console.log("cubemaps folder")
+      //     // let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
+      //     // parent.setAttribute("id", this.name)
+      //     // layers.appendChild(parent)
+      //     // let px = URL.createObjectURL(values[0]);
+      //     //createTest(px, parent)
+
+      //   }
+
+      // })
+
+
+    });
+
+
+
+
+   
+
+
+    //   for (let i = files.length; i < files.length; i++) { //let i = 0 
+    //     var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+
+    //     img.name = this.files[i].name  //generate id for parent object, current bug when dealing with duplicate image names
+
+    //        while(activeButtons.has(img.name)) {
+    //         img.name = img.name + "_"
+
+    //       }
+
+    //       activeButtons.add(img.name)
+
+
+    //     img.src = URL.createObjectURL(this.files[i]);
+    //     img.onload = findformat // find the 360 format that best fits this image 
+
+    //     addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+
+    //   }
   }
 
   //get image dimensions & and match to image format -> then transform image into 3d object
@@ -219,9 +309,9 @@
       case 12: watch(this.name, "stereoCube"); createStereoCube(this, parent); break;
       case 6: watch(this.name, "CubeStrip"); processCubeStrip(this, parent); break;
       case 2: watch(this.name, "Sphere"); createSphere(this, parent); break;
-      case 1.3: watch(this.name, "t cubemap" ); processCubeMap(this, parent); break;
+      case 1.3: watch(this.name, "t cubemap"); processCubeMap(this, parent); break;
       case 1: watch(this.name, "stereo spherical"); createStereoSphere(this, parent); break;
-      default: console.log("NA"); imagesLoading--; if (imagesLoaded == imagesLoading) { setupLayers() };  document.getElementById("label" + this.name).innerHTML =  "no format detected"
+      default: console.log("NA"); imagesLoading--; if (imagesLoaded == imagesLoading) { setupLayers() }; document.getElementById("label" + this.name).innerHTML = "no format detected"
     }
   }
 
