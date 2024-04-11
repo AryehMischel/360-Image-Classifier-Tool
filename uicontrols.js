@@ -132,3 +132,10 @@ function addDiv(){
     interface.appendChild(newDiv)
 
 }
+
+
+function disableButtonsWaitForSceneLoad(){
+
+    for (let key of activeButtons) document.getElementById("button" + key).setAttribute("disabled", true), buttonsToEnable.push("button" + key)  //disabling all existing ui buttons untill new images load in
+
+}

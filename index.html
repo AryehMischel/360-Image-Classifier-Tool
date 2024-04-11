@@ -147,24 +147,8 @@
   let imagesLoading = 0
   let imagesLoaded = 0
 
-  //img upload
-  document.getElementById('imgInput').onchange = function (e) {
-
-
-    console.log(activeButtons.length)
-    for (let key of activeButtons) document.getElementById("button" + key).setAttribute("disabled", true), buttonsToEnable.push("button" + key)  //disabling all existing ui buttons untill new images load in
-
-
-    var files = this.files;
-    imagesLoading = files.length
-    console.log(imagesLoading)
-    //unflatter dir input
-    let flatArray = files
-    var dir = new Map();
-    console.log(flatArray.length)
-    console.log(files[0])
-
-
+  function parseDirectoryHierarchy(flatArray){
+    var dir = new Map(); 
     for (i = 0; i < flatArray.length; i++) {
       var path = flatArray[i].webkitRelativePath.substring(0, flatArray[i].webkitRelativePath.lastIndexOf("/")) // flatArray[i].webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1, flatArray[i].webkitRelativePath.length)
       var file = flatArray[i]//.webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1)//);
@@ -180,33 +164,78 @@
       }
 
     }
-    //console.log(dir.get('folder/'))
+
+    return dir
+
+  }
+  //img upload
+  document.getElementById('imgInput').onchange = function (e) {
+
+
+
+    var files = this.files;
+    imagesLoading = files.length // we check if imagesLoaded == imagesLoading  // change imagesLoading to something like imagesToBeProcessed 
+
+    disableButtonsWaitForSceneLoad() //disable ui untill all images are loaded into the scene. Not strictly necessary 
+    let dir = parseDirectoryHierarchy(files)//dir { directory name: imgMap{ imgName: imgFile, etc...}} dir is a map with a nested map -> imgMap
+
+
     dir.forEach((values, keys) => {
- 
+
       console.log(keys, values.size)
-      if (values.size == 6) { //add more validation that it is a proper cubemap
+      if (values.size == 6) { //check if it is a cubemap
         console.log("cubemaps folder")
+        //make them all into images and compare sizes. if all of equal size and ratio of 1. then log error
         let name = keys
         while (activeButtons.has(name)) {
-            name = name + "_"
+          name = name + "_"
 
-          }
-        activeButtons.add(name)
-        addButton(setLayer, name);
-        buttonsToEnable.push("button" + name)
+        }
 
-        let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
-        parent.setAttribute("id",name )
-        imagesLoading = imagesLoading - 5 
-        // layers.appendChild(parent)
-        let px = URL.createObjectURL(values.get("px"));
-        let nx = URL.createObjectURL(values.get("nx"));
-        let py = URL.createObjectURL(values.get("py"));
-        let ny = URL.createObjectURL(values.get("ny"));
-        let pz = URL.createObjectURL(values.get("pz"));
-        let nz = URL.createObjectURL(values.get("nz"));
-       // watch(keys, "folder map")
-        createTest(px, nx, py, ny, pz, nz, parent)
+        try {
+          let px = URL.createObjectURL(values.get("px"));
+          let nx = URL.createObjectURL(values.get("nx"));
+          let py = URL.createObjectURL(values.get("py"));
+          let ny = URL.createObjectURL(values.get("ny"));
+          let pz = URL.createObjectURL(values.get("pz"));
+          let nz = URL.createObjectURL(values.get("nz"));
+          activeButtons.add(name)
+          addButton(setLayer, name);
+          buttonsToEnable.push("button" + name)
+
+          let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
+          parent.setAttribute("id", name)
+          imagesLoading = imagesLoading - 5
+          // layers.appendChild(parent)
+
+          // watch(keys, "folder map")
+          createTest(px, nx, py, ny, pz, nz, parent)
+        } catch {
+          console.log("aint a valid cubemap")
+          values.forEach((values, keys) => {
+
+            var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+
+            img.name = values.name  //generate id for parent object, current bug when dealing with duplicate image names
+
+            while (activeButtons.has(img.name)) {
+              img.name = img.name + "_"
+
+            }
+
+            globalImageFiles.set(img.name, values)
+            activeButtons.add(img.name)
+
+
+            img.src = URL.createObjectURL(values);
+            img.onload = findformat // find the 360 format that best fits this image 
+
+            addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+
+          })
+
+        }
+
 
 
       } else {
@@ -265,47 +294,48 @@
   }
 
 
-  
-  function printActiveImages(){
-      globalImageFiles.forEach((value, key) => {
-          console.log(value.name)
-      })
-    }
 
 
-    function roughSizeOfObject(object) {
-  const objectList = [];
-  const stack = [object];
-  let bytes = 0;
-
-  while (stack.length) {
-    const value = stack.pop();
-
-    switch (typeof value) {
-      case 'boolean':
-        bytes += 4;
-        break;
-      case 'string':
-        bytes += value.length * 2;
-        break;
-      case 'number':
-        bytes += 8;
-        break;
-      case 'object':
-        if (!objectList.includes(value)) {
-          objectList.push(value);
-          for (const prop in value) {
-            if (value.hasOwnProperty(prop)) {
-              stack.push(value[prop]);
-            }
-          }
-        }
-        break;
-    }
+  function printActiveImages() {
+    globalImageFiles.forEach((value, key) => {
+      console.log(value.name)
+    })
   }
 
-  return bytes;
-}
+
+  function roughSizeOfObject(object) {
+    const objectList = [];
+    const stack = [object];
+    let bytes = 0;
+
+    while (stack.length) {
+      const value = stack.pop();
+
+      switch (typeof value) {
+        case 'boolean':
+          bytes += 4;
+          break;
+        case 'string':
+          bytes += value.length * 2;
+          break;
+        case 'number':
+          bytes += 8;
+          break;
+        case 'object':
+          if (!objectList.includes(value)) {
+            objectList.push(value);
+            for (const prop in value) {
+              if (value.hasOwnProperty(prop)) {
+                stack.push(value[prop]);
+              }
+            }
+          }
+          break;
+      }
+    }
+
+    return bytes;
+  }
 
   //get image dimensions & and match to image format -> then transform image into 3d object
   function findformat() {
@@ -334,17 +364,17 @@
 
 
 
-  function reformatTest(id){
+  function reformatTest(id) {
     let p = document.getElementById(id)
-    for(let i = 0; i < p.object3D.children.length; i++){
+    for (let i = 0; i < p.object3D.children.length; i++) {
       p.object3D.remove(p.object3D.children[i])
     }
 
     console.log(globalImageFiles.get(id))
-   
+
     var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
     img.src = URL.createObjectURL(globalImageFiles.get(id));
-    
+
     img.onload = createSphere(img, p) // find the 360 format that best fits this image 
   }
 
