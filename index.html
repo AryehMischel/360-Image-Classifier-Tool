@@ -191,50 +191,100 @@
           name = name + "_"
 
         }
-
-        try {
-          let px = URL.createObjectURL(values.get("px"));
-          let nx = URL.createObjectURL(values.get("nx"));
-          let py = URL.createObjectURL(values.get("py"));
-          let ny = URL.createObjectURL(values.get("ny"));
-          let pz = URL.createObjectURL(values.get("pz"));
-          let nz = URL.createObjectURL(values.get("nz"));
-          activeButtons.add(name)
+         activeButtons.add(name)
           addButton(setLayer, name);
           buttonsToEnable.push("button" + name)
 
           let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
           parent.setAttribute("id", name)
           imagesLoading = imagesLoading - 5
-          // layers.appendChild(parent)
+           layers.appendChild(parent)
 
-          // watch(keys, "folder map")
-          createTest(px, nx, py, ny, pz, nz, parent)
-        } catch {
-          console.log("aint a valid cubemap")
-          values.forEach((values, keys) => {
+           watch(keys, "folder map")
 
-            var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+          var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+          var img2 = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+          var img3 = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+          var img4 = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+          var img5 = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+          var img6 = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+         
+         
+          var val = values.get(Array.from(values.keys())[0]); 
+          var val2 = values.get(Array.from(values.keys())[1]); 
+          var val3 = values.get(Array.from(values.keys())[2]); 
+          var val4 = values.get(Array.from(values.keys())[3]); 
+          var val5 = values.get(Array.from(values.keys())[4]); 
+          var val6 = values.get(Array.from(values.keys())[5]); 
+         
+         
+          img.src = URL.createObjectURL(val);
+          img2.src = URL.createObjectURL(val2);
+          img3.src = URL.createObjectURL(val3);
+          img4.src = URL.createObjectURL(val4);
+          img5.src = URL.createObjectURL(val5);
+          img6.src = URL.createObjectURL(val6);
+  
 
-            img.name = values.name  //generate id for parent object, current bug when dealing with duplicate image names
+          // wait for all images to load
 
-            while (activeButtons.has(img.name)) {
-              img.name = img.name + "_"
+          
+          const facesAreProperSquare = img.width/// img.height 
+          
+          console.log(facesAreProperSquare)
 
-            }
+          const facesAreEqual = allEqual([img.width + "/" + img.height , img2.width + "/" + img2.height, img3.width + "/" + img3.height]) 
 
-            globalImageFiles.set(img.name, values)
-            activeButtons.add(img.name)
+          // const result = allEqual([ [img.width, img.height],[img2.width, img2.height] , [img3.width, img3.height], [img4.width, img4.height], [img5.width, img5.height], [img6.width, img6.height]]) 
+          console.log(facesAreEqual)
+        //  createTest(img.src, img2.src, img3.src, img4.src, img5.src, img6.src, parent)
+
+//         createTest(px.src, nx.src, py.src, ny.src, pz.src, nz.src, parent)
+         // img.onload = findformat // find the 360 format that best fits this image 
+          // let px = URL.createObjectURL(values.get("px"));
+          // let nx = URL.createObjectURL(values.get("nx"));
+          // let py = URL.createObjectURL(values.get("py"));
+          // let ny = URL.createObjectURL(values.get("ny"));
+          // let pz = URL.createObjectURL(values.get("pz"));
+          // let nz = URL.createObjectURL(values.get("nz"));
+          // activeButtons.add(name)
+          // addButton(setLayer, name);
+          // buttonsToEnable.push("button" + name)
+
+          // let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
+          // parent.setAttribute("id", name)
+          // imagesLoading = imagesLoading - 5
+          // // layers.appendChild(parent)
+
+          // // watch(keys, "folder map")
+          // createTest(px, nx, py, ny, pz, nz, parent)
+        // } 
+        
+        //catch {
+        //   console.log("aint a valid cubemap")
+        //   values.forEach((values, keys) => {
+
+        //     var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
+
+        //     img.name = values.name  //generate id for parent object, current bug when dealing with duplicate image names
+
+        //     while (activeButtons.has(img.name)) {
+        //       img.name = img.name + "_"
+
+        //     }
+
+        //     globalImageFiles.set(img.name, values)
+        //     activeButtons.add(img.name)
 
 
-            img.src = URL.createObjectURL(values);
-            img.onload = findformat // find the 360 format that best fits this image 
+        //     img.src = URL.createObjectURL(values);
+        //     img.onload = findformat // find the 360 format that best fits this image 
 
-            addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+        //     addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
 
-          })
+        //   })
 
-        }
+        // }
 
 
 
@@ -385,4 +435,5 @@
   $(function () {
     $("#dom-overlay ").draggable();
   });
+  const allEqual = arr => arr.every(val => val === arr[0]);
 </script>
