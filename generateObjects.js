@@ -145,21 +145,6 @@ function createStereoCube(img, parent) {
     let canvas12 = document.createElement("canvas")
 
 
-    // document.body.appendChild(canvas)
-    // document.body.appendChild(canvas2)
-    // document.body.appendChild(canvas3)
-    // document.body.appendChild(canvas4)
-    // document.body.appendChild(canvas5)
-    // document.body.appendChild(canvas6)
-
-
-    // document.body.appendChild(canvas7)
-    // document.body.appendChild(canvas8)
-    // document.body.appendChild(canvas9)
-    // document.body.appendChild(canvas10)
-    // document.body.appendChild(canvas11)
-    // document.body.appendChild(canvas12)
-
 
     canvas.style.display = "none";
     canvas2.style.display = "none";
@@ -429,7 +414,7 @@ function processCubeMap(img, parent) {
         case "000111110001": drawbackwardst(img, parent); break;  //drawCapitalT
         case "001011110010": drawbackwardst(img, parent); break;  //drawbackwardst
 
-        default: console.log("NA")
+        default: console.log("NA"); imagesLoading--; if (imagesLoaded == imagesLoading) { setupLayers() }; document.getElementById("label" + img.name).innerHTML = "no format detected... click to reselect" // make sky a default sky that says to reformat 
     }
 
     
