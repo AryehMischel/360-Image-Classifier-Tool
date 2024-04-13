@@ -1,0 +1,69 @@
+body {
+    background-color: powderblue;
+  }
+
+  /* h1   {color: blue;} */
+  p {
+    color: red;
+  }
+
+  section {
+
+    display: inline-block;
+    background: lavenderblush;
+    color: #333333;
+    border-radius: 1em;
+    padding: 1em;
+    margin: 0;
+    accent-color: hotpink;
+    width: 350px;
+
+
+  }
+
+  .flex-container {
+    width: 50px;
+    /* or whatever width you want. */
+    /* max-width: 50px; */
+    min-height: 50px;
+    display: flex;
+    /* background-color: DodgerBlue; */
+  }
+
+  .flex-container>div {
+    background-color: #f1f1f1;
+    margin: 10px;
+    padding: 20px;
+    font-size: 30px;
+  }
+
+  button {
+    min-width: 100px;
+    width: 100px;
+    /* or whatever width you want. */
+    /* // max-width: 50px; */
+    /* or whatever width you want. */
+    display: inline-block;
+    overflow: hidden;
+  }
+
+
+  label {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+
+  }
+
+  .btn {
+    background-color: orange;
+    display: inline-block;
+    color: black;
+    border-radius: 1em;
+    accent-color: black;
+    padding: 1em;
+    margin: 0;
+    border-style: dashed;
+    border-color: black;
+
+  }

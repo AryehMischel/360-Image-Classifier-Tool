@@ -9,78 +9,7 @@
 <script src="https://unpkg.com/aframe-event-set-component@^4.1.1/dist/aframe-event-set-component.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
-
-<style>
-  body {
-    background-color: powderblue;
-  }
-
-  /* h1   {color: blue;} */
-  p {
-    color: red;
-  }
-
-  section {
-
-    display: inline-block;
-    background: lavenderblush;
-    color: #333333;
-    border-radius: 1em;
-    padding: 1em;
-    margin: 0;
-    accent-color: hotpink;
-    width: 350px;
-
-
-  }
-
-  .flex-container {
-    width: 50px;
-    /* or whatever width you want. */
-    /* max-width: 50px; */
-    min-height: 50px;
-    display: flex;
-    /* background-color: DodgerBlue; */
-  }
-
-  .flex-container>div {
-    background-color: #f1f1f1;
-    margin: 10px;
-    padding: 20px;
-    font-size: 30px;
-  }
-
-  button {
-    min-width: 100px;
-    width: 100px;
-    /* or whatever width you want. */
-    /* // max-width: 50px; */
-    /* or whatever width you want. */
-    display: inline-block;
-    overflow: hidden;
-  }
-
-
-  label {
-    display: flex;
-    align-items: center;
-    padding: 5px;
-
-  }
-
-  .btn {
-    background-color: orange;
-    display: inline-block;
-    color: black;
-    border-radius: 1em;
-    accent-color: black;
-    padding: 1em;
-    margin: 0;
-    border-style: dashed;
-    border-color: black;
-
-  }
-</style>
+<link rel="stylesheet" href="styles.css">
 
 <body>
   <a-scene webxr="overlayElement:#dom-overlay;">
@@ -129,6 +58,7 @@
 <script src="./generateObjects.js"></script>
 <script src="./uicontrols.js"></script>
 
+<script src="./imageHandling.js"></script>
 
 
 
@@ -148,225 +78,54 @@
   let imagesLoading = 0
   let imagesLoaded = 0
 
-  function parseDirectoryHierarchy(flatArray) {
-    var dir = new Map();
-    for (i = 0; i < flatArray.length; i++) {
-      var path = flatArray[i].webkitRelativePath.substring(0, flatArray[i].webkitRelativePath.lastIndexOf("/")) // flatArray[i].webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1, flatArray[i].webkitRelativePath.length)
-      var file = flatArray[i]//.webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1)//);
-      var filename = flatArray[i].webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1, flatArray[i].webkitRelativePath.lastIndexOf("."))
-      //console.log(path)
-
-      if (dir.has(path)) {
-        while (dir.get(path).has(filename)) {
-          filename = filename + "_"
-        }
-        dir.get(path).set(filename, file)
-      } else {
-        let imgMap = new Map()
-        imgMap.set(filename, file)
-        dir.set(path, imgMap);//[file]
-      }
-
-    }
-
-    return dir
-
-  }
-
-  async function handleCubeMapFolder(px, nx, py, ny, pz, nz) {
-
-
-    return ([proms, images])
-  }
-
-  async function checkCubeMapViable(values) {
-    var img = new Image();  //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img2 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img3 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img4 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img5 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img6 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-
-    img.name = Array.from(values.keys())[0]
-    img2.name = Array.from(values.keys())[1]
-    img3.name = Array.from(values.keys())[2]
-    img4.name = Array.from(values.keys())[3]
-    img5.name = Array.from(values.keys())[4]
-    img6.name = Array.from(values.keys())[5]
 
 
 
-    //console.log(Array.from(values.keys())[0])
-
-    var val = values.get(Array.from(values.keys())[0]);
-    var val2 = values.get(Array.from(values.keys())[1]);
-    var val3 = values.get(Array.from(values.keys())[2]);
-    var val4 = values.get(Array.from(values.keys())[3]);
-    var val5 = values.get(Array.from(values.keys())[4]);
-    var val6 = values.get(Array.from(values.keys())[5]);
 
 
-    img.src = URL.createObjectURL(val);
-    img2.src = URL.createObjectURL(val2);
-    img3.src = URL.createObjectURL(val3);
-    img4.src = URL.createObjectURL(val4);
-    img5.src = URL.createObjectURL(val5);
-    img6.src = URL.createObjectURL(val6);
-
-
-    let images = [img, img2, img3, img4, img5, img6]
-
-    // wait for all images to load
-
-    const proms = images.map(im => new Promise(res =>
-      im.onload = () => res(im.width, im.height)
-    ))
-
-
-    //const promise = Promise.resolve();
-
-    // list all image widths and heights _after_ the images have loaded:
-    const promise = Promise.all(proms).then(data => {
-      console.log(img.width / img.height == 1 && allEqual(data))
-      answer = img.width / img.height == 1 && allEqual(data)
-      return (answer)
-    })
-
-    //IDs = [1, 2, 3] //[promise, "someothershit"]
-    return ([promise, images])
-
-    // if (img.width / img.height == 1 && allEqual(data)) {
-
-  }
   //img upload
+
   document.getElementById('imgInput').onchange = async function (e) {
+    disableButtonsWaitForSceneLoad() //disable ui 
 
 
-
-
-
-
-    var files = $.grep(this.files, function (file) {
-      return file.type.indexOf("image/") === 0;  // filter out images
-    });
-
-
-
-    console.log(imagesLoading)
-    imagesLoading = files.length // we check if imagesLoaded == imagesLoading  // change imagesLoading to something like imagesToBeProcessed 
-
-    console.log(imagesLoading)
-    disableButtonsWaitForSceneLoad() //disable ui untill all images are loaded into the scene. Not strictly necessary 
+    var files = $.grep(this.files, function (file) { return file.type.indexOf("image/") === 0; }); // filter out images 
+    imagesLoading = files.length
+   
+   
     let dir = parseDirectoryHierarchy(files)//dir { directory name: imgMap{ imgName: imgFile, etc...}} dir is a map with a nested map -> imgMap
 
 
     dir.forEach((values, keys) => {
-
-      console.log(keys, values.size)
-
       let name = keys;
-        while (activeButtons.has(name)) {
-          name = name + "_"
 
-        }
+      while (activeButtons.has(name)) {
+        name = name + "_"
+      }
 
 
-      if (values.size == 6) { //check if it is a cubemap
-        console.log("trying once")
+      if (values.size == 6) { //check if it is a cubemap   //process images //check if images are valid cubemap
         let v = values
+       
         try {
-          let px = URL.createObjectURL(values.get("px"));
-          let nx = URL.createObjectURL(values.get("nx"));
-          let py = URL.createObjectURL(values.get("py"));
-          let ny = URL.createObjectURL(values.get("ny"));
-          let pz = URL.createObjectURL(values.get("pz"));
-          let nz = URL.createObjectURL(values.get("nz"));
 
-          let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
-          parent.setAttribute("id", name)
-          layers.appendChild(parent)
-
-
-          var img = new Image();  //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-          var img2 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-          var img3 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-          var img4 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-          var img5 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-          var img6 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-
-
-          //console.log(Array.from(values.keys())[0])
-          img.src = px
-          img2.src = nx
-          img3.src = py
-          img4.src = ny
-          img5.src = pz
-          img6.src = nz
-
-        
-        addButton(setLayer, name); // buttonsToEnable.push("button" + img.name); //add button to ui
-        activeButtons.add(name)
-        watch(name, "folderCube" )
-
-        imagesLoading -= 5;
-
-        if(imagesLoaded == imagesLoading){
-        setupLayers()
-         }
-
-
-          let CUBEimages = [img, img2, img3, img4, img5, img6]
-
-          // // wait for all images to load
-
-          const proms = CUBEimages.map(im => new Promise(res =>
-            im.onload = () => res()
-          ))
-
-          const promise = Promise.all(proms).then(data => {
-            createCubeMapFromFolder(CUBEimages, parent)
-
-          })
-
-
-          // handleCubeMapFolder(px, nx,py, ny, pz, nz).then((Values) => {
-
-          //   // 
-          //   let img1 = Values[1][0]
-          //   console.log(img1)
-          // })
-
-          console.log("proper filenames")
-
-
-
-
-
-
-
-          // watch(name, "cubemap folder")
-          // createCubeMapFromFolder(parent, px, nx,py, ny, pz, nz)
-
+          let processedImages = processCubeImages(values)
+          let parent = setupCubeMapFolderParent(name)
+          processedImages[0].then(() => { createCubeMapFromFolder(processedImages[1], parent) });
+          //could be simplified to createCubeMapFromFolder
 
         } catch {
 
           checkCubeMapViable(values).then((Values) => {
             Values[0].then((values) => {
-              console.log("trying onnly once")
-
               if (values == true) {
-                console.log("cubemap input incurrect")
 
-                //handle
+                //handle -> cubemap input files not specified 
               } else {
-
-
-                console.log("simply not a cubemap")
 
                 let imagesTO = Values[1];
 
                 for (let i = 0; i < imagesTO.length; i++) {
-
 
                   let img = imagesTO[i]
 
@@ -376,84 +135,32 @@
                   }
 
                   globalImageFiles.set(img.name, v.get(img.name))
-
-
                   addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
                   activeButtons.add(img.name)
                   findformat.call(img)
 
-
                 }
 
                 v = null
-
-
-
               }
-
             })
-
           })
         }
-
-    //     console.log("only runs when tur")
-
-
-
-
-
-
       } else {
-
         values.forEach((values, keys) => {
-
           processImage(values)
-
         })
-
       }
-
-
     });
 
     dir = null
     flatArray = null
     files = null
-
-
-
-  }
-
-  function processImage(values) {
-
-    var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
-
-    img.name = values.name  //generate id for parent object, current bug when dealing with duplicate image names
-
-    while (activeButtons.has(img.name)) {
-      img.name = img.name + "_"
-
-    }
-
-    globalImageFiles.set(img.name, values)
-    activeButtons.add(img.name)
-
-
-    img.src = URL.createObjectURL(values);
-    img.onload = findformat // find the 360 format that best fits this image 
-
-    addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
-
   }
 
 
 
 
-  function printActiveImages() {
-    globalImageFiles.forEach((value, key) => {
-      console.log(value.name)
-    })
-  }
 
 
   //get image dimensions & and match to image format -> then transform image into 3d object
@@ -477,30 +184,11 @@
 
 
 
-
-
   function watch(name, label) {
     buttonsToEnable.push("button" + name)
     document.getElementById("label" + name).innerHTML = label
 
   }
-
-
-
-  function reformatTest(id) {
-    let p = document.getElementById(id)
-    for (let i = 0; i < p.object3D.children.length; i++) {
-      p.object3D.remove(p.object3D.children[i])
-    }
-
-    console.log(globalImageFiles.get(id))
-
-    var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
-    img.src = URL.createObjectURL(globalImageFiles.get(id));
-
-    img.onload = createSphere(img, p) // find the 360 format that best fits this image 
-  }
-
 </script>
 
 
