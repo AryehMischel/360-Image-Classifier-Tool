@@ -327,7 +327,7 @@ function addImage(src) { //TO-DO pass in image name
         img.name = img.name + "_"
 
     }
-    globalImageFiles.set(img.name, values)
+  //  globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
     activeButtons.add(img.name)
     addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
     img.onload = findformat // find the 360 format that best fits this image 
