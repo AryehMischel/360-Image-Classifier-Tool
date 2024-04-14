@@ -128,7 +128,7 @@ async function checkCubeMapViable(values) {
     // if (img.width / img.height == 1 && allEqual(data)) {
 
   }
- 
+  
   function setupCubeMapFolderParent(name){
     let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
           parent.setAttribute("id", name)
