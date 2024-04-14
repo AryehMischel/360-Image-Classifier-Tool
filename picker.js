@@ -242,7 +242,7 @@ async function checkFolder(test) {
         console.log("response incame")
 
         console.log(files[0].id)
-
+        imagesLoading += files.length
         for (i = 0; i < files.length; i++) {
             getImages(files[i].id)
 
