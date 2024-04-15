@@ -231,7 +231,7 @@ async function getSubFolders() {
 }
 
 
- let cubemapFileNames = ['px','nx', 'py', 'ny', 'pz', 'nz']
+ const cubemapFileNames = new Set(['px','nx', 'py', 'ny', 'pz', 'nz']);
 
 async function checkFolder(test) {
     // const test = '1aOm0_RXTWw9iwm-cm7VHGCrMt20Atc9h'
@@ -246,7 +246,20 @@ async function checkFolder(test) {
 
         if(files.length == 6){
             console.log("might be a cubemap??")
-          
+        
+         let n = files[0].name.substring(0, files[0].name.lastIndexOf('.'))
+         let n1 =  files[1].name.substring(0, files[1].name.lastIndexOf('.'))
+         let n2 =   files[2].name.substring(0, files[2].name.lastIndexOf('.'))
+         let n3 =  files[3].name.substring(0, files[3].name.lastIndexOf('.'))
+         let n4 =   files[4].name.substring(0, files[4].name.lastIndexOf('.'))
+         let n5 =   files[5].name.substring(0, files[5].name.lastIndexOf('.'))
+
+         if(cubemapFileNames.has(n) && cubemapFileNames.has(n1) &&  cubemapFileNames.has(n2) && cubemapFileNames.has(n3) && cubemapFileNames.has(n4)  && cubemapFileNames.has(n5)){
+
+            console.log("cubemap!!")
+         } else{
+            console.log("boo map")
+         }
         }
 
         for (i = 0; i < files.length; i++) {
