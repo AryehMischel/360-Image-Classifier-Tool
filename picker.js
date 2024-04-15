@@ -364,19 +364,19 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                     headers: { Authorization: `Bearer ${accessToken}`}
                 }).then(response => response.blob())
             .then(blob => {
-            console.log(apple)
-               
+           console.log(apple)
+           const img = new Image();
+                
 
                 const reader = new FileReader();
                         reader.onload = function () {
-                            var img = new Image();
                             console.log(imgNames[i])
                             //img.name = imgNames[i]
                             cubeImages.push(img); 
 
                             img.src = this.result
                             img.onload = () => { 
-                                console.log(apple)
+                                console.log('woaw')
 
                                 cubemapCounter += 1;
                                 if(cubemapCounter == 6){ 
