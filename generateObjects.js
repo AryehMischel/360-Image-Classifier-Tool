@@ -673,7 +673,7 @@ function blurImageGrid(X_Seg, Y_Seg, imgData) {
 
 function createCube(parent, c, c2, c3, c4, c5, c6) {
 
-    const geometry = new THREE.BoxGeometry(40, 40, 40);
+    const geometry = new THREE.BoxGeometry(5000, 5000, 5000);
     const loader = new THREE.TextureLoader();
 
     const cubeMaterials = [
