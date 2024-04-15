@@ -356,13 +356,15 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                     img.src = this.result
                   //  cubemapFiles.set( imgNames[i], img); 
                     const myPromise = new Promise((resolve, reject) => {
-                         cubemapFiles.set( imgNames[i], img); 
-                        
+                         cubemapFiles.set(imgNames[i], img); 
+                         console.log("asdasd")
                       });
 
 
                     img.onload = () => { console.log("muddy waters"); myPromise.then(()=>{
                         cubemapCounter += 1;
+                        console.log("something should be working")
+
                          if(cubemapCounter == 6){ 
                             console.log("should be working")
                             createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
