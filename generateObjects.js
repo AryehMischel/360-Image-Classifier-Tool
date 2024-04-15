@@ -161,7 +161,6 @@ function createCubeMapFromFolder(images, parent) {
 function createStereoCube(img, parent) {
     console.log(performance.now())
 
-    console.log(img)
 
     let canvas = document.createElement("canvas")
     let canvas2 = document.createElement("canvas")
