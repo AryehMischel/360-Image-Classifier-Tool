@@ -231,7 +231,7 @@ async function getSubFolders() {
 }
 
 
-
+ let cubemapFileNames = ['px','nx', 'py', 'ny', 'pz', 'nz']
 
 async function checkFolder(test) {
     // const test = '1aOm0_RXTWw9iwm-cm7VHGCrMt20Atc9h'
@@ -251,7 +251,8 @@ async function checkFolder(test) {
 
         for (i = 0; i < files.length; i++) {
             console.log(files[i])
-            console.log(files[i].name.lastIndexOf("."))
+            let name = files[i].name
+            console.log(name.substring(0, name.lastIndexOf('.')))
 
             getImages(files[i].id)
 
