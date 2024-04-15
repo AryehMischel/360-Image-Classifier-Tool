@@ -255,6 +255,13 @@ async function checkFolder(test) { //pass in folder name
             let n4 = files[4].name.substring(0, files[4].name.lastIndexOf('.'))
             let n5 = files[5].name.substring(0, files[5].name.lastIndexOf('.'))
 
+            console.log(n)
+            console.log(n1)
+            console.log(n2)
+            console.log(n3)
+            console.log(n4)
+            console.log(n5)
+
             if (cubemapFileNames.has(n) && cubemapFileNames.has(n1) && cubemapFileNames.has(n2) && cubemapFileNames.has(n3) && cubemapFileNames.has(n4) && cubemapFileNames.has(n5)) {
 
                 let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
