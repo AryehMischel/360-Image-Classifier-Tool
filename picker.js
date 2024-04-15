@@ -354,8 +354,9 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                     var img = new Image();
                     img.name = imgNames[i]
                     img.src = this.result
-                    img.onload = () => { console.log("muddy waters"); cubemapFiles.set( imgNames[i], img); ;cubemapCounter += 1; if(cubemapCounter == 6){ 
-                        createCubeMapFromFolder([cubemapFiles.get('px'),cubemapFiles.get('nx'), cubemapFiles.get('py'),cubemapFiles.get('ny'), cubemapFiles.get('pz'),cubemapFiles.get('nz')], parent)   } 
+                    cubemapFiles.set( imgNames[i], img); 
+                    img.onload = () => { console.log("muddy waters"); cubemapCounter += 1; if(cubemapCounter == 6){ 
+                        createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent)   } 
                     }
                 }; // <--- `this.result` contains a base64 data URI
                 return reader.readAsDataURL(blob);
