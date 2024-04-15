@@ -337,7 +337,7 @@ async function makeCubeMap(parent, imageIds, imgNames) {
     let cubeImages = []
     let cubemapCounter = 0
   //  const cubemapFileNames = new Set(['px', 'nx', 'py', 'ny', 'pz', 'nz']);
-    let cubemapFiles = new Map([["px", ""], ["nx", ""],["py", ""], ["ny", ""],["pz", ""], ["nz", ""]]);
+    let cubemapFiles = new Map();//[["px", ""], ["nx", ""],["py", ""], ["ny", ""],["pz", ""], ["nz", ""]]
     for (i = 0; i < imageIds.length; i++) {
 
 
@@ -379,7 +379,6 @@ async function makeCubeMap(parent, imageIds, imgNames) {
 
   
     console.log("all done?")
-    console.log(cubeImages.length)
 
 
 
