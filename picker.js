@@ -379,8 +379,21 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                                 if(cubemapCounter == 6){ 
                                             console.log("should be working")
                                             console.log(imgNames.at('nz'))
-                                            createCubeMapFromFolder(cubeImages, parent)
-                                }
+                                            createCubeMapFromFolder([
+                                                cubeImages[imgNames.indexOf('px')],
+                                                cubeImages[ imgNames.indexOf('nx')],
+                                                cubeImages[  imgNames.indexOf('py')],
+                                                cubeImages[ imgNames.indexOf('ny')],
+                                                cubeImages[   imgNames.indexOf('pz') ],
+                                                cubeImages[ imgNames.indexOf('nz')]], parent)
+                                          
+                                           
+                                           
+                                            
+                                         
+                                            
+
+                                        }
                             };
                           //  cubemapFiles.set( imgNames[i], img); 
         
