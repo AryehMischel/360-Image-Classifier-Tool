@@ -266,7 +266,7 @@ async function checkFolder(test) { //pass in folder name
                 imagesLoading += 1
                 console.log("cubemap!!")
 
-                makeCubeMap(parent, [files[0].id, files[1].id, files[2].id, files[3].id, files[4].id, files[5].id])
+                makeCubeMap(parent, [files[0].id, files[1].id,files[2].id, files[3].id, files[4].id, files[5].id], [n, n1, n2, n3, n4, n5])
 
                 //get blobs of each image
                 //turn into images and onload store in array :: cubeimages process ++ 
@@ -333,10 +333,11 @@ async function getImages(fileId) {
 
 
 
-async function makeCubeMap(parent, imageIds) {
+async function makeCubeMap(parent, imageIds, imgNames) {
     let cubeImages = []
-
-
+    let cubemapCounter = 0
+  //  const cubemapFileNames = new Set(['px', 'nx', 'py', 'ny', 'pz', 'nz']);
+    let cubemapFiles = new Map([["px", ""], ["nx", ""],["py", ""], ["ny", ""],["pz", ""], ["nz", ""]]);
     for (i = 0; i < imageIds.length; i++) {
 
 
@@ -351,8 +352,11 @@ async function makeCubeMap(parent, imageIds) {
                 const reader = new FileReader();
                 reader.onload = function () {
                     var img = new Image();
+                    img.name = imgNames[i]
                     img.src = this.result
-                    img.onload = () => { console.log("muddy waters"); cubeImages.push(img); if(cubeImages.length == 6){  createCubeMapFromFolder(cubeImages, parent)} }
+                    img.onload = () => { console.log("muddy waters"); cubemapFiles.set( imgNames[i], img); ;cubemapCounter += 1; if(cubemapCounter == 6){ 
+                        createCubeMapFromFolder([cubemapFiles.get('px'),cubemapFiles.get('nx'), cubemapFiles.get('py'),cubemapFiles.get('ny'), cubemapFiles.get('pz'),cubemapFiles.get('nz')], parent)   } 
+                    }
                 }; // <--- `this.result` contains a base64 data URI
                 return reader.readAsDataURL(blob);
             })
