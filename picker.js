@@ -348,7 +348,7 @@ async function makeCubeMap(parent, imageIds, imgNames) {
             }
         }).then(response => response.blob())
             .then(blob => {
-                console.log(performance.now())
+              //  console.log(performance.now())
                 const reader = new FileReader();
                 reader.onload = function () {
                     var img = new Image();
@@ -358,17 +358,17 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                     const myPromise = new Promise((resolve, reject) => {
                          cubemapFiles.set(imgNames[i], img); 
                          console.log("asdasd")
-                      });
+                      }).then(()=>{ console.log("it's gotta happen here")});
 
 
-                    img.onload = () => { console.log("muddy waters"); myPromise.then(()=>{
-                        cubemapCounter += 1;
+                    img.onload = () => { console.log("muddy waters"); myPromise.then(()=>{ 
+                        // cubemapCounter += 1 
                         console.log("something should be working")
 
-                         if(cubemapCounter == 6){ 
-                            console.log("should be working")
-                            createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
-                         } 
+                        //  if(cubemapCounter == 6){ 
+                        //     console.log("should be working")
+                        //     createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
+                        //  } 
                         });
 
 
