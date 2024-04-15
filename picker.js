@@ -211,7 +211,7 @@ async function getSubFolders() {
         q: `mimeType='application/vnd.google-apps.folder' and parents in '${test}'`
     }).then(function (response) {
         var folders = response.result.files;
-        imagesLoading -= folders.length
+      //  imagesLoading -= folders.length
         for (i = 0; i < folders.length; i++) {
             console.log(folders[i].id)
 
@@ -241,9 +241,9 @@ async function checkFolder(test) {
     }).then(function (response) {
         var files = response.result.files;
         console.log("response incame")
-
-        console.log(files[0].id)
+        console.log(files.length)
         imagesLoading += files.length
+
         for (i = 0; i < files.length; i++) {
             getImages(files[i].id)
 
