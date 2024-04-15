@@ -325,7 +325,7 @@ async function checkFolder(test) { //pass in folder name
 
 async function getImages(fileId) {
 
-    const Res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+    fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
         headers: {
             Authorization: `Bearer ${accessToken}`
 
