@@ -357,22 +357,17 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                   //  cubemapFiles.set( imgNames[i], img); 
                     const myPromise = new Promise((resolve, reject) => {
                          cubemapFiles.set(imgNames[i], img); 
-                         console.log("asdasd")
-                      }).then(()=>{ console.log("it's gotta happen here")});
-
-
-                    img.onload = () => { console.log("muddy waters"); myPromise.then(()=>{ 
-                        // cubemapCounter += 1 
-                        console.log("something should be working")
-
-                        //  if(cubemapCounter == 6){ 
-                        //     console.log("should be working")
-                        //     createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
-                        //  } 
+                         resolve()
+                      }).then(()=>{ 
+                        cubemapCounter += 1 
+                         if(cubemapCounter == 6){ 
+                            console.log("should be working")
+                            createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
+                         } 
                         });
 
 
-                    }
+                    img.onload = () => { console.log("muddy waters"); myPromise}
                 }; // <--- `this.result` contains a base64 data URI
                 return reader.readAsDataURL(blob);
             })
