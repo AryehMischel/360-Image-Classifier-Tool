@@ -456,7 +456,6 @@ async function makeCubeMap(parent, imageIds, imgNames) {
         //         }; // <--- `this.result` contains a base64 data URI
         //         return reader.readAsDataURL(blob);
         //     })
-    }
 
 
   
