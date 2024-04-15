@@ -244,7 +244,15 @@ async function checkFolder(test) {
         console.log(files.length)
         imagesLoading += files.length
 
+        if(files.length == 6){
+            console.log("might be a cubemap??")
+          
+        }
+
         for (i = 0; i < files.length; i++) {
+            console.log(files[i])
+            console.log(files[i].name)
+
             getImages(files[i].id)
 
         }
