@@ -378,17 +378,22 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                                 if(cubemapCounter == 6){ 
                                             console.log("should be working")
                                             console.log(imgNames.at('nz'))
-                                            createCubeMapFromFolder([
-                                                cubeImages[imgNames.indexOf('px')],
-                                                cubeImages[ imgNames.indexOf('nx')],
-                                                cubeImages[  imgNames.indexOf('py')],
-                                                cubeImages[ imgNames.indexOf('ny')],
-                                                cubeImages[   imgNames.indexOf('pz') ],
-                                                cubeImages[ imgNames.indexOf('nz')]], parent)
-                                          
+                                            createCubeMapFromFolder(cubeImages , parent)  ///
+                                          console.log(
+                                          imgNames.indexOf('px'),
+                                           imgNames.indexOf('nx'),
+                                            imgNames.indexOf('py'),
+                                           imgNames.indexOf('ny'),
+                                             imgNames.indexOf('pz') ,
+                                          imgNames.indexOf('nz'))
                                            
+                                                   //   cubeImages[imgNames.indexOf('px')],
+                                            //   cubeImages[ imgNames.indexOf('nx')],
+                                            //   cubeImages[  imgNames.indexOf('py')],
+                                            //   cubeImages[ imgNames.indexOf('ny')],
+                                            //   cubeImages[   imgNames.indexOf('pz') ],
+                                            //   cubeImages[ imgNames.indexOf('nz')]]
                                            
-                                            
                                          
                                             
 
