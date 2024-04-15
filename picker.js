@@ -341,12 +341,17 @@ async function getImages(fileId) {
 
 
 async function makeCubeMap(parent, imageIds, imgNames) {
+
+    console.log(imageIds)
+    console.log(imgNames)
+
     let cubeImages = []
     let cubemapCounter = 0
   //  const cubemapFileNames = new Set(['px', 'nx', 'py', 'ny', 'pz', 'nz']);
     let cubemapFiles = new Map();//[["px", ""], ["nx", ""],["py", ""], ["ny", ""],["pz", ""], ["nz", ""]]
     for (i = 0; i < imageIds.length; i++) {
 
+        console.log("outside of loop " + imgNames[i])
 
         const Res = await fetch(`https://www.googleapis.com/drive/v3/files/${imageIds[i]}?alt=media`, {
             headers: {
@@ -361,6 +366,7 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                     var img = new Image();
                     console.log(imgNames[i])
                     img.name = imgNames[i]
+                    cubemapFiles.set(imgNames[i], img); 
                     img.src = this.result
                   //  cubemapFiles.set( imgNames[i], img); 
 
@@ -380,9 +386,13 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                     //      } 
                     //     });
 
-                    cubemapFiles.set(imgNames[i], img); 
-                    
-                    img.onload = () => { console.log("muddy waters");  cubemapCounter += 1;  if(cubemapCounter == 6){console.log("should be working"); console.log(cubemapFiles.get('nz')) } }
+              
+
+                    img.onload = () => { console.log("muddy waters");  cubemapCounter += 1;  if(cubemapCounter == 6){
+                        console.log("should be working"); 
+                        console.log(cubemapFiles.get('pz')) 
+                    }
+                     }
                 }; // <--- `this.result` contains a base64 data URI
                 return reader.readAsDataURL(blob);
             })
