@@ -347,13 +347,16 @@ async function makeCubeMap(parent, imageIds, imgNames) {
 
     console.log(imageIds)
     console.log(imgNames)
+
+    console.log(imgNames.at('nz'))
+
     var fetches = [];
     let cubeImages = []
     let cubemapCounter = 0
   //  const cubemapFileNames = new Set(['px', 'nx', 'py', 'ny', 'pz', 'nz']);
     let cubemapFiles = new Map();//[["px", ""], ["nx", ""],["py", ""], ["ny", ""],["pz", ""], ["nz", ""]]
     for (i = 0; i < imageIds.length; i++) {
-     
+    
           fetches.push(
             fetch(`https://www.googleapis.com/drive/v3/files/${imageIds[i]}?alt=media`, {
                     headers: {
@@ -375,6 +378,7 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                                 cubemapCounter += 1;
                                 if(cubemapCounter == 6){ 
                                             console.log("should be working")
+                                            console.log(imgNames.at('nz'))
                                             createCubeMapFromFolder(cubeImages, parent)
                                 }
                             };
