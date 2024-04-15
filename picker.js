@@ -153,7 +153,7 @@ async function pickerCallback(data) {
         console.log(obj.docs[0].id)
 
 
-        getSubFolders()
+        getSubFolders(obj.docs[0].id)
         //       checkFolder();
         //retrieveAllFiles()
         // const Res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${folderID}parents`, {
@@ -204,11 +204,10 @@ async function pickerCallback(data) {
 
 }
 
-async function getSubFolders() {
-    const test = '1aOm0_RXTWw9iwm-cm7VHGCrMt20Atc9h'
+async function getSubFolders(rootDir) {
     gapi.client.drive.files.list({
         // give name of the folder to check
-        q: `mimeType='application/vnd.google-apps.folder' and parents in '${test}'`
+        q: `mimeType='application/vnd.google-apps.folder' and parents in '${rootDir}'`
     }).then(function (response) {
         var folders = response.result.files;
         //  imagesLoading -= folders.length
@@ -218,7 +217,7 @@ async function getSubFolders() {
             checkFolder(`${folders[i].id}`)
         }
 
-        checkFolder(test)
+        checkFolder(rootDir)
 
         // for(i = 0; i < files.length; i++){
 
@@ -234,11 +233,11 @@ async function getSubFolders() {
 const cubemapFileNames = new Set(['px', 'nx', 'py', 'ny', 'pz', 'nz']);
 
 
-async function checkFolder(test) { //pass in folder name
+async function checkFolder(folder) { //pass in folder name
     // const test = '1aOm0_RXTWw9iwm-cm7VHGCrMt20Atc9h'
     gapi.client.drive.files.list({
         // give name of the folder to check
-        q: `mimeType contains 'image/' and '${test}' in parents`,
+        q: `mimeType contains 'image/' and '${folder}' in parents`,
     }).then(function (response) {
         var files = response.result.files;
         console.log("response incame")
@@ -265,11 +264,11 @@ async function checkFolder(test) { //pass in folder name
             if (cubemapFileNames.has(n) && cubemapFileNames.has(n1) && cubemapFileNames.has(n2) && cubemapFileNames.has(n3) && cubemapFileNames.has(n4) && cubemapFileNames.has(n5)) {
 
                 let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
-                parent.setAttribute("id", test)
+                parent.setAttribute("id", folder)
                 layers.appendChild(parent)
-                addButton(setLayer, test); // buttonsToEnable.push("button" + img.name); //add button to ui
-                activeButtons.add(test)
-                watch(test, "folderCube")
+                addButton(setLayer, folder); // buttonsToEnable.push("button" + img.name); //add button to ui
+                activeButtons.add(folder)
+                watch(folder, "folderCube")
                 imagesLoading += 1
                 console.log("cubemap!!")
 
