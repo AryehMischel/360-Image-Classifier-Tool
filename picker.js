@@ -366,13 +366,13 @@ async function makeCubeMap(parent, imageIds, imgNames) {
             .then(blob => {
            console.log(apple)
            const img = new Image();
-                
+           cubemapFiles.set(apple, img)
 
                 const reader = new FileReader();
                         reader.onload = function () {
                             console.log(imgNames[i])
                             //img.name = imgNames[i]
-                            cubeImages.push(img); 
+                            //cubeImages.push(img); 
 
                             img.src = this.result
                             img.onload = () => { 
@@ -382,14 +382,18 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                                 if(cubemapCounter == 6){ 
                                             console.log("should be working")
                                             console.log(imgNames.at('nz'))
-                                            createCubeMapFromFolder(cubeImages , parent)  ///
-                                          console.log(
-                                          imgNames.indexOf('px'),
-                                           imgNames.indexOf('nx'),
-                                            imgNames.indexOf('py'),
-                                           imgNames.indexOf('ny'),
-                                             imgNames.indexOf('pz') ,
-                                          imgNames.indexOf('nz'))
+                                    console.log(cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz'))
+                                    createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
+                                         
+                                         
+                                            //createCubeMapFromFolder(cubeImages , parent)  ///
+                                        //   console.log(
+                                        //   imgNames.indexOf('px'),
+                                        //    imgNames.indexOf('nx'),
+                                        //     imgNames.indexOf('py'),
+                                        //    imgNames.indexOf('ny'),
+                                        //      imgNames.indexOf('pz') ,
+                                        //   imgNames.indexOf('nz'))
                                            
                                                    //   cubeImages[imgNames.indexOf('px')],
                                             //   cubeImages[ imgNames.indexOf('nx')],
