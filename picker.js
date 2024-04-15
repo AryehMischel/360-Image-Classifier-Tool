@@ -251,7 +251,7 @@ async function checkFolder(test) {
 
         for (i = 0; i < files.length; i++) {
             console.log(files[i])
-            console.log(files[i].name)
+            console.log(files[i].name.lastIndexOf("."))
 
             getImages(files[i].id)
 
