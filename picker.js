@@ -354,7 +354,7 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                     var img = new Image();
                     img.name = imgNames[i]
                     img.src = this.result
-                    cubemapFiles.set( imgNames[i], img); 
+                  //  cubemapFiles.set( imgNames[i], img); 
                     const myPromise = new Promise((resolve, reject) => {
                          cubemapFiles.set( imgNames[i], img); 
                         
