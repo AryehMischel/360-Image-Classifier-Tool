@@ -354,8 +354,6 @@ async function makeCubeMap(parent, imageIds, imgNames) {
     let cubemapFiles = new Map();//[["px", ""], ["nx", ""],["py", ""], ["ny", ""],["pz", ""], ["nz", ""]]
     for (i = 0; i < imageIds.length; i++) {
      
-     
-          console.log(url[i]);
           fetches.push(
             fetch(`https://www.googleapis.com/drive/v3/files/${imageIds[i]}?alt=media`, {
                     headers: {
@@ -363,7 +361,6 @@ async function makeCubeMap(parent, imageIds, imgNames) {
         
                     }
                 }).then(response => response.blob())
-            .then(res => {return res.text(); })
             .then(blob => {
 
                 const reader = new FileReader();
