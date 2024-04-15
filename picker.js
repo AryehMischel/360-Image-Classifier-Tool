@@ -273,7 +273,7 @@ async function checkFolder(test) { //pass in folder name
                 imagesLoading += 1
                 console.log("cubemap!!")
 
-                makeCubeMap(parent, [files[0].id, files[1].id,files[2].id, files[3].id, files[4].id, files[5].id], [n, n1, n2, n3, n4, n5])
+                makeCubeMap(parent, [files[0].id, files[1].id, files[2].id, files[3].id, files[4].id, files[5].id], [n, n1, n2, n3, n4, n5])
 
                 //get blobs of each image
                 //turn into images and onload store in array :: cubeimages process ++ 
@@ -359,26 +359,30 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                 const reader = new FileReader();
                 reader.onload = function () {
                     var img = new Image();
+                    console.log(imgNames[i])
                     img.name = imgNames[i]
                     img.src = this.result
                   //  cubemapFiles.set( imgNames[i], img); 
-                    const myPromise = new Promise((resolve, reject) => {
-                         cubemapFiles.set(imgNames[i], img); 
-                         resolve()
-                      }).then(()=>{ 
-                        cubemapCounter += 1 
-                        console.log("fuck " +  cubemapCounter  )
-                        console.log(cubemapFiles.get(imgNames[i]))
-                         if(cubemapCounter == 6){ 
-                            console.log("should be working")
-                            console.log(cubemapFiles.get('nz'))
-                            //console.log(cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz'))
-                            //createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
-                         } 
-                        });
 
+                    // const myPromise = new Promise((resolve, reject) => {
+                    //     console.log(imgNames[i])
+                    //     cubemapFiles.set(imgNames[i], img); 
+                    //      resolve()
+                    //   }).then(()=>{ 
+                    //     cubemapCounter += 1 
+                    //     console.log("fuck " +  cubemapCounter  )
+                    //     console.log(cubemapFiles.get(imgNames[i]))
+                    //      if(cubemapCounter == 6){ 
+                    //         console.log("should be working")
+                    //         console.log(cubemapFiles.get('nz'))
+                    //         //console.log(cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz'))
+                    //         //createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
+                    //      } 
+                    //     });
 
-                    img.onload = () => { console.log("muddy waters"); myPromise}
+                    cubemapFiles.set(imgNames[i], img); 
+                    
+                    img.onload = () => { console.log("muddy waters");  cubemapCounter += 1;  if(cubemapCounter == 6){console.log("should be working"); console.log(cubemapFiles.get('nz')) } }
                 }; // <--- `this.result` contains a base64 data URI
                 return reader.readAsDataURL(blob);
             })
