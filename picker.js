@@ -431,7 +431,7 @@ async function makeCubeMap(parent, imageIds, imgNames) {
 
 
         Promise.all(fetches).then(function() {
-          console.log ("all done?");
+          console.log ("all done?" + fetches);
         
         });
         // console.log("outside of loop " + imgNames[i])
