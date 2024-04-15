@@ -332,10 +332,24 @@ async function getImages(fileId) {
         }
     }).then(response => response.blob())
         .then(blob => {
-            console.log(performance.now())
+          
+            const img = new Image();
+
+            img.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
+            
+            while (activeButtons.has(img.name)) {
+                img.name = img.name + "_"
+        
+            }
+            //  globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
+            activeButtons.add(img.name)
+            addButton(setLayer, img.name) ; // buttonsToEnable.push("button" + img.name); //add button to ui
             const reader = new FileReader();
+
             reader.onload = function () {
-                addImage(this.result)
+               
+                img.src = this.result
+                img.onload = findformat // find t
             }; // <--- `this.result` contains a base64 data URI
             return reader.readAsDataURL(blob);
         })
@@ -531,20 +545,7 @@ async function makeCubeMap(parent, imageIds, imgNames) {
 
 
 function addImage(src) { //TO-DO pass in image name
-    var img = new Image();
-
-    img.src = src
-
-    img.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
-
-    while (activeButtons.has(img.name)) {
-        img.name = img.name + "_"
-
-    }
-    //  globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
-    activeButtons.add(img.name)
-    addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
-    img.onload = findformat // find the 360 format that best fits this image 
+  //he 360 format that best fits this image 
     //document.body.appendChild(image); console.log("added phtot")
     //crop(src);
     //document.querySelector("a-assets").append(image)
