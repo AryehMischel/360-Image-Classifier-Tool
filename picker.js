@@ -362,7 +362,7 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                         cubemapCounter += 1 
                          if(cubemapCounter == 6){ 
                             console.log("should be working")
-                            console.log([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')])
+                            console.log(cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz'))
                             //createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
                          } 
                         });
