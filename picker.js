@@ -308,7 +308,7 @@ async function checkFolder(test) { //pass in folder name
                 activeButtons.add(img.name)
                 addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
 
-                fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
+                fetch(`https://www.googleapis.com/drive/v3/files/${files[i].id}?alt=media`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`
 
