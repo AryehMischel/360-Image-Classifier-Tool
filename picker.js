@@ -352,12 +352,14 @@ async function makeCubeMap(parent, imageIds) {
                 reader.onload = function () {
                     var img = new Image();
                     img.src = this.result
-                    img.onload = () => { console.log("muddy waters"); cubeImages.push(img) }
+                    img.onload = () => { console.log("muddy waters"); cubeImages.push(img); if(cubeImages.length == 6){  createCubeMapFromFolder(cubeImages, parent)} }
                 }; // <--- `this.result` contains a base64 data URI
                 return reader.readAsDataURL(blob);
             })
     }
 
+
+  
     console.log("all done?")
     console.log(cubeImages.length)
 
