@@ -289,6 +289,8 @@ async function checkFolder(test) { //pass in folder name
 
         } else {
 
+
+
             imagesLoading += files.length
 
             for (i = 0; i < files.length; i++) {
@@ -320,6 +322,7 @@ async function checkFolder(test) { //pass in folder name
     })
 }
 
+
 async function getImages(fileId) {
 
     const Res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
@@ -344,58 +347,118 @@ async function makeCubeMap(parent, imageIds, imgNames) {
 
     console.log(imageIds)
     console.log(imgNames)
-
+    var fetches = [];
     let cubeImages = []
     let cubemapCounter = 0
   //  const cubemapFileNames = new Set(['px', 'nx', 'py', 'ny', 'pz', 'nz']);
     let cubemapFiles = new Map();//[["px", ""], ["nx", ""],["py", ""], ["ny", ""],["pz", ""], ["nz", ""]]
     for (i = 0; i < imageIds.length; i++) {
-
-        console.log("outside of loop " + imgNames[i])
-
-        const Res = await fetch(`https://www.googleapis.com/drive/v3/files/${imageIds[i]}?alt=media`, {
-            headers: {
-                Authorization: `Bearer ${accessToken}`
-
-            }
-        }).then(response => response.blob())
+     
+     
+          console.log(url[i]);
+          fetches.push(
+            fetch(`https://www.googleapis.com/drive/v3/files/${imageIds[i]}?alt=media`, {
+                    headers: {
+                        Authorization: `Bearer ${accessToken}`
+        
+                    }
+                }).then(response => response.blob())
+            .then(res => {return res.text(); })
             .then(blob => {
-              //  console.log(performance.now())
-                const reader = new FileReader();
-                reader.onload = function () {
-                    var img = new Image();
-                    console.log(imgNames[i])
-                    img.name = imgNames[i]
-                    cubemapFiles.set(imgNames[i], img); 
-                    img.src = this.result
-                  //  cubemapFiles.set( imgNames[i], img); 
 
-                    // const myPromise = new Promise((resolve, reject) => {
-                    //     console.log(imgNames[i])
-                    //     cubemapFiles.set(imgNames[i], img); 
-                    //      resolve()
-                    //   }).then(()=>{ 
-                    //     cubemapCounter += 1 
-                    //     console.log("fuck " +  cubemapCounter  )
-                    //     console.log(cubemapFiles.get(imgNames[i]))
-                    //      if(cubemapCounter == 6){ 
-                    //         console.log("should be working")
-                    //         console.log(cubemapFiles.get('nz'))
-                    //         //console.log(cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz'))
-                    //         //createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
-                    //      } 
-                    //     });
+                const reader = new FileReader();
+                        reader.onload = function () {
+                            var img = new Image();
+                            console.log(imgNames[i])
+                            img.name = imgNames[i]
+                            cubemapFiles.set(imgNames[i], img); 
+                            img.src = this.result
+                            img.onload = () => { console.log("this image finished loading" + imgNames[i])};
+                          //  cubemapFiles.set( imgNames[i], img); 
+        
+                            // const myPromise = new Promise((resolve, reject) => {
+                            //     console.log(imgNames[i])
+                            //     cubemapFiles.set(imgNames[i], img); 
+                            //      resolve()
+                            //   }).then(()=>{ 
+                            //     cubemapCounter += 1 
+                            //     console.log("fuck " +  cubemapCounter  )
+                            //     console.log(cubemapFiles.get(imgNames[i]))
+                            //      if(cubemapCounter == 6){ 
+                            //         console.log("should be working")
+                            //         console.log(cubemapFiles.get('nz'))
+                            //         //console.log(cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz'))
+                            //         //createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
+                            //      } 
+                            //     });
+        
+                      
+        
+                            // img.onload = () => { console.log("muddy waters");  cubemapCounter += 1;  if(cubemapCounter == 6){
+                            //     console.log("should be working"); 
+                            //     console.log(cubemapFiles.get('pz')) 
+                            // }
+                            //  }
+                        }; // <--- `this.result` contains a base64 data URI
+                        return reader.readAsDataURL(blob);
+
+
+            })
+            .catch(status, err => {return console.log(status, err);})
+          );
+        }
+
+
+        Promise.all(fetches).then(function() {
+          console.log ("all done?");
+        });
+        // console.log("outside of loop " + imgNames[i])
+        // var img = new Image();
+        // img.name = imgNames[i]
+        // cubemapFiles.set(imgNames[i], img); 
+
+
+
+        // const Res = await fetch(`https://www.googleapis.com/drive/v3/files/${imageIds[i]}?alt=media`, {
+        //     headers: {
+        //         Authorization: `Bearer ${accessToken}`
+
+        //     }
+        // }).then(response => response.blob())
+        //     .then(blob => {
+        //       //  console.log(performance.now())
+        //         const reader = new FileReader();
+        //         reader.onload = function () {
+                    
+        //             img.src = this.result
+        //           //  cubemapFiles.set( imgNames[i], img); 
+
+        //             // const myPromise = new Promise((resolve, reject) => {
+        //             //     console.log(imgNames[i])
+        //             //     cubemapFiles.set(imgNames[i], img); 
+        //             //      resolve()
+        //             //   }).then(()=>{ 
+        //             //     cubemapCounter += 1 
+        //             //     console.log("fuck " +  cubemapCounter  )
+        //             //     console.log(cubemapFiles.get(imgNames[i]))
+        //             //      if(cubemapCounter == 6){ 
+        //             //         console.log("should be working")
+        //             //         console.log(cubemapFiles.get('nz'))
+        //             //         //console.log(cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz'))
+        //             //         //createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
+        //             //      } 
+        //             //     });
 
               
 
-                    img.onload = () => { console.log("muddy waters");  cubemapCounter += 1;  if(cubemapCounter == 6){
-                        console.log("should be working"); 
-                        console.log(cubemapFiles.get('pz')) 
-                    }
-                     }
-                }; // <--- `this.result` contains a base64 data URI
-                return reader.readAsDataURL(blob);
-            })
+        //             img.onload = () => { console.log("muddy waters");  cubemapCounter += 1;  if(cubemapCounter == 6){
+        //                 console.log("should be working"); 
+        //                 console.log(cubemapFiles.get('pz')) 
+        //             }
+        //              }
+        //         }; // <--- `this.result` contains a base64 data URI
+        //         return reader.readAsDataURL(blob);
+        //     })
     }
 
 
