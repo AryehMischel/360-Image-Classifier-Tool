@@ -368,9 +368,16 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                             var img = new Image();
                             console.log(imgNames[i])
                             img.name = imgNames[i]
-                            cubemapFiles.set(imgNames[i], img); 
+                            cubeImages.push(img); 
                             img.src = this.result
-                            img.onload = () => { console.log("this image finished loading" + imgNames[i])};
+                            img.onload = () => { 
+
+                                cubemapCounter += 1;
+                                if(cubemapCounter == 6){ 
+                                            console.log("should be working")
+                                            createCubeMapFromFolder(cubeImages, parent)
+                                }
+                            };
                           //  cubemapFiles.set( imgNames[i], img); 
         
                             // const myPromise = new Promise((resolve, reject) => {
@@ -408,6 +415,7 @@ async function makeCubeMap(parent, imageIds, imgNames) {
 
         Promise.all(fetches).then(function() {
           console.log ("all done?");
+        
         });
         // console.log("outside of loop " + imgNames[i])
         // var img = new Image();
