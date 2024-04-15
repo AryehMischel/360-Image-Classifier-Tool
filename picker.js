@@ -58,7 +58,7 @@ function gisLoaded() {
  */
 function maybeEnableButtons() {
     if (pickerInited && gisInited) {
-       // document.getElementById('authorize_button').style.visibility = 'visible';
+        // document.getElementById('authorize_button').style.visibility = 'visible';
     }
 }
 
@@ -211,7 +211,7 @@ async function getSubFolders() {
         q: `mimeType='application/vnd.google-apps.folder' and parents in '${test}'`
     }).then(function (response) {
         var folders = response.result.files;
-      //  imagesLoading -= folders.length
+        //  imagesLoading -= folders.length
         for (i = 0; i < folders.length; i++) {
             console.log(folders[i].id)
 
@@ -231,9 +231,10 @@ async function getSubFolders() {
 }
 
 
- const cubemapFileNames = new Set(['px','nx', 'py', 'ny', 'pz', 'nz']);
+const cubemapFileNames = new Set(['px', 'nx', 'py', 'ny', 'pz', 'nz']);
 
-async function checkFolder(test) {
+
+async function checkFolder(test) { //pass in folder name
     // const test = '1aOm0_RXTWw9iwm-cm7VHGCrMt20Atc9h'
     gapi.client.drive.files.list({
         // give name of the folder to check
@@ -242,34 +243,58 @@ async function checkFolder(test) {
         var files = response.result.files;
         console.log("response incame")
         console.log(files.length)
-        imagesLoading += files.length
 
-        if(files.length == 6){
+
+        if (files.length == 6) {
             console.log("might be a cubemap??")
-        
-         let n = files[0].name.substring(0, files[0].name.lastIndexOf('.'))
-         let n1 =  files[1].name.substring(0, files[1].name.lastIndexOf('.'))
-         let n2 =   files[2].name.substring(0, files[2].name.lastIndexOf('.'))
-         let n3 =  files[3].name.substring(0, files[3].name.lastIndexOf('.'))
-         let n4 =   files[4].name.substring(0, files[4].name.lastIndexOf('.'))
-         let n5 =   files[5].name.substring(0, files[5].name.lastIndexOf('.'))
 
-         if(cubemapFileNames.has(n) && cubemapFileNames.has(n1) &&  cubemapFileNames.has(n2) && cubemapFileNames.has(n3) && cubemapFileNames.has(n4)  && cubemapFileNames.has(n5)){
+            let n = files[0].name.substring(0, files[0].name.lastIndexOf('.'))
+            let n1 = files[1].name.substring(0, files[1].name.lastIndexOf('.'))
+            let n2 = files[2].name.substring(0, files[2].name.lastIndexOf('.'))
+            let n3 = files[3].name.substring(0, files[3].name.lastIndexOf('.'))
+            let n4 = files[4].name.substring(0, files[4].name.lastIndexOf('.'))
+            let n5 = files[5].name.substring(0, files[5].name.lastIndexOf('.'))
 
-            console.log("cubemap!!")
-         } else{
-            console.log("boo map")
-         }
+            if (cubemapFileNames.has(n) && cubemapFileNames.has(n1) && cubemapFileNames.has(n2) && cubemapFileNames.has(n3) && cubemapFileNames.has(n4) && cubemapFileNames.has(n5)) {
+
+                let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
+                parent.setAttribute("id", test)
+                layers.appendChild(parent)
+                addButton(setLayer, test); // buttonsToEnable.push("button" + img.name); //add button to ui
+                activeButtons.add(test)
+                watch(test, "folderCube")
+                imagesLoading += 1
+                console.log("cubemap!!")
+
+                makeCubeMap(parent, [files[0].id, files[1].id, files[2].id, files[3].id, files[4].id, files[5].id])
+
+                //get blobs of each image
+                //turn into images and onload store in array :: cubeimages process ++ 
+                // after all six images are process in array
+                //createCubeMapFromFolder(images, parent)
+
+
+            } else {
+                console.log("boo map")
+                imagesLoading += files.length
+            }
+
+
+        } else {
+
+            imagesLoading += files.length
+
+            for (i = 0; i < files.length; i++) {
+                console.log(files[i])
+                let name = files[i].name
+                console.log(name.substring(0, name.lastIndexOf('.')))
+
+                getImages(files[i].id)
+
+            }
         }
 
-        for (i = 0; i < files.length; i++) {
-            console.log(files[i])
-            let name = files[i].name
-            console.log(name.substring(0, name.lastIndexOf('.')))
 
-            getImages(files[i].id)
-
-        }
         // const Res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
         //   headers: {
         //       Authorization: `Bearer ${accessToken}`
@@ -308,7 +333,37 @@ async function getImages(fileId) {
 
 
 
+async function makeCubeMap(parent, imageIds) {
+    let cubeImages = []
 
+
+    for (i = 0; i < imageIds.length; i++) {
+
+
+        const Res = await fetch(`https://www.googleapis.com/drive/v3/files/${imageIds[i]}?alt=media`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+
+            }
+        }).then(response => response.blob())
+            .then(blob => {
+                console.log(performance.now())
+                const reader = new FileReader();
+                reader.onload = function () {
+                    var img = new Image();
+                    img.src = this.result
+                    img.onload = () => { console.log("muddy waters"); cubeImages.push(img) }
+                }; // <--- `this.result` contains a base64 data URI
+                return reader.readAsDataURL(blob);
+            })
+    }
+
+    console.log("all done?")
+    console.log(cubeImages.length)
+
+
+
+}
 
 // function retrieveAllFiles(callback) {
 //     var retrievePageOfFiles = function (request, result) {
@@ -350,7 +405,7 @@ function addImage(src) { //TO-DO pass in image name
         img.name = img.name + "_"
 
     }
-  //  globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
+    //  globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
     activeButtons.add(img.name)
     addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
     img.onload = findformat // find the 360 format that best fits this image 
