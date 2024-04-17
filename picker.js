@@ -237,7 +237,7 @@ async function checkFolder(folder) { //pass in folder name
     // const test = '1aOm0_RXTWw9iwm-cm7VHGCrMt20Atc9h'
     gapi.client.drive.files.list({
         // give name of the folder to check
-        q: `mimeType contains 'image/' and '${folder}' in parents`,
+        q: `mimeType contains 'image/' and '${folder}' in parents and trashed = false`,
     }).then(function (response) {
         var files = response.result.files;
         console.log("response incame")
