@@ -309,18 +309,18 @@ async function checkFolder(folder) { //pass in folder name
 
                 fetch(`https://www.googleapis.com/drive/v3/files/${files[i].id}?alt=media`, {
                     headers: {
-                        Authorization: `Bearer ${accessToken}`
+                        Authorization: `Bearer ${accessToken}`,
+                        'Access-Control-Allow-Origin': 'https://refactorfromscratch.onrender.com/'
 
                     }
                 }).then(response => response.blob())
                     .then(blob => {
+
+                        const image = document.createElement("img")
+                        image.src = URL.createObjectURL(blob)
+                        document.body.appendChild(image);
+                        image.onload = findformat // find t
                         //  globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
-                        const reader = new FileReader();
-                        reader.onload = function () {
-                            img.src = this.result
-                            img.onload = findformat // find t
-                        }; // <--- `this.result` contains a base64 data URI
-                        return reader.readAsDataURL(blob);
                     })
             }
         }
@@ -355,25 +355,21 @@ async function getImages(fileId) {
     }).then(response => response.blob())
         .then(blob => {
 
-            const img = new Image();
+            const image = new Image();
 
-            img.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
+            image.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
 
-            while (activeButtons.has(img.name)) {
-                img.name = img.name + "_"
+            while (activeButtons.has(image.name)) {
+                image.name = image.name + "_"
 
             }
             //  globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
-            activeButtons.add(img.name)
-            addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
-            const reader = new FileReader();
-
-            reader.onload = function () {
-
-                img.src = this.result
-                img.onload = findformat // find t
-            }; // <--- `this.result` contains a base64 data URI
-            return reader.readAsDataURL(blob);
+            activeButtons.add(image.name)
+            addButton(setLayer, image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+          
+            image.src = URL.createObjectURL(blob)
+            document.body.appendChild(image);
+            image.onload = findformat // find t
         })
 }
 
@@ -421,52 +417,9 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                                 createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent);
 
 
-                                //createCubeMapFromFolder(cubeImages , parent)  ///
-                                //   console.log(
-                                //   imgNames.indexOf('px'),
-                                //    imgNames.indexOf('nx'),
-                                //     imgNames.indexOf('py'),
-                                //    imgNames.indexOf('ny'),
-                                //      imgNames.indexOf('pz') ,
-                                //   imgNames.indexOf('nz'))
-
-                                //   cubeImages[imgNames.indexOf('px')],
-                                //   cubeImages[ imgNames.indexOf('nx')],
-                                //   cubeImages[  imgNames.indexOf('py')],
-                                //   cubeImages[ imgNames.indexOf('ny')],
-                                //   cubeImages[   imgNames.indexOf('pz') ],
-                                //   cubeImages[ imgNames.indexOf('nz')]]
-
-
-
-
                             }
                         };
-                        //  cubemapFiles.set( imgNames[i], img); 
-
-                        // const myPromise = new Promise((resolve, reject) => {
-                        //     console.log(imgNames[i])
-                        //     cubemapFiles.set(imgNames[i], img); 
-                        //      resolve()
-                        //   }).then(()=>{ 
-                        //     cubemapCounter += 1 
-                        //     console.log("fuck " +  cubemapCounter  )
-                        //     console.log(cubemapFiles.get(imgNames[i]))
-                        //      if(cubemapCounter == 6){ 
-                        //         console.log("should be working")
-                        //         console.log(cubemapFiles.get('nz'))
-                        //         //console.log(cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz'))
-                        //         //createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
-                        //      } 
-                        //     });
-
-
-
-                        // img.onload = () => { console.log("muddy waters");  cubemapCounter += 1;  if(cubemapCounter == 6){
-                        //     console.log("should be working"); 
-                        //     console.log(cubemapFiles.get('pz')) 
-                        // }
-                        //  }
+         
                     }; // <--- `this.result` contains a base64 data URI
                     return reader.readAsDataURL(blob);
 
@@ -481,54 +434,6 @@ async function makeCubeMap(parent, imageIds, imgNames) {
         //   console.log ("all done?" + fetches);
 
     });
-    // console.log("outside of loop " + imgNames[i])
-    // var img = new Image();
-    // img.name = imgNames[i]
-    // cubemapFiles.set(imgNames[i], img); 
-
-
-
-    // const Res = await fetch(`https://www.googleapis.com/drive/v3/files/${imageIds[i]}?alt=media`, {
-    //     headers: {
-    //         Authorization: `Bearer ${accessToken}`
-
-    //     }
-    // }).then(response => response.blob())
-    //     .then(blob => {
-    //       //  console.log(performance.now())
-    //         const reader = new FileReader();
-    //         reader.onload = function () {
-
-    //             img.src = this.result
-    //           //  cubemapFiles.set( imgNames[i], img); 
-
-    //             // const myPromise = new Promise((resolve, reject) => {
-    //             //     console.log(imgNames[i])
-    //             //     cubemapFiles.set(imgNames[i], img); 
-    //             //      resolve()
-    //             //   }).then(()=>{ 
-    //             //     cubemapCounter += 1 
-    //             //     console.log("fuck " +  cubemapCounter  )
-    //             //     console.log(cubemapFiles.get(imgNames[i]))
-    //             //      if(cubemapCounter == 6){ 
-    //             //         console.log("should be working")
-    //             //         console.log(cubemapFiles.get('nz'))
-    //             //         //console.log(cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz'))
-    //             //         //createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent) ; 
-    //             //      } 
-    //             //     });
-
-
-
-    //             img.onload = () => { console.log("muddy waters");  cubemapCounter += 1;  if(cubemapCounter == 6){
-    //                 console.log("should be working"); 
-    //                 console.log(cubemapFiles.get('pz')) 
-    //             }
-    //              }
-    //         }; // <--- `this.result` contains a base64 data URI
-    //         return reader.readAsDataURL(blob);
-    //     })
-
 
 
     console.log("all done?")
@@ -537,29 +442,6 @@ async function makeCubeMap(parent, imageIds, imgNames) {
 
 }
 
-// function retrieveAllFiles(callback) {
-//     var retrievePageOfFiles = function (request, result) {
-//         request.execute(function (resp) {
-//             result = result.concat(resp.items);
-//             var nextPageToken = resp.nextPageToken;
-//             if (nextPageToken) {
-//                 request = gapi.client.drive.files.list({
-//                     'pageToken': nextPageToken
-//                 });
-//                 retrievePageOfFiles(request, result);
-//             } else {
-//                 callback(result);
-//             }
-//         });
-//     };
-
-//     var initialRequest = gapi.client.drive.files.list({
-//         q : "'1aOm0_RXTWw9iwm-cm7VHGCrMt20Atc9h' in parents"
-//     });
-
-
-//     console.log(retrievePageOfFiles(initialRequest, []));
-// }
 
 
 
