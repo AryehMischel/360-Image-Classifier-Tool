@@ -306,18 +306,18 @@ async function checkFolder(folder) { //pass in folder name
                        
                         console.log("got blob " + i + " " + performance.now())
 
-                        // const image = document.createElement("img")
-                        // image.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
-                        // while (activeButtons.has(image.name)) {
-                        //     image.name = image.name + "_"
+                        const image = document.createElement("img")
+                        image.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
+                        while (activeButtons.has(image.name)) {
+                            image.name = image.name + "_"
         
-                        // }
-                        // activeButtons.add(image.name)
-                        // addButton(setLayer, image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
-                        // image.src = URL.createObjectURL(blob)
-                        // document.body.appendChild(image);
-                        // image.onload = findformat // find t
-                        //  globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
+                        }
+                        activeButtons.add(image.name)
+                        addButton(setLayer, image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+                        image.src = URL.createObjectURL(blob)
+                        document.body.appendChild(image);
+                        image.onload = findformat // find t
+                         globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
                     })
             }
         }
