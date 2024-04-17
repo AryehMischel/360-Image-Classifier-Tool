@@ -317,7 +317,7 @@ async function checkFolder(folder) { //pass in folder name
                         image.src = URL.createObjectURL(blob)
                         document.body.appendChild(image);
                         image.onload = findformat // find t
-                         globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
+                         globalImageFiles.set(image.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
                     })
             }
         }
