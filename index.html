@@ -91,78 +91,20 @@
     disableButtonsWaitForSceneLoad() //disable ui 
 
 
-    var files = $.grep(this.files, function (file) { return file.type.indexOf("image/") === 0; }); // filter out images 
-    imagesLoading = files.length
+    var inputDir = $.grep(this.files, function (file) { return file.type.indexOf("image/") === 0; }); // returns flattened array of images in root folder and all folders under root folder
+    imagesLoading = inputDir.length   //a counter representing all the images currently loading...
    
    
-    let dir = parseDirectoryHierarchy(files)//dir { directory name: imgMap{ imgName: imgFile, etc...}} dir is a map with a nested map -> imgMap
+    let dir =  unFlattenDir(inputDir) //returns map of directories - each with a nested map of filenames and filedata. example ->  {dir1: {'file1': './assets/images/dir1/file1.png', 'file2': './assets/images/dir1/file2.png'},
+    //                                                                                                                              dir2: {'file1': './assets/images/dir2/file3.png', 'file2': './assets/images/dir2/file4.png'},
+   //                                                                                                                               dir3: {'file1': './assets/images/dir3/file1.png', 'file2': './assets/images/dir3/file2.png'} } }
+
+    processDir(dir) //process all the images in directories
+
+    
 
 
-    dir.forEach((values, keys) => {
-      let name = keys;
-
-      while (activeButtons.has(name)) {
-        name = name + "_"
-      }
-
-
-      if (values.size == 6) { //check if it is a cubemap   //process images //check if images are valid cubemap
-        let v = values
-       
-        try {
-
-          let processedImages = processCubeImages(values)
-          let parent = setupCubeMapFolderParent(name)
-          processedImages[0].then(() => { createCubeMapFromFolder(processedImages[1], parent) });
-          //could be simplified to createCubeMapFromFolder
-
-        } catch {
-
-          checkCubeMapViable(values).then((Values) => { //I should check even if names are correct?
-            Values[0].then((values) => {
-              if (values == true) {
-
-                //handle -> cubemap input files not specified 
-              } else {
-
-                let imagesTO = Values[1];
-
-                for (let i = 0; i < imagesTO.length; i++) {
-
-                  let img = imagesTO[i]
-
-                  while (activeButtons.has(img.name)) {
-                    img.name = img.name + "_"
-
-                  }
-
-                  globalImageFiles.set(img.name, v.get(img.name))
-                  addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
-                  activeButtons.add(img.name)
-                  findformat.call(img)
-
-                }
-
-                v = null
-              }
-            })
-          })
-        }
-      } else {
-        values.forEach((values, keys) => {
-          processImage(values)
-        })
-      }
-    });
-
-    dir = null
-    flatArray = null
-    files = null
   }
-
-
-
-
 
 
   //get image dimensions & and match to image format -> then transform image into 3d object

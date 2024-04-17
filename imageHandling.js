@@ -1,4 +1,4 @@
-function parseDirectoryHierarchy(flatArray) {
+function unFlattenDir(flatArray) {
     var dir = new Map();
     for (i = 0; i < flatArray.length; i++) {
       var path = flatArray[i].webkitRelativePath.substring(0, flatArray[i].webkitRelativePath.lastIndexOf("/")) // flatArray[i].webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1, flatArray[i].webkitRelativePath.length)
@@ -22,6 +22,73 @@ function parseDirectoryHierarchy(flatArray) {
     return dir
 
   }
+
+  function processDir(dir){
+
+    dir.forEach((values, keys) => {
+      let name = keys;
+
+      while (activeButtons.has(name)) {
+        name = name + "_"
+      }
+
+
+      if (values.size == 6) { //check if it is a cubemap   //process images //check if images are valid cubemap
+        let v = values
+       
+        try {
+
+          let processedImages = processCubeImages(values)
+          let parent = setupCubeMapFolderParent(name)
+          processedImages[0].then(() => { createCubeMapFromFolder(processedImages[1], parent) });
+          //could be simplified to createCubeMapFromFolder
+
+        } catch {
+
+          checkCubeMapViable(values).then((Values) => { //I should check even if names are correct?
+            Values[0].then((values) => {
+              if (values == true) {
+
+                //handle -> cubemap input files not specified 
+              } else {
+
+                let imagesTO = Values[1];
+
+                for (let i = 0; i < imagesTO.length; i++) {
+
+                  let img = imagesTO[i]
+
+                  while (activeButtons.has(img.name)) {
+                    img.name = img.name + "_"
+
+                  }
+
+                  globalImageFiles.set(img.name, v.get(img.name))
+                  addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+                  activeButtons.add(img.name)
+                  findformat.call(img)
+
+                }
+
+                v = null
+              }
+            })
+          })
+        }
+      } else {
+        values.forEach((values, keys) => {
+          processImage(values)
+        })
+      }
+    });
+
+    dir = null
+    flatArray = null
+    files = null
+  }
+
+
+  
 
 
 
