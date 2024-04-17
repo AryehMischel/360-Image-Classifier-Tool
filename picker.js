@@ -294,6 +294,7 @@ async function checkFolder(folder) { //pass in folder name
 
             for (i = 0; i < files.length; i++) {
            
+                console.log("fetching blob " + i + " " + performance.now())
 
                 fetch(`https://www.googleapis.com/drive/v3/files/${files[i].id}?alt=media`, {
                     headers: {
@@ -302,6 +303,8 @@ async function checkFolder(folder) { //pass in folder name
                     }
                 }).then(response => response.blob())
                     .then(blob => {
+                       
+                        console.log("got blob " + i + " " + performance.now())
 
                         const image = document.createElement("img")
                         image.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
