@@ -293,19 +293,7 @@ async function checkFolder(folder) { //pass in folder name
             imagesLoading += files.length
 
             for (i = 0; i < files.length; i++) {
-                // console.log(files[i])
-                // let name = files[i].name
-                // console.log(name.substring(0, name.lastIndexOf('.')))
-
-                //getImages(files[i].id)
-                const img = new Image();
-                img.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
-                while (activeButtons.has(img.name)) {
-                    img.name = img.name + "_"
-
-                }
-                activeButtons.add(img.name)
-                addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+           
 
                 fetch(`https://www.googleapis.com/drive/v3/files/${files[i].id}?alt=media`, {
                     headers: {
@@ -316,6 +304,13 @@ async function checkFolder(folder) { //pass in folder name
                     .then(blob => {
 
                         const image = document.createElement("img")
+                        iamge.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
+                        while (activeButtons.has(image.name)) {
+                            image.name = image.name + "_"
+        
+                        }
+                        activeButtons.add(img.name)
+                        addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
                         image.src = URL.createObjectURL(blob)
                         document.body.appendChild(image);
                         image.onload = findformat // find t
