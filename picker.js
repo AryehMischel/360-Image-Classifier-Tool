@@ -310,7 +310,6 @@ async function checkFolder(folder) { //pass in folder name
                 fetch(`https://www.googleapis.com/drive/v3/files/${files[i].id}?alt=media`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
-                        'Access-Control-Allow-Origin': 'https://refactorfromscratch.onrender.com/'
 
                     }
                 }).then(response => response.blob())
@@ -397,33 +396,26 @@ async function makeCubeMap(parent, imageIds, imgNames) {
             }).then(response => response.blob())
                 .then(blob => {
                     console.log(apple)
-                    const img = new Image();
+                    const img = new Image(); //  const img = new Image();
                     cubemapFiles.set(apple, img)
 
-                    const reader = new FileReader();
-                    reader.onload = function () {
-                        console.log(imgNames[i])
-                        //img.name = imgNames[i]
-                        //cubeImages.push(img); 
+                    
+                    img.src = URL.createObjectURL(blob)
+                   // document.body.appendChild(image);
+                    img.onload = () => {
+                        console.log('woaw')
 
-                        img.src = this.result
-                        img.onload = () => {
-                            console.log('woaw')
-
-                            cubemapCounter += 1;
-                            if (cubemapCounter == 6) {
-                                console.log("should be working")
-                                console.log(imgNames.at('nz'))
-                                createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent);
+                        cubemapCounter += 1;
+                        if (cubemapCounter == 6) {
+                            console.log("should be working")
+                            console.log(imgNames.at('nz'))
+                            createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent);
 
 
-                            }
-                        };
-         
-                    }; // <--- `this.result` contains a base64 data URI
-                    return reader.readAsDataURL(blob);
+                        }
+                    };
 
-
+                    
                 })
                 .catch(status, err => { return console.log(status, err); })
         );
