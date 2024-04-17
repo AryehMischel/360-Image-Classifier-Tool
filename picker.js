@@ -304,13 +304,13 @@ async function checkFolder(folder) { //pass in folder name
                     .then(blob => {
 
                         const image = document.createElement("img")
-                        iamge.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
+                        image.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
                         while (activeButtons.has(image.name)) {
                             image.name = image.name + "_"
         
                         }
-                        activeButtons.add(img.name)
-                        addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+                        activeButtons.add(image.name)
+                        addButton(setLayer, image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
                         image.src = URL.createObjectURL(blob)
                         document.body.appendChild(image);
                         image.onload = findformat // find t
@@ -320,20 +320,6 @@ async function checkFolder(folder) { //pass in folder name
         }
 
 
-        // const Res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
-        //   headers: {
-        //       Authorization: `Bearer ${accessToken}`
-
-        //   }}).then( response => response.blob())
-        //   .then(blob =>{
-        //       console.log(performance.now())
-        //       const reader = new FileReader() ;
-        //       reader.onload = function(){
-        //        console.log(this.result)
-        //         addImage(this.result)
-        //       } ; // <--- `this.result` contains a base64 data URI
-        //       return reader.readAsDataURL(blob) ;
-        //   })
 
     })
 }
