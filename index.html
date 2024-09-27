@@ -7,8 +7,17 @@
 <script src="./aframe-stereocam-component.js"></script>
 <script src="https://unpkg.com/super-hands@^3.0.3/dist/super-hands.min.js"></script>
 <script src="https://unpkg.com/aframe-event-set-component@^4.1.1/dist/aframe-event-set-component.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.js"></script>
+
+<style>
+  #draggable { width: 150px; height: 150px; padding: 0.5em; }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+  <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
+  <script>
+  $( function() {
+    $( "#dom-overlay" ).draggable();
+  } );
+  </script>
 <link rel="stylesheet" href="styles.css">
 
 <body>
@@ -46,10 +55,11 @@
 
       <h2>Upload 360 Images</h2>
       <label for="imgInput" class="btn">Select Image Folder</label>
-      
+
       <input class="input" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput"
         webkitdirectory multiple />
-        <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
+      <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
+      <div class="win-size-grip"></div>
   </div>
 
 
@@ -93,15 +103,15 @@
 
     var inputDir = $.grep(this.files, function (file) { return file.type.indexOf("image/") === 0; }); // returns flattened array of images in root folder and all folders under root folder
     imagesLoading = inputDir.length   //a counter representing all the images currently loading...
-   
-   
-    let dir =  unFlattenDir(inputDir) //returns map of directories - each with a nested map of filenames and filedata. example ->  {dir1: {'file1': './assets/images/dir1/file1.png', 'file2': './assets/images/dir1/file2.png'},
+
+
+    let dir = unFlattenDir(inputDir) //returns map of directories - each with a nested map of filenames and filedata. example ->  {dir1: {'file1': './assets/images/dir1/file1.png', 'file2': './assets/images/dir1/file2.png'},
     //                                                                                                                              dir2: {'file1': './assets/images/dir2/file3.png', 'file2': './assets/images/dir2/file4.png'},
-   //                                                                                                                               dir3: {'file1': './assets/images/dir3/file1.png', 'file2': './assets/images/dir3/file2.png'} } }
+    //                                                                                                                               dir3: {'file1': './assets/images/dir3/file1.png', 'file2': './assets/images/dir3/file2.png'} } }
 
     processDir(dir) //process all the images in directories
 
-    
+
 
 
   }
@@ -138,8 +148,11 @@
 
 <script>
   $(function () {
-    $("#dom-overlay ").draggable();
+    $("#dom-overlay").draggable().resizable();
+   
   });
+
+
   const allEqual = arr => arr.every(val => val === arr[0]);
 </script>
 

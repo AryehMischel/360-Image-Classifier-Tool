@@ -8,7 +8,6 @@ body {
   }
 
   section {
-
     display: inline-block;
     background: lavenderblush;
     color: #333333;
@@ -16,46 +15,124 @@ body {
     padding: 1em;
     margin: 0;
     accent-color: hotpink;
-    width: 350px;
+    width: 30vw; /* Use full width of the parent container */
+    max-width: 1250px; /* Set a maximum width */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
 
+#draggable { width: 150px; height: 150px; padding: 0.5em; }
+#dom-overlay { width: 300px; height: 300px; border: 1px solid black; }
 
-  }
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    section {
+        max-width: 100%; /* Adjust max-width for tablets */
+        padding: 0.8em; /* Adjust padding */
+    }
+}
+
+@media (max-width: 480px) {
+    section {
+        max-width: 100%; /* Adjust max-width for mobile devices */
+        padding: 0.6em; /* Adjust padding */
+    }}
 
   .flex-container {
-    width: 50px;
-    /* or whatever width you want. */
-    /* max-width: 50px; */
+    width:100%; /* Use full width of the parent container */
+    max-width: 1200px; /* Optional: Set a maximum width */
     min-height: 50px;
     display: flex;
-    /* background-color: DodgerBlue; */
-  }
+    flex-wrap: wrap; /* Allow wrapping to the next line if needed */
+    gap: 10px; /* Optional: Add space between items */
+    padding: 10px; /* Optional: Add padding for better spacing */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
 
-  .flex-container>div {
+.flex-container > div {
     background-color: #f1f1f1;
     margin: 10px;
     padding: 20px;
     font-size: 30px;
-  }
+    flex: 1 1 calc(33.333% - 20px); /* Responsive width with space for margin */
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+.deleteWindowButton {
+  background-color: #36b2bb; /* Green background */
+  border: none; /* No border */
+  color: white; /* White text */
+  padding: 15px 32px; /* Top/bottom and left/right padding */
+  align-items: center;
+  text-align: center; /* Centered text */
+  text-decoration: none; /* No underline */
+  display: inline-block; /* Inline block for layout */
+  font-size: 12px; /* Font size */
+  margin: 4px 2px; /* Margin around the button */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s; /* Smooth background color transition */
+  white-space: normal;
+  overflow: hidden;
+  max-width: 60px; /* Set a maximum width */
+  display: block; 
+  width: 100%; 
+  max-width: 100px; 
+  white-space: normal; 
+  text-align: center;
+  max-height: 50px; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
 
-  button {
-    min-width: 100px;
-    width: 100px;
-    /* or whatever width you want. */
-    /* // max-width: 50px; */
-    /* or whatever width you want. */
-    display: inline-block;
+}
+.selectImageButton {
+    background-color: #751d46; /* Green background */
+    border: none; /* No border */
+    color: white; /* White text */
+    padding: 15px 32px; /* Top/bottom and left/right padding */
+    align-items: center;
+    text-align: center; /* Centered text */
+    text-decoration: none; /* No underline */
+    display: inline-block; /* Inline block for layout */
+    font-size: 12px; /* Font size */
+    margin: 4px 2px; /* Margin around the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth background color transition */
+    white-space: normal;
     overflow: hidden;
-  }
+    max-width: 120px; /* Set a maximum width */
+    display: block; 
+    width: 100%; 
+    max-width: 100px; 
+    white-space: normal; 
+    text-align: center;
+    max-height: 50px; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
+  
+}
 
 
-  label {
+
+
+/*"style", "display: block; width: 100%; max-width: 100px; white-space: normal; text-align: center;max-height: 50px; overflow: hidden; text-overflow: ellipsis;");*/
+.win-size-grip {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  padding: 4px;
+  bottom: 0;
+  right: 0;
+  cursor: nwse-resize;
+  background: url(https://raw.githubusercontent.com/RickStrahl/jquery-resizable/master/assets/wingrip.png) no-repeat;
+}
+
+label {
     display: flex;
     align-items: center;
     padding: 5px;
+}
 
-  }
-
-  .btn {
+.btn {
     background-color: orange;
     display: inline-block;
     color: black;
@@ -65,5 +142,4 @@ body {
     margin: 0;
     border-style: dashed;
     border-color: black;
-
-  }
+}
