@@ -7,31 +7,38 @@ function addButton(clickFunction, innerHTML){
 	let scrollingButtonContainer = document.querySelector("#scrollingButtonContainer")
 
     let newDiv = document.createElement("div")
-    // newDiv.setAttribute("style","display: block;")
-      // newDiv.innerHTML = 'aasdasdasdasdasdasdasdasdasdasdasd'
      newDiv.setAttribute("class", 'flex-container')
-    // let b = document.createElement("button")
     
     let deleteImageButton = document.createElement("button")
     deleteImageButton.setAttribute("class", "deleteWindowButton");
-    deleteImageButton.innerHTML = "delete image"
+    deleteImageButton.innerHTML = '<i class="fas fa-times"></i>'
+    
 	deleteImageButton.onclick = function() { removeLayer(innerHTML)}
-    // newDiv.appendChild(b)
   
     
 	let button = document.createElement("button")
     button.setAttribute("class", "selectImageButton");
-    let label = document.createElement("label")
-    label.setAttribute("id", "label" + innerHTML)
-	button.innerHTML = innerHTML
+
+
+
+    let icon = document.createElement("img");
+    icon.setAttribute("class", "icon")
+    icon.setAttribute("id", "label" + innerHTML);
+    // icon.setAttribute("src", "./Load.gif"); // Replace with the actual path to your icon
+
+    
+    // let label = document.createElement("label")
+    // label.setAttribute("id", "label" + innerHTML)
+	
+    button.innerHTML = innerHTML
 	button.setAttribute("id", "button" + innerHTML)
 	button.onclick = function() { clickFunction(innerHTML)}
 	// button.addEventListener("click", clickFunction())//innerHTML
-	button.disabled = true;
+	// button.disabled = true;
 	newDiv.appendChild(button)
     newDiv.appendChild(deleteImageButton)
 
-    newDiv.appendChild(label)
+    newDiv.appendChild(icon)
 
 
    
@@ -137,6 +144,8 @@ function addDiv(){
 
 function disableButtonsWaitForSceneLoad(){
 
-    for (let key of activeButtons) document.getElementById("button" + key).setAttribute("disabled", true), buttonsToEnable.push("button" + key)  //disabling all existing ui buttons untill new images load in
+    for (let key of activeButtons)
+         document.getElementById("button" + key).setAttribute("disabled", true), 
+         buttonsToEnable.push("button" + key)  //disabling all existing ui buttons untill new images load in
 
 }

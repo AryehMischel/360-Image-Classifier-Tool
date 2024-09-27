@@ -18,6 +18,7 @@
     $( "#dom-overlay" ).draggable();
   } );
   </script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="styles.css">
 
 <body>
@@ -56,10 +57,9 @@ z
 
 
       <h2>Upload 360 Images</h2>
-      <label for="imgInput" class="btn">Select Image Folder</label>
-
-      <input class="input" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput"
-        webkitdirectory multiple />
+      
+      <label for="imgInput" class="uploadImageButton">Select Image Folder</label>
+      <input class="input" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput" webkitdirectory multiple />
       <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
       <div id="scrollingButtonContainer"></div>
       <div class="win-size-grip"></div>
@@ -92,6 +92,12 @@ z
 <!-- -->
 
 <script>
+  const formatIcons = {
+    "CubeMap": "./cubemapLogo.png",
+    
+  }
+
+
   const scene = document.querySelector("a-scene")
   var globalImageFiles = new Map()
   var buttonsToEnable = []
@@ -148,7 +154,13 @@ z
 
   function watch(name, label) {
     buttonsToEnable.push("button" + name)
-    document.getElementById("label" + name).innerHTML = label
+    let formatIcon = document.getElementById("label" + name)
+    
+    //formatIcon.removeChild(formatIcon.firstChild)
+    // icon.setAttribute("style", "background-image: url('path/to/your/image1.png');")
+    formatIcon.setAttribute("style", `background-image: url(${formatIcons["CubeMap"]})`)
+
+
 
   }
 </script>

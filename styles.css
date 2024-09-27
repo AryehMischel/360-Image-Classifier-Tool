@@ -1,156 +1,287 @@
 body {
-    background-color: powderblue;
-  }
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f0f0f0;
+}
 
-  /* h1   {color: blue;} */
-  p {
+/* h1   {color: blue;} */
+p {
     color: red;
-  }
+}
 
-  section {
+section {
     display: inline-block;
-    background: lavenderblush;
+    background: #FFFFFF;
+    /* White Background */
     color: #333333;
+    /* Dark Gray Text */
     border-radius: 1em;
     padding: 1em;
     margin: 0;
-    accent-color: hotpink;
-    width: 30vw; /* Use full width of the parent container */
-    max-width: 1250px; /* Set a maximum width */
-    box-sizing: border-box; /* Include padding and border in element's total width and height */
+    accent-color: #F5A623;
+    /* Orange */
+    width: 30vw;
+    /* Use full width of the parent container */
+    max-width: 1250px;
+    /* Set a maximum width */
+    min-width: 300px;
+    box-sizing: border-box;
+    /* Include padding and border in element's total width and height */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Subtle Shadow */
+}
+
+.icon {
+
+
+    /* border-radius: 50%; */
+    width: 5vh; /* Match the height of .selectImageButton */
+    height: 5vh; /* Match the height of .selectImageButton */
+    background-size: contain; /* Scale the image to fit the container */
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; 
+
+
+}
+
+
+
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 
 /* Media Queries for Responsiveness */
-@media (max-width: 768px) {
-    section {
-        max-width: 100%; /* Adjust max-width for tablets */
-        padding: 0.8em; /* Adjust padding */
+    @media (max-width: 768px) {
+        section {
+            max-width: 100%;
+            /* Adjust max-width for tablets */
+            padding: 0.8em;
+            /* Adjust padding */
+        }
     }
-}
 
-@media (max-width: 480px) {
-    section {
-        max-width: 100%; /* Adjust max-width for mobile devices */
-        padding: 0.6em; /* Adjust padding */
-    }}
+    @media (max-width: 480px) {
+        section {
+            max-width: 100%;
+            /* Adjust max-width for mobile devices */
+            padding: 0.6em;
+            /* Adjust padding */
+        }
+    }
 
-  .flex-container {
-    width:100%; /* Use full width of the parent container */
-    max-width: 1200px; /* Optional: Set a maximum width */
-    min-height: 50px;
-    display: flex;
-    flex-wrap: wrap; /* Allow wrapping to the next line if needed */
-    gap: 10px; /* Optional: Add space between items */
-    padding: 10px; /* Optional: Add padding for better spacing */
-    box-sizing: border-box; /* Include padding and border in element's total width and height */
-}
+    .flex-container {
+        width: 100%;
+        /* Use full width of the parent container */
+        max-width: 1200px;
+        /* Optional: Set a maximum width */
+        min-height: 50px;
+        display: flex;
+        flex-wrap: wrap;
+        /* Allow wrapping to the next line if needed */
+        gap: 10px;
+        /* Optional: Add space between items */
+        padding: 10px;
+        /* Optional: Add padding for better spacing */
+        box-sizing: border-box;
+        /* Include padding and border in element's total width and height */
+    }
 
-.flex-container > div {
-    background-color: #f1f1f1;
-    margin: 10px;
-    padding: 20px;
-    font-size: 30px;
-    flex: 1 1 calc(33.333% - 20px); /* Responsive width with space for margin */
-    box-sizing: border-box; /* Include padding and border in element's total width and height */
-}
-
-
-
-#scrollingButtonContainer{
-    background-color: #4ebf0c;
-    max-height: 40vh;
-    overflow: auto;
-
-}
-
-
-.deleteWindowButton {
-    background-color: #050052; /* Green background */
-    border: none; /* No border */
-    color: white; /* White text */
-    padding: 15px 32px; /* Top/bottom and left/right padding */
-    align-items: center;
-    text-align: center; /* Centered text */
-    text-decoration: none; /* No underline */
-    display: inline-block; /* Inline block for layout */
-    font-size: 12px; /* Font size */
-    max-width: 100px;
-    width: 5vw;
-    max-height: 100;
-    height: 5vh;
-    margin: 4px 2px; /* Margin around the button */
-    cursor: pointer; /* Pointer cursor on hover */
-    border-radius: 5px; /* Rounded corners */
-    transition: background-color 0.3s; /* Smooth background color transition */
-    white-space: normal;
-    overflow: hidden;
-}
-
-.selectImageButton {
+    .flex-container>div {
+        background-color: #FFFFFF;
+        /* White Background */
+        margin: 10px;
+        padding: 20px;
+        font-size: 30px;
+        flex: 1 1 calc(33.333% - 20px);
+        /* Responsive width with space for margin */
+        box-sizing: border-box;
+        /* Include padding and border in element's total width and height */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        /* Subtle Shadow */
+    }
 
 
-    max-width: 10vw;
-    width: 10vw;
-    max-height: 15vh;
-    height: 5vh;
-    background-color: #751d46; /* Green background */
-    border: none; /* No border */
-    color: white; /* White text */
-    padding: 15px 32px; /* Top/bottom and left/right padding */
-    align-items: center;
-    text-align: center; /* Centered text */
 
-    text-decoration: none; /* No underline */
-    display: inline-block; /* Inline block for layout */
-    font-size: 12px; /* Font size */
-    margin: 4px 2px; /* Margin around the button */
-    cursor: pointer; /* Pointer cursor on hover */
-    border-radius: 5px; /* Rounded corners */
-    transition: background-color 0.3s; /* Smooth background color transition */
-    white-space: normal;
-    overflow: hidden;
-    text-overflow: ellipsis; /* Add ellipsis for overflow text */
-    box-sizing: border-box; /
-}
-/* The scrollbar itself */
-::-webkit-scrollbar {
-    width: 12px;  /* Width of the scrollbar */
-    height: 12px; /* Height of the scrollbar */
-}
+    #scrollingButtonContainer {
+        background-color: #ffffff;
+        /* Teal Background */
+        max-height: 40vh;
+        overflow: auto;
 
-/* The draggable part of the scrollbar */
-::-webkit-scrollbar-thumb {
-    background: #888; /* Color of the draggable part */
-    border-radius: 6px; /* Roundness of the draggable part */
-}
-
-/* The scrollbar track */
-::-webkit-scrollbar-track {
-    background: #f1f1f1; /* Color of the track */
-    border-radius: 6px; /* Roundness of the track */
-}
-
-/* Optional: On hover, change the scrollbar thumb color */
-::-webkit-scrollbar-thumb:hover {
-    background: #555; /* Color on hover */
-}
+    }
 
 
-label {
-    display: flex;
-    align-items: center;
-    padding: 5px;
-}
+    .deleteWindowButton {
+        background-color: #dc3545;
+        /* Red Background */
+        border: none;
+        /* No border */
+        color: white;
+        /* White text */
+        padding: 10px;
+        /* Padding */
+        display: flex;
+        /* Flexbox for centering */
+        justify-content: center;
+        /* Center horizontally */
+        align-items: center;
+        /* Center vertically */
+        text-align: center;
+        /* Centered text */
+        text-decoration: none;
+        /* No underline */
+        font-size: 22px;
+        /* Font size */
+        width: 40px;
+        /* Fixed width */
+        height: 5vh;
+        /* Match the height of .selectImageButton */
+        margin: 4px 2px;
+        /* Margin around the button */
+        cursor: pointer;
+        /* Pointer cursor on hover */
+        border-radius: 20%;
+        /* Circular button */
+        transition: background-color 0.3s;
+        /* Smooth background color transition */
+        box-sizing: border-box;
+        /* Include padding and border in element's total width and height */
+    }
 
-.btn {
-    background-color: orange;
-    display: inline-block;
-    color: black;
-    border-radius: 1em;
-    accent-color: black;
-    padding: 1em;
-    margin: 0;
-    border-style: dashed;
-    border-color: black;
-}
+    .selectImageButton {
+        max-width: 10vw;
+        width: 10vw;
+        max-height: 15vh;
+        height: 5vh;
+        background-color: #28a745;
+        color: #fff;
+        border: none;
+        /* No border */
+        padding: 15px 32px;
+        /* Top/bottom and left/right padding */
+        align-items: center;
+        text-align: center;
+        /* Centered text */
+        text-decoration: none;
+        /* No underline */
+        display: inline-block;
+        /* Inline block for layout */
+        font-size: 12px;
+        /* Font size */
+        margin: 4px 2px;
+        /* Margin around the button */
+        cursor: pointer;
+        /* Pointer cursor on hover */
+        border-radius: 5px;
+        /* Rounded corners */
+        transition: background-color 0.3s;
+        /* Smooth background color transition */
+        white-space: normal;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* Add ellipsis for overflow text */
+        box-sizing: border-box;
+        /* Include padding and border in element's total width and height */
+    }
+
+    .selectImageButton:disabled {
+        background-color: #cccccc;
+        /* Gray Background */
+        color: #666666;
+        /* Dark Gray Text */
+        cursor: not-allowed;
+        /* Change cursor to not-allowed */
+        opacity: 0.6;
+        /* Reduce opacity */
+    }
+
+
+    .selectImageButton:hover {
+        background-color: #218838;
+    }
+
+    /* The scrollbar itself */
+    ::-webkit-scrollbar {
+        width: 12px;
+        /* Width of the scrollbar */
+        height: 12px;
+        /* Height of the scrollbar */
+    }
+
+    /* The draggable part of the scrollbar */
+    ::-webkit-scrollbar-thumb {
+        background: #888;
+        /* Color of the draggable part */
+        border-radius: 6px;
+        /* Roundness of the draggable part */
+    }
+
+    /* The scrollbar track */
+    ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        /* Color of the track */
+        border-radius: 6px;
+        /* Roundness of the track */
+    }
+
+    /* Optional: On hover, change the scrollbar thumb color */
+    ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+        /* Color on hover */
+    }
+
+
+    label {
+        display: flex;
+        align-items: center;
+        padding: 5px;
+    }
+
+    .btn {
+        background-color: #ff0077;
+        /* Orange Background */
+        display: inline-block;
+        color: white;
+        /* White Text */
+        border-radius: 1em;
+        accent-color: black;
+        padding: 1em;
+        margin: 0;
+        border-style: dashed;
+        border-color: white;
+        /* White Border */
+        text-align: center;
+        /* Centered text */
+        cursor: pointer;
+        /* Pointer cursor on hover */
+        transition: background-color 0.3s;
+        /* Smooth background color transition */
+    }
+
+    .uploadImageButton {
+        display: inline-block;
+        /* Inline block for layout */
+        font-size: 12px;
+        /* Font size */
+        max-width: 300px;
+        min-width: 150px;
+        width: 30%;
+        height: 10%;
+        max-height: 5vh;
+        overflow: hidden;
+        padding: 10px;
+        margin: 10px 0;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+    }
