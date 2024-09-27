@@ -4,7 +4,7 @@ let cl = 0
 const activeButtons = new Set();
 
 function addButton(clickFunction, innerHTML){
-	let interface = document.querySelector("#my-interface")
+	let scrollingButtonContainer = document.querySelector("#scrollingButtonContainer")
 
     let newDiv = document.createElement("div")
     // newDiv.setAttribute("style","display: block;")
@@ -12,33 +12,30 @@ function addButton(clickFunction, innerHTML){
      newDiv.setAttribute("class", 'flex-container')
     // let b = document.createElement("button")
     
-    let b2 = document.createElement("button")
-    b2.setAttribute("class", "deleteWindowButton");
-    b2.innerHTML = "delete image"
-	b2.onclick = function() { removeLayer(innerHTML)}
+    let deleteImageButton = document.createElement("button")
+    deleteImageButton.setAttribute("class", "deleteWindowButton");
+    deleteImageButton.innerHTML = "delete image"
+	deleteImageButton.onclick = function() { removeLayer(innerHTML)}
     // newDiv.appendChild(b)
   
     
 	let button = document.createElement("button")
     button.setAttribute("class", "selectImageButton");
-	// button.setAttribute("style","display: block;")
-    // button.setAttribute("style", "display: block; width: 100%; white-space: normal;");
-    button.setAttribute("style", "display: block; width: 100%; max-width: 100px; white-space: normal; text-align: center;max-height: 50px; overflow: hidden; text-overflow: ellipsis;");
     let label = document.createElement("label")
-    // label.setAttribute("style","display: block;")
     label.setAttribute("id", "label" + innerHTML)
 	button.innerHTML = innerHTML
 	button.setAttribute("id", "button" + innerHTML)
-	// button.addEventListener("click", ()=>{console.log("asdasdasd")})//innerHTML
 	button.onclick = function() { clickFunction(innerHTML)}
 	// button.addEventListener("click", clickFunction())//innerHTML
 	button.disabled = true;
 	newDiv.appendChild(button)
-    newDiv.appendChild(b2)
+    newDiv.appendChild(deleteImageButton)
 
     newDiv.appendChild(label)
 
-    interface.appendChild(newDiv)
+
+   
+    scrollingButtonContainer.appendChild(newDiv)
 	//return button
 
 }

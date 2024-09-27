@@ -20,8 +20,6 @@ body {
     box-sizing: border-box; /* Include padding and border in element's total width and height */
 }
 
-#draggable { width: 150px; height: 150px; padding: 0.5em; }
-#dom-overlay { width: 300px; height: 300px; border: 1px solid black; }
 
 /* Media Queries for Responsiveness */
 @media (max-width: 768px) {
@@ -56,40 +54,53 @@ body {
     flex: 1 1 calc(33.333% - 20px); /* Responsive width with space for margin */
     box-sizing: border-box; /* Include padding and border in element's total width and height */
 }
-.deleteWindowButton {
-  background-color: #36b2bb; /* Green background */
-  border: none; /* No border */
-  color: white; /* White text */
-  padding: 15px 32px; /* Top/bottom and left/right padding */
-  align-items: center;
-  text-align: center; /* Centered text */
-  text-decoration: none; /* No underline */
-  display: inline-block; /* Inline block for layout */
-  font-size: 12px; /* Font size */
-  margin: 4px 2px; /* Margin around the button */
-  cursor: pointer; /* Pointer cursor on hover */
-  border-radius: 5px; /* Rounded corners */
-  transition: background-color 0.3s; /* Smooth background color transition */
-  white-space: normal;
-  overflow: hidden;
-  max-width: 60px; /* Set a maximum width */
-  display: block; 
-  width: 100%; 
-  max-width: 100px; 
-  white-space: normal; 
-  text-align: center;
-  max-height: 50px; 
-  overflow: hidden; 
-  text-overflow: ellipsis;
+
+
+
+#scrollingButtonContainer{
+    background-color: #4ebf0c;
+    max-height: 40vh;
+    overflow: auto;
 
 }
+
+
+.deleteWindowButton {
+    background-color: #050052; /* Green background */
+    border: none; /* No border */
+    color: white; /* White text */
+    padding: 15px 32px; /* Top/bottom and left/right padding */
+    align-items: center;
+    text-align: center; /* Centered text */
+    text-decoration: none; /* No underline */
+    display: inline-block; /* Inline block for layout */
+    font-size: 12px; /* Font size */
+    max-width: 100px;
+    width: 5vw;
+    max-height: 100;
+    height: 5vh;
+    margin: 4px 2px; /* Margin around the button */
+    cursor: pointer; /* Pointer cursor on hover */
+    border-radius: 5px; /* Rounded corners */
+    transition: background-color 0.3s; /* Smooth background color transition */
+    white-space: normal;
+    overflow: hidden;
+}
+
 .selectImageButton {
+
+
+    max-width: 10vw;
+    width: 10vw;
+    max-height: 15vh;
+    height: 5vh;
     background-color: #751d46; /* Green background */
     border: none; /* No border */
     color: white; /* White text */
     padding: 15px 32px; /* Top/bottom and left/right padding */
     align-items: center;
     text-align: center; /* Centered text */
+
     text-decoration: none; /* No underline */
     display: inline-block; /* Inline block for layout */
     font-size: 12px; /* Font size */
@@ -99,32 +110,32 @@ body {
     transition: background-color 0.3s; /* Smooth background color transition */
     white-space: normal;
     overflow: hidden;
-    max-width: 120px; /* Set a maximum width */
-    display: block; 
-    width: 100%; 
-    max-width: 100px; 
-    white-space: normal; 
-    text-align: center;
-    max-height: 50px; 
-    overflow: hidden; 
-    text-overflow: ellipsis;
-  
+    text-overflow: ellipsis; /* Add ellipsis for overflow text */
+    box-sizing: border-box; /
+}
+/* The scrollbar itself */
+::-webkit-scrollbar {
+    width: 12px;  /* Width of the scrollbar */
+    height: 12px; /* Height of the scrollbar */
 }
 
-
-
-
-/*"style", "display: block; width: 100%; max-width: 100px; white-space: normal; text-align: center;max-height: 50px; overflow: hidden; text-overflow: ellipsis;");*/
-.win-size-grip {
-  position: absolute;
-  width: 16px;
-  height: 16px;
-  padding: 4px;
-  bottom: 0;
-  right: 0;
-  cursor: nwse-resize;
-  background: url(https://raw.githubusercontent.com/RickStrahl/jquery-resizable/master/assets/wingrip.png) no-repeat;
+/* The draggable part of the scrollbar */
+::-webkit-scrollbar-thumb {
+    background: #888; /* Color of the draggable part */
+    border-radius: 6px; /* Roundness of the draggable part */
 }
+
+/* The scrollbar track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1; /* Color of the track */
+    border-radius: 6px; /* Roundness of the track */
+}
+
+/* Optional: On hover, change the scrollbar thumb color */
+::-webkit-scrollbar-thumb:hover {
+    background: #555; /* Color on hover */
+}
+
 
 label {
     display: flex;

@@ -9,7 +9,7 @@
 <script src="https://unpkg.com/aframe-event-set-component@^4.1.1/dist/aframe-event-set-component.min.js"></script>
 
 <style>
-  #draggable { width: 150px; height: 150px; padding: 0.5em; }
+  #draggable { width: 150px; height: 150px; padding: 0.5em;resize: both }
   </style>
   <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
   <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
@@ -50,6 +50,8 @@
   </a-scene>
   <!-- style="display: inline-block; background: lavenderblush; color: #333333; border-radius: 1em; padding: 1em; margin:0; accent-color: hotpink;" -->
   <div id="dom-overlay">
+
+z
     <section id="my-interface">
 
 
@@ -59,7 +61,10 @@
       <input class="input" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput"
         webkitdirectory multiple />
       <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
+      <div id="scrollingButtonContainer"></div>
       <div class="win-size-grip"></div>
+      
+    </section>
   </div>
 
 
@@ -72,6 +77,9 @@
 
 <script src="./imageHandling.js"></script>
 
+<script>
+  
+</script>
 
 
 
@@ -149,7 +157,7 @@
 <script>
   $(function () {
     $("#dom-overlay").draggable().resizable();
-   
+    $("#draggable-iframe").draggable().resizable();
   });
 
 
@@ -157,7 +165,6 @@
 </script>
 
 <script>
-
 
 
 </script>
