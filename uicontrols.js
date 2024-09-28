@@ -33,8 +33,6 @@ function addButton(clickFunction, innerHTML){
     button.innerHTML = innerHTML
 	button.setAttribute("id", "button" + innerHTML)
 	button.onclick = function() { clickFunction(innerHTML)}
-	// button.addEventListener("click", clickFunction())//innerHTML
-	// button.disabled = true;
 	newDiv.appendChild(button)
     newDiv.appendChild(deleteImageButton)
 
@@ -49,14 +47,16 @@ function addButton(clickFunction, innerHTML){
 
 
 function setLayer(layerID){
-    document.getElementById(cl).setAttribute("visible", false)
+    // document.getElementById(cl).setAttribute("visible", false)
     
-    let layer = document.getElementById(layerID)
-     layer.setAttribute("visible", true)
+    // let layer = document.getElementById(layerID)
+    //  layer.setAttribute("visible", true)
 
-     cl = layerID    
+    //  cl = layerID    
 
 }
+
+
 
 // const layers = document.querySelector("#layers")
 function setupLayers(){

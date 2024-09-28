@@ -713,3 +713,129 @@ function createCube(parent, c, c2, c3, c4, c5, c6) {
 
 
 }
+
+
+function createCubeMapTexture(img){
+
+}
+
+function createCubeStripTexture(img){
+   
+    let canvas = document.createElement("canvas")
+    let canvas2 = document.createElement("canvas")
+    let canvas3 = document.createElement("canvas")
+    let canvas4 = document.createElement("canvas")
+    let canvas5 = document.createElement("canvas")
+    let canvas6 = document.createElement("canvas")
+
+    canvas.style.display = "none";
+    canvas2.style.display = "none";
+    canvas3.style.display = "none";
+    canvas4.style.display = "none";
+    canvas5.style.display = "none";
+    canvas6.style.display = "none";
+
+    const ctx = canvas.getContext("2d");
+    const ctx2 = canvas2.getContext("2d");
+    const ctx3 = canvas3.getContext("2d");
+    const ctx4 = canvas4.getContext("2d");
+    const ctx5 = canvas5.getContext("2d");
+    const ctx6 = canvas6.getContext("2d");
+
+
+    let divisor = 6
+    let w = img.naturalWidth / divisor
+
+    //console.log(performance.now())
+
+
+    canvas.height = img.naturalHeight
+    canvas.width = img.naturalWidth / divisor
+
+    canvas2.height = img.naturalHeight
+    canvas2.width = img.naturalWidth / divisor
+
+
+    canvas3.height = img.naturalHeight
+    canvas3.width = img.naturalWidth / divisor
+
+    canvas4.height = img.naturalHeight
+    canvas4.width = img.naturalWidth / divisor
+
+
+    canvas5.height = img.naturalHeight
+    canvas5.width = img.naturalWidth / divisor
+
+    canvas6.height = img.naturalHeight
+    canvas6.width = img.naturalWidth / divisor
+
+
+    ctx.drawImage(img, 0, 0); //bottom of image
+    ctx2.drawImage(img, -w, 0);
+    ctx3.drawImage(img, -w * 2, 0);
+    ctx4.drawImage(img, -w * 3, 0); //bottom of image
+    ctx5.drawImage(img, -w * 4, 0);
+    ctx6.drawImage(img, -w * 5, 0);  //bottom of image
+
+
+    let cubeTexture = createCubeTexture(canvas, canvas2, canvas3, canvas4, canvas5, canvas6) //create a cubemap from 6 canvas's
+    cubeMapTextures[img.name] = cubeTexture
+    imagesLoaded += 1;
+    // if(imagesLoaded == imagesLoading){  //setupLayers() }
+}
+
+
+
+function createStereoCubeMapTexture(img){
+
+}
+
+
+
+function createEqrtTexture(img){
+    const texture = new THREE.TextureLoader().load(img.src);
+    renderer.initTexture(texture)
+    imagesLoaded += 1;
+    textures[img.name] = texture
+   
+    // if(imagesLoaded == imagesLoading){  //setupLayers() }
+}
+
+function createStereoEqrtTexture(img){
+
+}
+
+
+//Not sure why I choose CanvasTexure instead of bitmaps. I should probably try changing this at some point...
+
+function createCubeTexture(c, c2, c3, c4, c5, c6) {
+    const canvasTextures = [
+        new THREE.CanvasTexture(c),
+        new THREE.CanvasTexture(c2),
+        new THREE.CanvasTexture(c3),
+        new THREE.CanvasTexture(c4),
+        new THREE.CanvasTexture(c5),
+        new THREE.CanvasTexture(c6),
+    ];
+    
+    // Initialize each texture
+    canvasTextures.forEach(texture => {
+        renderer.initTexture(texture);
+    });
+
+    //delete canvas's 
+    c = null
+    c2 = null
+    c3 = null
+    c4 = null
+    c5 = null
+    c6 = null
+
+    return canvasTextures
+
+
+
+
+
+
+}
