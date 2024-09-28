@@ -1,5 +1,6 @@
+var dir = new Map();
 function unFlattenDir(flatArray) {
-    var dir = new Map();
+console.log("handling images")
     for (i = 0; i < flatArray.length; i++) {
       var path = flatArray[i].webkitRelativePath.substring(0, flatArray[i].webkitRelativePath.lastIndexOf("/")) // flatArray[i].webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1, flatArray[i].webkitRelativePath.length)
       var file = flatArray[i]//.webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1)//);
@@ -64,7 +65,7 @@ function unFlattenDir(flatArray) {
                   }
 
                   globalImageFiles.set(img.name, v.get(img.name))
-                  addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+                  addButton(img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
                   activeButtons.add(img.name)
                   findformat.call(img)
 
@@ -200,7 +201,7 @@ async function checkCubeMapViable(values) {
     let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
           parent.setAttribute("id", name)
           layers.appendChild(parent)
-          addButton(setLayer, name); // buttonsToEnable.push("button" + img.name); //add button to ui
+          addButton(name); // buttonsToEnable.push("button" + img.name); //add button to ui
           activeButtons.add(name)
           watch(name, "folderCube" )
           imagesLoading -= 5;
@@ -235,7 +236,7 @@ async function checkCubeMapViable(values) {
     img.src = URL.createObjectURL(values);
     img.onload = findformat // find the 360 format that best fits this image 
 
-    addButton(setLayer, img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+    addButton(img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
 
   }
 

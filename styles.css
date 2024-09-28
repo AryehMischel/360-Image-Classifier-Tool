@@ -155,6 +155,26 @@ section {
         /* Include padding and border in element's total width and height */
     }
 
+    .deleteWindowButton:hover {
+        background-color: #c82333;
+    }
+
+    .deleteWindowButton:disabled {
+        background-color: #cccccc;
+        /* Gray Background */
+        color: #666666;
+        /* Dark Gray Text */
+        cursor: not-allowed;
+        /* Change cursor to not-allowed */
+        opacity: 0.6;
+        /* Reduce opacity */
+    }
+
+    .deleteWindowButton:disabled i {
+        color: #666666; /* Dark gray icon */
+        opacity: 0.6; /* Reduce opacity */
+    }
+
     .selectImageButton {
         max-width: 10vw;
         width: 10vw;
@@ -202,10 +222,15 @@ section {
         /* Reduce opacity */
     }
 
-
+    .selectImageButton:disabled.hover-disabled {
+        background-color: #bbbbbb;
+        /* Slightly darker gray background */
+    }
     .selectImageButton:hover {
         background-color: #218838;
     }
+
+
 
     /* The scrollbar itself */
     ::-webkit-scrollbar {

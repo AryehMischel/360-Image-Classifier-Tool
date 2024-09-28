@@ -123,34 +123,7 @@ function createCubeMapFromFolder(images, parent) {
      createCube(parent, canvas, canvas2, canvas3, canvas4, canvas5, canvas6) 
 
 
-    // const textu
 
-    //    const geometry = new THREE.BoxGeometry(20, 20, 20);
-    //    const loader = new THREE.TextureLoader();
-   
-    //    const cubeMaterials = [
-   
-    //     new THREE.MeshBasicMaterial({ map: loader.load(px), side: THREE.BackSide }), //left side
-    //     new THREE.MeshBasicMaterial({ map: loader.load(nx), side: THREE.BackSide }), //left side
-    //     new THREE.MeshBasicMaterial({ map: loader.load(py), side: THREE.BackSide }), //left side
-    //     new THREE.MeshBasicMaterial({ map: loader.load(ny), side: THREE.BackSide }), //left side
-    //     new THREE.MeshBasicMaterial({ map: loader.load(pz), side: THREE.BackSide }), //left side
-    //     new THREE.MeshBasicMaterial({ map: loader.load(nz), side: THREE.BackSide }), //left side
-
-    //    ];
-   
-    //    cubeMaterials.BackSide = true;
-   
-   
-   
-    //    //create material, color, or image texture
-    //    let cube = new THREE.Mesh(geometry, cubeMaterials);
-    //    parent.object3D.add(cube) //append cubes to parent element
-    //    layers.appendChild(parent)
-    //   imagesLoaded += 1;
-    //   if(imagesLoaded == imagesLoading){
-    //     setupLayers()
-    //      }
 
 
 
@@ -442,14 +415,22 @@ function processCubeMap(img, parent) {
     //                              0010
     // 001011110010 represents      1111   which means the underlaying img is a standard cube map -> https://docs.unity3d.com/Manual/class-Cubemap.html
     //                              0010
+    let formatIcon = document.getElementById("label" + img.name)
 
     switch (format) {
 
-        case "010011110100": drawt(img, parent); break;  //drawt 
-        case "000111110001": drawbackwardst(img, parent); break;  //drawCapitalT
-        case "001011110010": drawbackwardst(img, parent); break;  //drawbackwardst
-
+        case "010011110100": 
+        formatIcon.setAttribute("style", `background-image: url(${formatIcons["HorizontalCross"]}`)
+        createCubeMapTextureFromHorizontalCross(img); break;  //Format is a horizontal cross 
+        case "000111110001":
+        formatIcon.setAttribute("style", `background-image: url(${formatIcons["HorizontalT"]}`)
+        createCubeMapTextureFromHorizontalT(img); 
+        break;  //drawCapitalT
+        // case "001011110010": createCubeMapTextureFromVerticalCross(img, parent); break;  //not supported yet
+        //
+        
         default: console.log("NA"); imagesLoading--; if (imagesLoaded == imagesLoading) { setupLayers() }; document.getElementById("label" + img.name).innerHTML = "no format detected... click to reselect" // make sky a default sky that says to reformat 
+    
     }
 
     
@@ -714,6 +695,143 @@ function createCube(parent, c, c2, c3, c4, c5, c6) {
 
 }
 
+function createCubeMapTextureFromHorizontalT(img){
+    let canvas = document.createElement("canvas")
+    let canvas2 = document.createElement("canvas")
+    let canvas3 = document.createElement("canvas")
+    let canvas4 = document.createElement("canvas")
+    let canvas5 = document.createElement("canvas")
+    let canvas6 = document.createElement("canvas")
+
+    canvas.style.display = "none";
+    canvas2.style.display = "none";
+    canvas3.style.display = "none";
+    canvas4.style.display = "none";
+    canvas5.style.display = "none";
+    canvas6.style.display = "none";
+
+    const ctx = canvas.getContext("2d");
+    const ctx2 = canvas2.getContext("2d");
+    const ctx3 = canvas3.getContext("2d");
+    const ctx4 = canvas4.getContext("2d");
+    const ctx5 = canvas5.getContext("2d");
+    const ctx6 = canvas6.getContext("2d");
+
+    // let divisor = 6 // let w = img.naturalWidth / divisor
+
+
+    canvas.height = img.naturalHeight / 3
+    canvas.width = img.naturalWidth / 4
+    canvas2.height = img.naturalHeight / 3
+    canvas2.width = img.naturalWidth / 4
+    canvas3.height = img.naturalHeight / 3
+    canvas3.width = img.naturalWidth / 4
+    canvas4.height = img.naturalHeight / 3
+    canvas4.width = img.naturalWidth / 4
+    canvas5.height = img.naturalHeight / 3
+    canvas5.width = img.naturalWidth / 4
+    canvas6.height = img.naturalHeight / 3
+    canvas6.width = img.naturalWidth / 4
+
+
+    //image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+
+    ctx.drawImage(img, img.width * .75, img.height / 3, img.width / 4, img.height / 3, 0, 0, img.width / 4, img.height / 3); //-x
+    ctx2.drawImage(img, img.width * .25, img.height / 3, img.width / 4, img.height / 3, 0, 0, img.width / 4, img.height / 3); //+x
+    ctx3.drawImage(img, img.width * .5, 0, img.width / 4, img.height / 3, 0, 0, img.width / 4, img.height / 3); //+y
+    ctx4.drawImage(img, img.width * .5, (img.height / 3) * 2, img.width / 4, img.height / 3, 0, 0, img.width / 4, img.height / 3); //-y
+    ctx5.drawImage(img, img.width / 2, img.height / 3, img.width / 4, img.height / 3, 0, 0, img.width / 4, img.height / 3); //+x
+    ctx6.drawImage(img, 0, img.height / 3, img.width / 4, img.height / 3, 0, 0, img.width / 4, img.height / 3); //-x
+
+    let cubeTexture = createCubeTexture(canvas, canvas2, canvas3, canvas4, canvas5, canvas6) //create a cubemap from 6 canvas's
+    cubeMapTextures[img.name] = cubeTexture
+
+    // imagesLoaded += 1;
+    // if(imagesLoaded == imagesLoading){
+    //     setupLayers()
+    // }
+
+    canvas = null
+    canvas2 = null
+    canvas3 = null
+    canvas4 = null
+    canvas5 = null
+    canvas6 = null
+
+    let button = document.getElementById("button" + img.name)
+    let deleteButton = document.getElementById("delete" + img.name)
+    deleteButton.disabled = false
+    button.disabled = false
+
+}
+
+function createCubeMapTextureFromHorizontalCross(img){
+    let canvas = document.createElement("canvas")
+    let canvas2 = document.createElement("canvas")
+    let canvas3 = document.createElement("canvas")
+    let canvas4 = document.createElement("canvas")
+    let canvas5 = document.createElement("canvas")
+    let canvas6 = document.createElement("canvas")
+
+    canvas.style.display = "none";
+    canvas2.style.display = "none";
+    canvas3.style.display = "none";
+    canvas4.style.display = "none";
+    canvas5.style.display = "none";
+    canvas6.style.display = "none";
+
+    const ctx = canvas.getContext("2d");
+    const ctx2 = canvas2.getContext("2d");
+    const ctx3 = canvas3.getContext("2d");
+    const ctx4 = canvas4.getContext("2d");
+    const ctx5 = canvas5.getContext("2d");
+    const ctx6 = canvas6.getContext("2d");
+
+    // let divisor = 6 // let w = img.naturalWidth / divisor
+
+
+    canvas.height = img.naturalHeight / 3
+    canvas.width = img.naturalWidth / 4
+    canvas2.height = img.naturalHeight / 3
+    canvas2.width = img.naturalWidth / 4
+    canvas3.height = img.naturalHeight / 3
+    canvas3.width = img.naturalWidth / 4
+    canvas4.height = img.naturalHeight / 3
+    canvas4.width = img.naturalWidth / 4
+    canvas5.height = img.naturalHeight / 3
+    canvas5.width = img.naturalWidth / 4
+    canvas6.height = img.naturalHeight / 3
+    canvas6.width = img.naturalWidth / 4
+
+
+    //image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+    ctx.drawImage(img, img.width / 2, img.height / 3, img.width / 4, img.height / 3, 0, 0, img.width / 4, img.height / 3); //+x
+    ctx2.drawImage(img, 0, img.height / 3, img.width / 4, img.height / 3, 0, 0, img.width / 4, img.height / 3); //-x
+    ctx3.drawImage(img, img.width / 4, 0, img.width / 4, img.height / 3, 0, 0, img.width / 4, img.height / 3); //+y
+    ctx4.drawImage(img, img.width / 4, (img.height / 3) * 2, img.width / 4, img.height / 3, 0, 0, img.width / 4, img.height / 3); //-y
+    ctx5.drawImage(img, img.width * .25, img.height / 3, img.width / 4, img.height / 3, 0, 0, img.width / 4, img.height / 3); //+z
+    ctx6.drawImage(img, img.width * .75, img.height / 3, img.width / 4, img.height / 3, 0, 0, img.width / 4, img.height / 3); //-z
+
+    let cubeTexture = createCubeTexture(canvas, canvas2, canvas3, canvas4, canvas5, canvas6) //create a cubemap from 6 canvas's
+    cubeMapTextures[img.name] = cubeTexture
+    
+    // imagesLoaded += 1;
+    // if(imagesLoaded == imagesLoading){
+    //     setupLayers()
+    // }
+
+    canvas = null
+    canvas2 = null
+    canvas3 = null
+    canvas4 = null
+    canvas5 = null
+    canvas6 = null
+
+ let button = document.getElementById("button" + img.name)
+    let deleteButton = document.getElementById("delete" + img.name)
+    deleteButton.disabled = false
+    button.disabled = false
+}
 
 function createCubeMapTexture(img){
 
@@ -781,13 +899,167 @@ function createCubeStripTexture(img){
     let cubeTexture = createCubeTexture(canvas, canvas2, canvas3, canvas4, canvas5, canvas6) //create a cubemap from 6 canvas's
     cubeMapTextures[img.name] = cubeTexture
     imagesLoaded += 1;
+
+    let button = document.getElementById("button" + img.name)
+    let deleteButton = document.getElementById("delete" + img.name)
+    deleteButton.disabled = false
+    button.disabled = false
     // if(imagesLoaded == imagesLoading){  //setupLayers() }
 }
 
 
 
 function createStereoCubeMapTexture(img){
+    let canvas = document.createElement("canvas")
+    let canvas2 = document.createElement("canvas")
+    let canvas3 = document.createElement("canvas")
+    let canvas4 = document.createElement("canvas")
+    let canvas5 = document.createElement("canvas")
+    let canvas6 = document.createElement("canvas")
 
+
+
+    let canvas7 = document.createElement("canvas")
+    let canvas8 = document.createElement("canvas")
+    let canvas9 = document.createElement("canvas")
+    let canvas10 = document.createElement("canvas")
+    let canvas11 = document.createElement("canvas")
+    let canvas12 = document.createElement("canvas")
+
+
+
+    canvas.style.display = "none";
+    canvas2.style.display = "none";
+    canvas3.style.display = "none";
+    canvas4.style.display = "none";
+    canvas5.style.display = "none";
+    canvas6.style.display = "none";
+
+
+    canvas7.style.display = "none";
+    canvas8.style.display = "none";
+    canvas9.style.display = "none";
+    canvas10.style.display = "none";
+    canvas11.style.display = "none";
+    canvas12.style.display = "none";
+
+
+
+    let ctx = canvas.getContext("2d");
+    let ctx2 = canvas2.getContext("2d");
+    let ctx3 = canvas3.getContext("2d");
+    let ctx4 = canvas4.getContext("2d");
+    let ctx5 = canvas5.getContext("2d");
+    let ctx6 = canvas6.getContext("2d");
+
+
+    let ctx7 = canvas7.getContext("2d");
+    let ctx8 = canvas8.getContext("2d");
+    let ctx9 = canvas9.getContext("2d");
+    let ctx10 = canvas10.getContext("2d");
+    let ctx11 = canvas11.getContext("2d");
+    let ctx12 = canvas12.getContext("2d");
+
+
+    let divisor = 12
+    let w = img.naturalWidth / divisor
+
+    canvas.height = img.naturalHeight
+    canvas.width = img.naturalWidth / divisor
+
+    canvas2.height = img.naturalHeight
+    canvas2.width = img.naturalWidth / divisor
+
+
+    canvas3.height = img.naturalHeight
+    canvas3.width = img.naturalWidth / divisor
+
+    canvas4.height = img.naturalHeight
+    canvas4.width = img.naturalWidth / divisor
+
+
+    canvas5.height = img.naturalHeight
+    canvas5.width = img.naturalWidth / divisor
+
+    canvas6.height = img.naturalHeight
+    canvas6.width = img.naturalWidth / divisor
+
+
+    canvas7.height = img.naturalHeight
+    canvas7.width = img.naturalWidth / divisor
+
+    canvas8.height = img.naturalHeight
+    canvas8.width = img.naturalWidth / divisor
+
+
+    canvas9.height = img.naturalHeight
+    canvas9.width = img.naturalWidth / divisor
+
+    canvas10.height = img.naturalHeight
+    canvas10.width = img.naturalWidth / divisor
+
+
+    canvas11.height = img.naturalHeight
+    canvas11.width = img.naturalWidth / divisor
+
+    canvas12.height = img.naturalHeight
+    canvas12.width = img.naturalWidth / divisor
+
+
+    ctx.drawImage(img, 0, 0); //bottom of image
+    ctx2.drawImage(img, -w, 0);
+    ctx3.drawImage(img, -w * 2, 0);
+    ctx4.drawImage(img, -w * 3, 0); //bottom of image
+    ctx5.drawImage(img, -w * 4, 0);
+    ctx6.drawImage(img, -w * 5, 0);  //bottom of image
+    ctx7.drawImage(img, -w * 6, 0);  //bottom of image
+    ctx8.drawImage(img, -w * 7, 0);  //bottom of image
+    ctx9.drawImage(img, -w * 8, 0);  //bottom of image
+    ctx10.drawImage(img, -w * 9, 0);  //bottom of image
+    ctx11.drawImage(img, -w * 10, 0);  //bottom of image
+    ctx12.drawImage(img, -w * 11, 0);  //bottom of image
+
+
+
+    var cubeTextureLeft = createCubeTexture(canvas, canvas2, canvas3, canvas4, canvas5, canvas6) 
+    var cubeTextureRight = createCubeTexture(canvas7, canvas8, canvas9, canvas10, canvas11, canvas12)
+    stereoCubeMapTextures[img.name] = [cubeTextureLeft, cubeTextureRight]   
+
+    canvas = null
+    canvas2 = null
+    canvas3 = null
+    canvas4 = null
+    canvas5 = null
+    canvas6 = null
+    canvas7 = null
+    canvas8 = null
+    canvas9 = null
+    canvas10 = null
+    canvas11 = null
+    canvas12 = null
+
+    ctx = null
+    ctx2 = null
+    ctx3 = null
+    ctx4 = null
+    ctx5 = null
+    ctx6 = null
+    ctx7 = null
+    ctx8 = null
+    ctx9 = null
+    ctx10 = null
+    ctx11 = null
+    ctx12 = null
+
+    imagesLoaded += 1;
+    if(imagesLoaded == imagesLoading){
+        setupLayers()
+    }
+
+    let button = document.getElementById("button" + img.name)
+    let deleteButton = document.getElementById("delete" + img.name)
+    deleteButton.disabled = false
+    button.disabled = false
 }
 
 
@@ -796,15 +1068,118 @@ function createEqrtTexture(img){
     const texture = new THREE.TextureLoader().load(img.src);
     renderer.initTexture(texture)
     imagesLoaded += 1;
-    textures[img.name] = texture
+    eqrtTextures[img.name] = texture
+    let button = document.getElementById("button" + img.name)
+    let deleteButton = document.getElementById("delete" + img.name)
+    deleteButton.disabled = false
+    button.disabled = false
    
     // if(imagesLoaded == imagesLoading){  //setupLayers() }
 }
 
 function createStereoEqrtTexture(img){
+    let canvas = document.createElement("canvas")
+    let canvas2 = document.createElement("canvas")
 
+    canvas.style.display = "none";
+    canvas2.style.display = "none";
+
+    const ctx = canvas.getContext("2d");
+    const ctx2 = canvas2.getContext("2d");
+
+    canvas.height = img.naturalHeight / 2
+    canvas.width = img.naturalWidth
+
+    canvas2.height = img.naturalHeight / 2
+    canvas2.width = img.naturalWidth
+
+    ctx.drawImage(img, 0, 0);
+    ctx2.drawImage(img, 0, -img.height / 2);
+
+
+    const textureLeft = new THREE.CanvasTexture(canvas);
+    const textureRight = new THREE.CanvasTexture(canvas2);
+
+    canvas = null
+    canvas2 = null
+
+    stereoEqrtTextures[img.name] = [textureLeft, textureRight]
+    let button = document.getElementById("button" + img.name)
+    let deleteButton = document.getElementById("delete" + img.name)
+    deleteButton.disabled = false
+    button.disabled = false
+    // imagesLoaded += 1;
+    // if(imagesLoaded == imagesLoading){
+    //     setupLayers()
+    // }
 }
 
+function createCubeMapTextureFromImage(images, imageName){
+    let canvas = document.createElement("canvas")
+    let canvas2 = document.createElement("canvas")
+    let canvas3 = document.createElement("canvas")
+    let canvas4 = document.createElement("canvas")
+    let canvas5 = document.createElement("canvas")
+    let canvas6 = document.createElement("canvas")
+
+
+
+
+    canvas.height = images[2].naturalHeight
+    canvas.width = images[2].naturalWidth 
+    canvas2.height = images[2].naturalHeight
+    canvas2.width = images[2].naturalWidth 
+    canvas3.height = images[2].naturalHeight 
+    canvas3.width = images[2].naturalWidth 
+    canvas4.height = images[2].naturalHeight 
+    canvas4.width = images[2].naturalWidth 
+    canvas5.height = images[2].naturalHeight 
+    canvas5.width = images[2].naturalWidth 
+    canvas6.height = images[2].naturalHeight 
+    canvas6.width = images[2].naturalWidth 
+
+    canvas.style.display = "none";
+    canvas2.style.display = "none";
+    canvas3.style.display = "none";
+    canvas4.style.display = "none";
+    canvas5.style.display = "none";
+    canvas6.style.display = "none";
+
+    let ctx = canvas.getContext("2d");
+    let ctx2 = canvas2.getContext("2d");
+    let ctx3 = canvas3.getContext("2d");
+    let ctx4 = canvas4.getContext("2d");
+    let ctx5 = canvas5.getContext("2d");
+    let ctx6 = canvas6.getContext("2d");
+
+
+
+    ctx.drawImage(images[0], 0, 0)
+    ctx2.drawImage(images[1], 0, 0)
+    ctx3.drawImage(images[2], 0, 0)
+    ctx4.drawImage(images[3], 0, 0)
+    ctx5.drawImage(images[4], 0, 0)
+    ctx6.drawImage(images[5], 0, 0)
+
+    let cubeTexture = createCubeTexture(canvas, canvas2, canvas3, canvas4, canvas5, canvas6)
+    cubeMapTextures[imageName] = cubeTexture
+
+    canvas = null
+    canvas2 = null
+    canvas3 = null
+    canvas4 = null
+    canvas5 = null
+    canvas6 = null
+
+    let button = document.getElementById("button" + imageName)
+    let deleteButton = document.getElementById("delete" + imageName)
+    deleteButton.disabled = false
+    button.disabled = false
+    // imagesLoaded += 1;
+    // if(imagesLoaded == imagesLoading){
+    //     setupLayers()
+    // }
+}
 
 //Not sure why I choose CanvasTexure instead of bitmaps. I should probably try changing this at some point...
 
@@ -823,19 +1198,10 @@ function createCubeTexture(c, c2, c3, c4, c5, c6) {
         renderer.initTexture(texture);
     });
 
-    //delete canvas's 
-    c = null
-    c2 = null
-    c3 = null
-    c4 = null
-    c5 = null
-    c6 = null
 
     return canvasTextures
 
 
-
-
-
-
 }
+
+

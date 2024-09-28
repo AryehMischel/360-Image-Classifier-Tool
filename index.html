@@ -47,7 +47,7 @@
 
     <a-entity id="cubeMapLayer"></a-entity>
 
-    <a-entity id="stereocubeMapLayer"></a-entity>
+    <a-entity id="stereoCubeMapLayer"></a-entity>
 
     <a-entity id="eqrtLayer"></a-entity>
 
@@ -68,7 +68,7 @@
   <!-- style="display: inline-block; background: lavenderblush; color: #333333; border-radius: 1em; padding: 1em; margin:0; accent-color: hotpink;" -->
   <div id="dom-overlay">
 
-    z
+
     <section id="my-interface">
 
 
@@ -92,11 +92,10 @@
 <script>
 
   let activeLayer = "eqrtLayer"
-
+  let activeImage = null
   //store all of the 360 images as threejs textures
-  var textures = new Object();
   var cubeMapTextures = new Object();
-  var stereoCubeTextures = new Object();
+  var stereoCubeMapTextures = new Object();
   var eqrtTextures = new Object();
   var stereoEqrtTextures = new Object();
 
@@ -104,21 +103,21 @@
   // This uses extra geometry for sake of simplicity, but could easily be optimized if performance was a concern.
 
   let cubeMapLayer = document.getElementById("cubeMapLayer")
-  let stereocubeMapLayer = document.getElementById("stereocubeMapLayer")
+  let stereoCubeMapLayer = document.getElementById("stereoCubeMapLayer")
   let eqrtLayer = document.getElementById("eqrtLayer")
   let stereoEqrtLayer = document.getElementById("stereoEqrtLayer")
 
   let layers_ = {
     "cubeMapLayer": cubeMapLayer,
-    "stereocubeMapLayer": stereocubeMapLayer,
+    "stereoCubeMapLayer": stereoCubeMapLayer,
     "eqrtLayer": eqrtLayer,
     "stereoEqrtLayer": stereoEqrtLayer
   }
 
-  cubeMapLayer.setAttribute("visible", true)
-  stereocubeMapLayer.setAttribute("visible", false)
+  cubeMapLayer.setAttribute("visible", false)
+  stereoCubeMapLayer.setAttribute("visible", false)
   stereoEqrtLayer.setAttribute("visible", false)
-  eqrtLayer.setAttribute("visible", false)
+  eqrtLayer.setAttribute("visible", true)
 
 
   const material = new THREE.MeshPhongMaterial();
@@ -136,64 +135,142 @@
     new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
     new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
 
-    // new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c), side: THREE.BackSide }),
-    // new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c2), side: THREE.BackSide }),
-    // new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c3), side: THREE.BackSide }),
-    // new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c4), side: THREE.BackSide }),
-    // new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c5), side: THREE.BackSide }),
-    // new THREE.MeshBasicMaterial({ map: new THREE.CanvasTexture(c6), side: THREE.BackSide }),
 
   ];
 
 
+  // Function to clone materials
+  function cloneMaterials(materials) {
+    return materials.map(material => material.clone());
+  }
+
+  const cubeMaterialsLeftEye = cloneMaterials(cubeMaterials);
+  const cubeMaterialsRightEye = cloneMaterials(cubeMaterials);
 
 
-
+  // Clone materials for each cubeMesh
   let cubeMesh = new THREE.Mesh(skyBoxGeometry, cubeMaterials);
-  let cubeMeshLeftEye = new THREE.Mesh(skyBoxGeometry);
-  let cubeMeshRightEye = new THREE.Mesh(skyBoxGeometry);
+
+  let cubeMeshLeftEye = new THREE.Mesh(skyBoxGeometry, cubeMaterialsLeftEye);
+  let cubeMeshRightEye = new THREE.Mesh(skyBoxGeometry, cubeMaterialsRightEye);
+
 
   let eqrtMesh = new THREE.Mesh(skySphericalGeometry, material);
-  let eqrtMeshLeftEye = new THREE.Mesh(skySphericalGeometry);
-  let eqrtMeshRightEye = new THREE.Mesh(skySphericalGeometry);
+
+  let eqrtMeshLeftEye = new THREE.Mesh(skySphericalGeometry, material.clone());
+  let eqrtMeshRightEye = new THREE.Mesh(skySphericalGeometry, material.clone());
 
   cubeMeshLeftEye.layers.set(1)
   cubeMeshRightEye.layers.set(2)
+
   eqrtMeshLeftEye.layers.set(1)
   eqrtMeshRightEye.layers.set(2)
 
   cubeMapLayer.object3D.add(cubeMesh)
-  stereocubeMapLayer.object3D.add(cubeMeshLeftEye, cubeMeshRightEye)
+  stereoCubeMapLayer.object3D.add(cubeMeshLeftEye, cubeMeshRightEye)
   eqrtLayer.object3D.add(eqrtMesh)
   stereoEqrtLayer.object3D.add(eqrtMeshLeftEye, eqrtMeshRightEye)
 
 
 
   function setLayerTexture(texture, format) {
-    layers_["cubeMapLayer"].object3D.children[0].material.map = texture
+    activeImage = texture
+
+    if (format === "cubeMap") {
+
+      for (let i = 0; i < cubeMapLayer.object3D.children[0].material.length; i++) {
+        cubeMapLayer.object3D.children[0].material[i].map = cubeMapTextures[texture][i];
+        cubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
+      }
+
+      if (activeLayer !== "cubeMapLayer") {
+        layers_[activeLayer].setAttribute("visible", false);
+        cubeMapLayer.setAttribute("visible", true);
+        activeLayer = "cubeMapLayer";
+      }
+
+
+    } else if (format === "stereoCubeMap") {
+
+      for (let i = 0; i < stereoCubeMapLayer.object3D.children[0].material.length; i++) {
+        stereoCubeMapLayer.object3D.children[0].material[i].map = stereoCubeMapTextures[texture][0][i];
+        stereoCubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
+      }
+
+      for (let i = 0; i < stereoCubeMapLayer.object3D.children[1].material.length; i++) {
+        stereoCubeMapLayer.object3D.children[1].material[i].map = stereoCubeMapTextures[texture][1][i];
+        stereoCubeMapLayer.object3D.children[1].material[i].needsUpdate = true;
+      }
+
+      if (activeLayer !== "stereoCubeMapLayer") {
+        layers_[activeLayer].setAttribute("visible", false);
+        stereoCubeMapLayer.setAttribute("visible", true);
+        activeLayer = "stereoCubeMapLayer";
+      }
+
+    } else if (format === "eqrt") {
+
+      eqrtLayer.object3D.children[0].material.map = eqrtTextures[texture];
+      eqrtLayer.object3D.children[0].material.needsUpdate = true;
+
+      if (activeLayer !== "eqrtLayer") {
+        layers_[activeLayer].setAttribute("visible", false);
+        eqrtLayer.setAttribute("visible", true);
+        activeLayer = "eqrtLayer";
+      }
+
+    } else if (format === "stereoEqrt") {
+      stereoEqrtLayer.object3D.children[0].material.map = stereoEqrtTextures[texture][0];
+      stereoEqrtLayer.object3D.children[0].material.needsUpdate = true;
+      stereoEqrtLayer.object3D.children[1].material.map = stereoEqrtTextures[texture][1];
+      stereoEqrtLayer.object3D.children[1].material.needsUpdate = true;
+
+      if (activeLayer !== "stereoEqrtLayer") {
+        layers_[activeLayer].setAttribute("visible", false);
+        stereoEqrtLayer.setAttribute("visible", true);
+        activeLayer = "stereoEqrtLayer";
+      }
+
+    }
 
 
 
-    // switch (format) {
-    //   case format === activeLayer: console.log("this is the active layer"); break;
-    //   case "cubeMap":
-    //     // layers_["cubeMapLayer"].object3D
-    //     layers_[activeLayer].enabled = false;
-
-    //     layers_["cubeMapLayer"].enabled = true;
-    //     break;
-    //   case "stereoCubeMap":
-    //     cubeMeshLeftEye.material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide }); cubeMeshRightEye.material = new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide }); break;
-    //   case "eqrt":
-    //     layers_[format].object3D.children[0].material = [activeLayer].setAttribute("visible", false); break;
-    //   case "steroeEqrt": ; break;
-    // }
 
 
-    // eqrtLayer.object3D.children[0].material.map = texture
-    // eqrtLayer.object3D.children[0].material.needsUpdate = true;
 
 
+  }
+
+  function removeTextureFromMaterial(format) {
+
+    switch (format) {
+      case "cubeMap":
+        for (let i = 0; i < cubeMapLayer.object3D.children[0].material.length; i++) {
+          cubeMapLayer.object3D.children[0].material[i].map = null;
+          cubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
+        }
+        break;
+      case "stereoCubeMap":
+        for (let i = 0; i < stereoCubeMapLayer.object3D.children[0].material.length; i++) {
+          stereoCubeMapLayer.object3D.children[0].material[i].map = null;
+          stereoCubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
+        }
+        for (let i = 0; i < stereoCubeMapLayer.object3D.children[1].material.length; i++) {
+          stereoCubeMapLayer.object3D.children[1].material[i].map = null;
+          stereoCubeMapLayer.object3D.children[1].material[i].needsUpdate = true;
+        }
+        break;
+      case "eqrt":
+        eqrtLayer.object3D.children[0].material.map = null;
+        eqrtLayer.object3D.children[0].material.needsUpdate = true;
+        break;
+      case "stereoEqrt":
+        stereoEqrtLayer.object3D.children[0].material.map = null;
+        stereoEqrtLayer.object3D.children[0].material.needsUpdate = true;
+        stereoEqrtLayer.object3D.children[1].material.map = null;
+        stereoEqrtLayer.object3D.children[1].material.needsUpdate = true;
+        break;
+    }
 
   }
 
@@ -228,7 +305,13 @@
 
 <script>
   const formatIcons = {
-    "CubeMap": "./cubemapLogo.png",
+    "cubeMap": "./assets/icons/cubemapLogo.png",
+    "stripCubeMap": "./assets/icons/cubeStripLogo.png",
+    "stereoCubeMap": "./assets/icons/altStereoCubeMapLogo.png",
+    "eqrt": "./assets/icons/eqrtLogoHalfTransparent.png",
+    "stereoEqrt": "./assets/icons/stereoEqrtLogoTransparent.png",
+    "HorizontalCross": "./assets/icons/cubemapLogo.png",
+    "HorizontalT": "./assets/icons/cubemapLogo.png",
 
   }
 
@@ -248,22 +331,13 @@
   //img upload
 
   document.getElementById('imgInput').onchange = async function (e) {
-    disableButtonsWaitForSceneLoad() //disable ui 
-
-
+    // disableButtonsWaitForSceneLoad() //disables all the ui 
+    console.log("loading images")
     var inputDir = $.grep(this.files, function (file) { return file.type.indexOf("image/") === 0; }); // returns flattened array of images in root folder and all folders under root folder
     imagesLoading = inputDir.length   //a counter representing all the images currently loading...
-
-
     let dir = unFlattenDir(inputDir) //returns map of directories - each with a nested map of filenames and filedata. example ->  {dir1: {'file1': './assets/images/dir1/file1.png', 'file2': './assets/images/dir1/file2.png'},
-    //                                                                                                                              dir2: {'file1': './assets/images/dir2/file3.png', 'file2': './assets/images/dir2/file4.png'},
-    //                                                                                                                               dir3: {'file1': './assets/images/dir3/file1.png', 'file2': './assets/images/dir3/file2.png'} } }
-
     processDir(dir) //process all the images in directories
-
-
-
-
+    e.target.value = '';  //empty input field
   }
 
 
@@ -271,34 +345,59 @@
   function findformat() {
 
     let ratio = Math.round((this.width / this.height) * 10) / 10 // the ratio of the image will indicate the 360 format of the image
-    console.log(ratio)
     let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
     parent.setAttribute("id", this.name)
     layers.appendChild(parent)
 
     switch (ratio) {
-      case 12: watch(this.name, "stereoCube"); createStereoCubeMapTexture(this, parent); break;
-      case 6: watch(this.name, "CubeStrip"); createCubeStripTexture(this, parent); break;
-      case 2: watch(this.name, "Sphere"); createEqrtTexture(this, parent); break;
-      case 1.3: watch(this.name, "t cubemap"); createCubeMapTexture(this, parent); break;
-      case 1: watch(this.name, "stereo spherical"); createStereoEqrtTexture(this, parent); break;
+      case 12: watch(this.name, "stereoCubeMap"); createStereoCubeMapTexture(this, parent); break;
+      case 6: watch(this.name, "cubeMap", "stripCubeMap"); createCubeStripTexture(this, parent); break;
+      case 2: watch(this.name, "eqrt"); createEqrtTexture(this, parent); break;
+      case 1.3: watch(this.name, "cubeMap"); processCubeMap(this, parent); break;
+      case 1: watch(this.name, "stereoEqrt"); createStereoEqrtTexture(this, parent); break;
       default: console.log("NA"); imagesLoading--; if (imagesLoaded == imagesLoading) { setupLayers() }; document.getElementById("label" + this.name).innerHTML = "no format detected"
     }
   }
 
 
 
-  function watch(name, label) {
+  function watch(name, label, subClass) {
+    console.log(name, label, subClass)  
     buttonsToEnable.push("button" + name)
-    let formatIcon = document.getElementById("label" + name)
 
-    //formatIcon.removeChild(formatIcon.firstChild)
-    // icon.setAttribute("style", "background-image: url('path/to/your/image1.png');")
-    formatIcon.setAttribute("style", `background-image: url(${formatIcons["CubeMap"]})`)
+    let button = document.getElementById("button" + name)
+    button.setAttribute("onclick", `setLayerTexture('${name}', '${label}')`)
+
+    let deleteButton = document.getElementById("delete" + name)
+    deleteButton.setAttribute("onclick", `deleteImage('${name}', '${label}')`)
+
+
+    if (label === "cubeMap") {
+      if (subClass === "stripCubeMap") {
+        let formatIcon = document.getElementById("label" + name)
+        formatIcon.setAttribute("style", `background-image: url(${formatIcons["stripCubeMap"]})`)
+      }
+
+      // return;
+    } else {
+
+      let formatIcon = document.getElementById("label" + name)
+      formatIcon.setAttribute("style", `background-image: url(${formatIcons[label]})`)
+      // return;
+    }
+
+    if (label !== "cubeMap") {
+      let formatIcon = document.getElementById("label" + name)
+      formatIcon.setAttribute("style", `background-image: url(${formatIcons[label]})`)
+    
+    }
 
 
 
   }
+
+
+
 </script>
 
 
