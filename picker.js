@@ -312,8 +312,8 @@ async function checkFolder(folder) { //pass in folder name
             imagesLoading += files.length
 
             for (i = 0; i < files.length; i++) {
-                console.log(files[i].name, "? name");
-           
+                // console.log(files[i].name, "? name");
+                const name = files[i].name
                 console.log("fetching blob " + i + " " + performance.now())
 
                 fetch(`https://www.googleapis.com/drive/v3/files/${files[i].id}?alt=media`, {
@@ -327,7 +327,7 @@ async function checkFolder(folder) { //pass in folder name
                         console.log("got blob " + i + " " + performance.now())
 
                         const image = document.createElement("img")
-                        image.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
+                        image.name =  name//"gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
                         while (savedImages.has(image.name)) {
                             image.name = image.name + "_"
         
@@ -338,7 +338,6 @@ async function checkFolder(folder) { //pass in folder name
                         image.src = URL.createObjectURL(blob)
                         document.body.appendChild(image);
                         image.onload = findformat // find t
-                        globalImageFiles.set(image.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
                     })
             }
         }
@@ -367,7 +366,6 @@ async function getImages(fileId) {
                 image.name = image.name + "_"
 
             }
-            //  globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
             savedImages.add(image.name)
             addImageUI(image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
           
