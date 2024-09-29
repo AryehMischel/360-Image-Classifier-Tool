@@ -287,7 +287,7 @@ async function checkFolder(folder) { //pass in folder name
                 // layers.appendChild(parent)
                 
                 addImageUI(folder); // buttonsToEnable.push("button" + img.name); //add button to ui
-                activeButtons.add(folder)
+                savedImages.add(folder)
                 //setUI(folder, "folderCube")
                 console.log("cubemap!!")
 
@@ -327,11 +327,11 @@ async function checkFolder(folder) { //pass in folder name
 
                         const image = document.createElement("img")
                         image.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
-                        while (activeButtons.has(image.name)) {
+                        while (savedImages.has(image.name)) {
                             image.name = image.name + "_"
         
                         }
-                        activeButtons.add(image.name)
+                        savedImages.add(image.name)
                         
                         addImageUI(image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
                         image.src = URL.createObjectURL(blob)
@@ -362,12 +362,12 @@ async function getImages(fileId) {
 
             image.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
 
-            while (activeButtons.has(image.name)) {
+            while (savedImages.has(image.name)) {
                 image.name = image.name + "_"
 
             }
             //  globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
-            activeButtons.add(image.name)
+            savedImages.add(image.name)
             addImageUI(image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
           
             image.src = URL.createObjectURL(blob)
