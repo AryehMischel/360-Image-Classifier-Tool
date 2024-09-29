@@ -58,14 +58,21 @@
   </a-scene>
 
   <div id="dom-overlay">
+    
     <section id="my-interface">
       <h3>Upload 360 Images</h3>
-      <label for="imgInput" class="uploadImageButton">Select Image Folder</label>
+
+      <div class="flex-container">
+        <label for="imgInput" class="uploadImageButton">Select Image Folder</label>
+
+        <button id="npm install dotenv" onclick="handleAuthClick()">
+          <img src="https://ssl.gstatic.com/docs/doclist/images/drive_icon_32.png" alt="Google Drive Logo">
+           Import from Google Drive
+        </button>
+
+      </div>
       <input class="driveButton" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput" webkitdirectory multiple />
-      <button id="npm install dotenv" onclick="handleAuthClick()">
-        <img src="https://ssl.gstatic.com/docs/doclist/images/drive_icon_32.png" alt="Google Drive Logo">
-         Import from Google Drive
-      </button>
+     
       <div id="scrollingButtonContainer"></div>
       <div class="win-size-grip"></div>
     </section>
@@ -293,14 +300,17 @@
 <script>
   //global variables
   const formatIcons = {
-    "cubeMap": "./assets/icons/cubemapLogo.png",
-    "stripCubeMap": "./assets/icons/cubeStripLogo.png",
-    "stereoCubeMap": "./assets/icons/altStereoCubeMapLogo.png",
-    "eqrt": "./assets/icons/eqrtLogoHalfTransparent.png",
-    "stereoEqrt": "./assets/icons/stereoEqrtLogoTransparent.png",
-    "HorizontalCross": "./assets/icons/cubemapLogo.png",
-    "HorizontalT": "./assets/icons/cubemapLogo.png",
-    "folderCube": "./assets/icons/cubemapLogo.png",
+    "cubeMap": "./assets/icons/thickBorderCubeMapLogo.png",
+    "stripCubeMap": "./assets/icons/cubeStripThickBorderLogo.png",
+    "stereoCubeMap": "./assets/icons/thickBorderStereroCubeMapLogo.png",
+    "eqrt": "./assets/icons/globe.png",
+    "stereoEqrt": "./assets/icons/stereoGlobe.png",
+    "HorizontalCross": "./assets/icons/thickBorderCubeMapLogo.png",
+    "HorizontalT": "./assets/icons/thickBorderCubeMapLogo.png",
+    "folderCube":    "./assets/icons/folder.png",
+    "folderCubeMap": "./assets/icons/folder.png",
+    "cubeMapFolder": "./assets/icons/folder.png",
+
     "noFormatDetectedIcon": "./assets/icons/cubemapLogo.png",
   }
 

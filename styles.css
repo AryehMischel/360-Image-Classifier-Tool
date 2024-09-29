@@ -35,289 +35,340 @@ section {
     /* Subtle Shadow */
 }
 
+
+
+
+.flex-container {
+    width: 100%;
+    /* Use full width of the parent container */
+    max-width: 1200px;
+    /* Optional: Set a maximum width */
+    min-height: 50px;
+    display: flex;
+    flex-wrap: wrap;
+    /* Allow wrapping to the next line if needed */
+    gap: 10px;
+    /* Optional: Add space between items */
+    padding: 10px;
+    /* Optional: Add padding for better spacing */
+    box-sizing: border-box;
+    /* Include padding and border in element's total width and height */
+}
+
+.flex-container>div {
+    background-color: #c9101000;
+    margin: 10px;
+    padding: 20px;
+    font-size: 30px;
+    font-size: 14px;
+    box-sizing: border-box;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0);
+}
+
 .formatIcon {
+    background-color: #ffffff00;
+    border: none !important;
+    padding: 0 !important;
+    /* Remove any padding */
+    margin: 0 !important;
+    /* Remove any margin */
+    width: 5vh;
+    /* Match the height of .selectImageButton */
+    height: 5vh;
+    /* Match the height of .selectImageButton */
+    background-size: contain;
+    /* Scale the image to fit the container */
+    background-position: center;
+    /* Center the image */
+    background-repeat: no-repeat;
+    overflow: hidden;
+    box-sizing: border-box;
+}
 
 
-    /* border-radius: 50%; */
-    width: 5vh; /* Match the height of .selectImageButton */
-    height: 5vh; /* Match the height of .selectImageButton */
-    background-size: contain; /* Scale the image to fit the container */
-    background-position: center; /* Center the image */
-    background-repeat: no-repeat; 
+
+.deleteWindowButton {
+    background-color: #dc3545;
+    /* Red Background */
+    border: none;
+    /* No border */
+    color: white;
+    /* White text */
+    padding: 10px;
+    /* Padding */
+    display: flex;
+    /* Flexbox for centering */
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+    text-align: center;
+    /* Centered text */
+    text-decoration: none;
+    /* No underline */
+    font-size: 22px;
+    /* Font size */
+    width: 40px;
+    /* Fixed width */
+    height: 5vh;
+    /* Match the height of .selectImageButton */
+    margin: 4px 2px;
+    /* Margin around the button */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    border-radius: 20%;
+    /* Circular button */
+    transition: background-color 0.3s;
+    /* Smooth background color transition */
+    box-sizing: border-box;
+    /* Include padding and border in element's total width and height */
+}
+
+.deleteWindowButton:hover {
+    background-color: #c82333;
+}
+
+.deleteWindowButton:disabled {
+    background-color: #cccccc;
+    /* Gray Background */
+    color: #666666;
+    /* Dark Gray Text */
+    cursor: not-allowed;
+    /* Change cursor to not-allowed */
+    opacity: 0.6;
+    /* Reduce opacity */
+}
+
+.deleteWindowButton:disabled i {
+    color: #666666;
+    /* Dark gray icon */
+    opacity: 0.6;
+    /* Reduce opacity */
+}
+
+.selectImageButton {
+    display: flex;
+    /* Use flexbox */
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
+    max-width: 10vw;
+    width: 20vw;
+    max-height: 5vh;
+    height: 5vh;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 0px 10px;
+    text-align: center;
+    text-decoration: none;
+    font-size: 10px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+}
+
+.selectImageButton:hover {
+    background-color: #218838;
+}
+
+.selectImageButton:disabled {
+    background-color: #cccccc;
+    /* Gray Background */
+    color: #666666;
+    /* Dark Gray Text */
+    cursor: not-allowed;
+    /* Change cursor to not-allowed */
+    opacity: 0.6;
+    /* Reduce opacity */
+}
 
 
+.selectImageButton:disabled.hover-disabled {
+    background-color: #bbbbbb;
+    /* Slightly darker gray background */
 }
 
 
 
 
+#scrollingButtonContainer {
+    background-color: #ffffff;
+    /* Teal Background */
+    max-height: 40vh;
+    overflow: auto;
+}
+
+
+/* The scrollbar itself */
+::-webkit-scrollbar {
+    width: 12px;
+    /* Width of the scrollbar */
+    height: 12px;
+    /* Height of the scrollbar */
+}
+
+/* The draggable part of the scrollbar */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    /* Color of the draggable part */
+    border-radius: 6px;
+    /* Roundness of the draggable part */
+}
+
+/* The scrollbar track */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    /* Color of the track */
+    border-radius: 6px;
+    /* Roundness of the track */
+}
+
+/* Optional: On hover, change the scrollbar thumb color */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+    /* Color on hover */
+}
+
+
+label {
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+
+.uploadImageButton {
+    display: inline-block;
+    max-width: 150px;
+    min-width: 80px;
+    width: 50%;
+    height: 10%;
+    max-height: 5vh;
+    overflow: hidden;
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.5em;
+    /*font-size: 12px;*/
+
+}
+
+
+.driveButton {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.driveButton img {
+    width: 24px;
+    height: 24px;
+    margin-right: 8px;
+}
+
+#authorize_button {
+    font-size: 10px;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    background-color: #ececec00;
+    border: none !important;
+    /* Remove any border */
+    padding: 0 !important;
+    /* Remove any padding */
+    margin: 0 !important;
+    /* Remove any margin */
+    width: 5vh;
+    /* Match the height of .selectImageButton */
+    height: 5vh;
+    /* Match the height of .selectImageButton */
+    background-size: contain;
+    /* Scale the image to fit the container */
+    background-position: center;
+    /* Center the image */
+    background-repeat: no-repeat;
+    white-space: normal;
+    /* Allow text to wrap */
+    overflow: visible;
+    /* Allow text to overflow */
+    box-sizing: border-box;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: rgb(151, 151, 151);
+    color: #1100fc;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+
+    /* Allow text to overflow */
+    white-space: normal;
+    /* Allow text to wrap */
+    overflow: visible;
+    /* Allow text to overflow */
+
+    /* Define text size */
+    font-size: 14px;
+    /* Adjust the size as needed */
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+
+.iconParent {}
+
+
 @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 
 /* Media Queries for Responsiveness */
-    @media (max-width: 768px) {
-        section {
-            max-width: 100%;
-            /* Adjust max-width for tablets */
-            padding: 0.8em;
-            /* Adjust padding */
-        }
+@media (max-width: 768px) {
+    section {
+        max-width: 100%;
+        /* Adjust max-width for tablets */
+        padding: 0.8em;
+        /* Adjust padding */
     }
+}
 
-    @media (max-width: 480px) {
-        section {
-            max-width: 100%;
-            /* Adjust max-width for mobile devices */
-            padding: 0.6em;
-            /* Adjust padding */
-        }
+@media (max-width: 480px) {
+    section {
+        max-width: 100%;
+        /* Adjust max-width for mobile devices */
+        padding: 0.6em;
+        /* Adjust padding */
     }
-
-    .flex-container {
-        width: 100%;
-        /* Use full width of the parent container */
-        max-width: 1200px;
-        /* Optional: Set a maximum width */
-        min-height: 50px;
-        display: flex;
-        flex-wrap: wrap;
-        /* Allow wrapping to the next line if needed */
-        gap: 10px;
-        /* Optional: Add space between items */
-        padding: 10px;
-        /* Optional: Add padding for better spacing */
-        box-sizing: border-box;
-        /* Include padding and border in element's total width and height */
-    }
-
-    .flex-container>div {
-        background-color: #FFFFFF;
-        /* White Background */
-        margin: 10px;
-        padding: 20px;
-        font-size: 30px;
-        flex: 1 1 calc(33.333% - 20px);
-        /* Responsive width with space for margin */
-        box-sizing: border-box;
-        /* Include padding and border in element's total width and height */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        /* Subtle Shadow */
-    }
-
-
-
-    #scrollingButtonContainer {
-        background-color: #ffffff;
-        /* Teal Background */
-        max-height: 40vh;
-        overflow: auto;
-
-    }
-
-
-    .deleteWindowButton {
-        background-color: #dc3545;
-        /* Red Background */
-        border: none;
-        /* No border */
-        color: white;
-        /* White text */
-        padding: 10px;
-        /* Padding */
-        display: flex;
-        /* Flexbox for centering */
-        justify-content: center;
-        /* Center horizontally */
-        align-items: center;
-        /* Center vertically */
-        text-align: center;
-        /* Centered text */
-        text-decoration: none;
-        /* No underline */
-        font-size: 22px;
-        /* Font size */
-        width: 40px;
-        /* Fixed width */
-        height: 5vh;
-        /* Match the height of .selectImageButton */
-        margin: 4px 2px;
-        /* Margin around the button */
-        cursor: pointer;
-        /* Pointer cursor on hover */
-        border-radius: 20%;
-        /* Circular button */
-        transition: background-color 0.3s;
-        /* Smooth background color transition */
-        box-sizing: border-box;
-        /* Include padding and border in element's total width and height */
-    }
-
-    .deleteWindowButton:hover {
-        background-color: #c82333;
-    }
-
-    .deleteWindowButton:disabled {
-        background-color: #cccccc;
-        /* Gray Background */
-        color: #666666;
-        /* Dark Gray Text */
-        cursor: not-allowed;
-        /* Change cursor to not-allowed */
-        opacity: 0.6;
-        /* Reduce opacity */
-    }
-
-    .deleteWindowButton:disabled i {
-        color: #666666; /* Dark gray icon */
-        opacity: 0.6; /* Reduce opacity */
-    }
-
-    .selectImageButton {
-
-
-        display: flex;           /* Use flexbox */
-        justify-content: center; /* Center horizontally */
-        align-items: center;     /* Center vertically */    
-        max-width: 10vw;
-        width: 20vw;
-        max-height: 5vh;
-        height: 5vh;
-        background-color: #28a745;
-        color: #fff;
-        border: none;
-        padding: 0px 10px;
-        text-align: center;
-        text-decoration: none;
-        font-size: 10px;
-        margin: 4px 2px;
-        cursor: pointer;
-        border-radius: 5px;
-        transition: background-color 0.3s;
-        white-space: normal;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        box-sizing: border-box;
-    }
-
-    .selectImageButton:disabled {
-        background-color: #cccccc;
-        /* Gray Background */
-        color: #666666;
-        /* Dark Gray Text */
-        cursor: not-allowed;
-        /* Change cursor to not-allowed */
-        opacity: 0.6;
-        /* Reduce opacity */
-    }
-
-    .selectImageButton:disabled.hover-disabled {
-        background-color: #bbbbbb;
-        /* Slightly darker gray background */
-    }
-    .selectImageButton:hover {
-        background-color: #218838;
-    }
-
-
-
-    /* The scrollbar itself */
-    ::-webkit-scrollbar {
-        width: 12px;
-        /* Width of the scrollbar */
-        height: 12px;
-        /* Height of the scrollbar */
-    }
-
-    /* The draggable part of the scrollbar */
-    ::-webkit-scrollbar-thumb {
-        background: #888;
-        /* Color of the draggable part */
-        border-radius: 6px;
-        /* Roundness of the draggable part */
-    }
-
-    /* The scrollbar track */
-    ::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        /* Color of the track */
-        border-radius: 6px;
-        /* Roundness of the track */
-    }
-
-    /* Optional: On hover, change the scrollbar thumb color */
-    ::-webkit-scrollbar-thumb:hover {
-        background: #555;
-        /* Color on hover */
-    }
-
-
-    label {
-        display: flex;
-        align-items: center;
-        padding: 5px;
-    }
-
-    .btn {
-        background-color: #ff0077;
-        /* Orange Background */
-        display: inline-block;
-        color: white;
-        /* White Text */
-        border-radius: 1em;
-        accent-color: black;
-        padding: 1em;
-        margin: 0;
-        border-style: dashed;
-        border-color: white;
-        /* White Border */
-        text-align: center;
-        /* Centered text */
-        cursor: pointer;
-        /* Pointer cursor on hover */
-        transition: background-color 0.3s;
-        /* Smooth background color transition */
-    }
-
-    .uploadImageButton {
-        
-        display: inline-block;
-        max-width: 150px;
-        min-width: 80px;
-        width: 50%;
-        height: 10%;
-        max-height: 5vh;
-        overflow: hidden;
-        padding: 10px;
-        margin: 10px 0;
-        background-color: #007bff;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        cursor: pointer;
-        font-size: 0.5em;
-        /*font-size: 12px;*/
-
-    }
-
-
-    .driveButton {
-        background-color: white;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 10px 20px;
-        display: flex;
-        align-items: center;
-        cursor: pointer;
-    }
-    .driveButton img {
-        width: 24px;
-        height: 24px;
-        margin-right: 8px;
-    }
-
-    #authorize_button {
-        font-size: 10px;
-    }
+}

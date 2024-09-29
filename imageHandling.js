@@ -41,7 +41,7 @@ function unFlattenDir(flatArray) {
 
           let processedImages = processCubeImages(values)
           addImageUI(name)
-          setUI(name, "folderCube")
+          setUI(name, "cubeMap")
           processedImages[0].then(() => { createCubeMapTextureFromImages(processedImages[1], name) });
         
         } catch {

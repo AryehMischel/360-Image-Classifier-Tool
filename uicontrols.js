@@ -21,14 +21,28 @@ function addImageUI(imageName) {
 
 
 
-    let icon = document.createElement("img");
+    let iconParent = document.createElement("div")
+    iconParent.setAttribute("class", "tooltip")
+    iconParent.setAttribute("id", "iconParent" + imageName)
+    // iconParent.setAttribute("class", "iconParent")
+
+    let icon = document.createElement("div");
+    // icon.src = "assets/icons/globe.png"
     icon.setAttribute("class", "formatIcon")
     icon.setAttribute("id", "formatIcon" + imageName);
+    
+    let span = document.createElement("span")
+    span.setAttribute("id", "tooltip" + imageName)
+    span.setAttribute("class", "tooltiptext")
+    // span.innerHTML = "This is the tooltip for Image 1!"
+
+    iconParent.appendChild(icon)
+    iconParent.appendChild(span)
 
 
     newDiv.appendChild(button)
     newDiv.appendChild(deleteImageButton)
-    newDiv.appendChild(icon)
+    newDiv.appendChild(iconParent)
 
     scrollingButtonContainer.appendChild(newDiv)
 
@@ -56,7 +70,6 @@ function deleteImage(imageName, format) {
 
     // console.log("deleting " + imageName, "from " + format + "Textures")
     let command = "delete " + format + "Textures[" + "'" + imageName + "'" + "]"
-    console.log(command)
     eval(command)
 
 
@@ -66,7 +79,13 @@ function deleteImage(imageName, format) {
 //call when image format is discovered
 function addFormatIcon(name, format) {
     let formatIcon = document.getElementById("formatIcon" + name);
-    console.log(formatIcon, format)
     formatIcon.setAttribute("style", `background-image: url(${formatIcons[format]})`);
+
+    let tooltip = document.getElementById("tooltip" + name);
+    tooltip.innerHTML = format
+
+    //set tooltip text
+    
+   
 
 }

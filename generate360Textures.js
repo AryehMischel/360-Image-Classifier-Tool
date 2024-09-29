@@ -599,8 +599,9 @@ function createCubeMapTextureFromImages(images, imageName){
     canvas4 = null
     canvas5 = null
     canvas6 = null
-
-    setUI(imageName, "cubeMap");
+    
+    // setUI(imageName, "cubeMap");
+    addFormatIcon(imageName, "folderCubeMap")
     // imagesLoaded += 1;
 }
 //could be usefull to change canvasTextures to bitmaps, it would make it easier to add webworkers
