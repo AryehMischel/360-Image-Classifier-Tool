@@ -1,6 +1,6 @@
-var dir = new Map();
+
+
 function unFlattenDir(flatArray) {
-console.log("handling images")
     for (i = 0; i < flatArray.length; i++) {
       var path = flatArray[i].webkitRelativePath.substring(0, flatArray[i].webkitRelativePath.lastIndexOf("/")) // flatArray[i].webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1, flatArray[i].webkitRelativePath.length)
       var file = flatArray[i]//.webkitRelativePath.substring(flatArray[i].webkitRelativePath.lastIndexOf("/") + 1)//);
@@ -29,7 +29,7 @@ console.log("handling images")
     dir.forEach((values, keys) => {
       let name = keys;
 
-      while (activeButtons.has(name)) {
+      while (savedImages.has(name)) {
         name = name + "_"
       }
 
@@ -40,10 +40,10 @@ console.log("handling images")
         try {
 
           let processedImages = processCubeImages(values)
-          let parent = setupCubeMapFolderParent(name)
-          processedImages[0].then(() => { createCubeMapFromFolder(processedImages[1], parent) });
-          //could be simplified to createCubeMapFromFolder
-
+          addImageUI(name)
+          setUI(name, "folderCube")
+          processedImages[0].then(() => { createCubeMapTextureFromImages(processedImages[1], name) });
+        
         } catch {
 
           checkCubeMapViable(values).then((Values) => { //I should check even if names are correct?
@@ -59,14 +59,14 @@ console.log("handling images")
 
                   let img = imagesTO[i]
 
-                  while (activeButtons.has(img.name)) {
+                  while (savedImages.has(img.name)) {
                     img.name = img.name + "_"
 
                   }
 
                   globalImageFiles.set(img.name, v.get(img.name))
-                  addButton(img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
-                  activeButtons.add(img.name)
+                  addImageUI(img.name); 
+                  savedImages.add(img.name)
                   findformat.call(img)
 
                 }
@@ -88,12 +88,6 @@ console.log("handling images")
     files = null
   }
 
-
-  
-
-
-
-
   function processCubeImages(values){
 
     let px = URL.createObjectURL(values.get("px"));
@@ -105,12 +99,12 @@ console.log("handling images")
 
 
     
-    var img = new Image();  //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img2 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img3 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img4 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img5 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img6 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
+    var img = new Image();  
+    var img2 = new Image(); 
+    var img3 = new Image();
+    var img4 = new Image(); 
+    var img5 = new Image(); 
+    var img6 = new Image(); 
 
 
     //console.log(Array.from(values.keys())[0])
@@ -138,23 +132,19 @@ console.log("handling images")
 
 
 async function checkCubeMapViable(values) {
-    var img = new Image();  //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img2 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img3 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img4 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img5 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
-    var img6 = new Image(); //img.parentID = this.files[i].name     //this is a little hack that can be removed later
+    var img = new Image();  
+    var img2 = new Image();
+    var img3 = new Image(); 
+    var img4 = new Image(); 
+    var img5 = new Image(); 
+    var img6 = new Image(); 
 
-    img.name = Array.from(values.keys())[0]
+    img.name =  Array.from(values.keys())[0]
     img2.name = Array.from(values.keys())[1]
     img3.name = Array.from(values.keys())[2]
     img4.name = Array.from(values.keys())[3]
     img5.name = Array.from(values.keys())[4]
     img6.name = Array.from(values.keys())[5]
-
-
-
-    //console.log(Array.from(values.keys())[0])
 
     var val = values.get(Array.from(values.keys())[0]);
     var val2 = values.get(Array.from(values.keys())[1]);
@@ -175,13 +165,11 @@ async function checkCubeMapViable(values) {
     let images = [img, img2, img3, img4, img5, img6]
 
     // wait for all images to load
-
     const proms = images.map(im => new Promise(res =>
       im.onload = () => res(im.width, im.height)
     ))
 
 
-    //const promise = Promise.resolve();
 
     // list all image widths and heights _after_ the images have loaded:
     const promise = Promise.all(proms).then(data => {
@@ -190,33 +178,11 @@ async function checkCubeMapViable(values) {
       return (answer)
     })
 
-    //IDs = [1, 2, 3] //[promise, "someothershit"]
     return ([promise, images])
-
     // if (img.width / img.height == 1 && allEqual(data)) {
 
   }
   
-  function setupCubeMapFolderParent(name){
-    let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
-          parent.setAttribute("id", name)
-          layers.appendChild(parent)
-          addButton(name); // buttonsToEnable.push("button" + img.name); //add button to ui
-          activeButtons.add(name)
-          watch(name, "folderCube" )
-          imagesLoading -= 5;
-
-          return parent
-
-  }
-
-
-  function printActiveImages() {
-    globalImageFiles.forEach((value, key) => {
-      console.log(value.name)
-    })
-  }
-
   
   function processImage(values) {
 
@@ -224,33 +190,20 @@ async function checkCubeMapViable(values) {
 
     img.name = values.name  //generate id for parent object, current bug when dealing with duplicate image names
 
-    while (activeButtons.has(img.name)) {
+    while (savedImages.has(img.name)) {
       img.name = img.name + "_"
 
     }
 
     globalImageFiles.set(img.name, values)
-    activeButtons.add(img.name)
+    savedImages.add(img.name)
 
 
     img.src = URL.createObjectURL(values);
     img.onload = findformat // find the 360 format that best fits this image 
 
-    addButton(img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+    addImageUI(img.name); // buttonsToEnable.push("button" + img.name); //add button to ui
 
   }
 
 
-  function reformatTest(id) {
-    let p = document.getElementById(id)
-    for (let i = 0; i < p.object3D.children.length; i++) {
-      p.object3D.remove(p.object3D.children[i])
-    }
-
-    console.log(globalImageFiles.get(id))
-
-    var img = new Image(); //img.parentID = this.files[i].name //this is a little hack that can be removed later
-    img.src = URL.createObjectURL(globalImageFiles.get(id));
-
-    img.onload = createSphere(img, p) // find the 360 format that best fits this image 
-  }

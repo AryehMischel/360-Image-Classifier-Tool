@@ -284,7 +284,7 @@
 
 </script>
 
-<script src="./generateObjects.js"></script>
+<script src="./generate360Textures.js"></script>
 <script src="./uicontrols.js"></script>
 
 <script src="./imageHandling.js"></script>
@@ -304,6 +304,7 @@
 <!-- -->
 
 <script>
+  //global variables
   const formatIcons = {
     "cubeMap": "./assets/icons/cubemapLogo.png",
     "stripCubeMap": "./assets/icons/cubeStripLogo.png",
@@ -312,7 +313,6 @@
     "stereoEqrt": "./assets/icons/stereoEqrtLogoTransparent.png",
     "HorizontalCross": "./assets/icons/cubemapLogo.png",
     "HorizontalT": "./assets/icons/cubemapLogo.png",
-
   }
 
 
@@ -324,14 +324,14 @@
   let imagesLoaded = 0
 
 
+  var savedImages = new Set();
+  var dir = new Map();
 
 
 
 
-  //img upload
-
+  // upload images
   document.getElementById('imgInput').onchange = async function (e) {
-    // disableButtonsWaitForSceneLoad() //disables all the ui 
     console.log("loading images")
     var inputDir = $.grep(this.files, function (file) { return file.type.indexOf("image/") === 0; }); // returns flattened array of images in root folder and all folders under root folder
     imagesLoading = inputDir.length   //a counter representing all the images currently loading...
@@ -344,59 +344,33 @@
   //get image dimensions & and match to image format -> then transform image into 3d object
   function findformat() {
 
-    let ratio = Math.round((this.width / this.height) * 10) / 10 // the ratio of the image will indicate the 360 format of the image
-    let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
-    parent.setAttribute("id", this.name)
-    layers.appendChild(parent)
+    let imageRatio = Math.round((this.width / this.height) * 10) / 10 // the ratio of the image will indicate the 360 format of the image
 
-    switch (ratio) {
-      case 12: watch(this.name, "stereoCubeMap"); createStereoCubeMapTexture(this, parent); break;
-      case 6: watch(this.name, "cubeMap", "stripCubeMap"); createCubeStripTexture(this, parent); break;
-      case 2: watch(this.name, "eqrt"); createEqrtTexture(this, parent); break;
-      case 1.3: watch(this.name, "cubeMap"); processCubeMap(this, parent); break;
-      case 1: watch(this.name, "stereoEqrt"); createStereoEqrtTexture(this, parent); break;
-      default: console.log("NA"); imagesLoading--; if (imagesLoaded == imagesLoading) { setupLayers() }; document.getElementById("label" + this.name).innerHTML = "no format detected"
+
+    switch (imageRatio) { // width/height
+      case 12:
+        addFormatIcon(this.name, "stereoCubeMap");
+        createStereoCubeMapTexture(this); break;
+
+      case 6:
+        addFormatIcon(this.name, "stripCubeMap");
+        createCubeStripTexture(this); break;
+
+      case 2:
+        addFormatIcon(this.name, "eqrt");
+        createEqrtTexture(this); break;
+
+      case 1.3:
+        // addFormatIcon(this.name, "cubeMap");
+        processCubeMap(this); break;
+
+      case 1: addFormatIcon(this.name, "stereoEqrt"); createStereoEqrtTexture(this); break;
+      default:
+        //imagesLoading--;
+        addFormatIcon(this.name, "noFormatDetectedIcon");
+        break;
     }
   }
-
-
-
-  function watch(name, label, subClass) {
-    console.log(name, label, subClass)  
-    buttonsToEnable.push("button" + name)
-
-    let button = document.getElementById("button" + name)
-    button.setAttribute("onclick", `setLayerTexture('${name}', '${label}')`)
-
-    let deleteButton = document.getElementById("delete" + name)
-    deleteButton.setAttribute("onclick", `deleteImage('${name}', '${label}')`)
-
-
-    if (label === "cubeMap") {
-      if (subClass === "stripCubeMap") {
-        let formatIcon = document.getElementById("label" + name)
-        formatIcon.setAttribute("style", `background-image: url(${formatIcons["stripCubeMap"]})`)
-      }
-
-      // return;
-    } else {
-
-      let formatIcon = document.getElementById("label" + name)
-      formatIcon.setAttribute("style", `background-image: url(${formatIcons[label]})`)
-      // return;
-    }
-
-    if (label !== "cubeMap") {
-      let formatIcon = document.getElementById("label" + name)
-      formatIcon.setAttribute("style", `background-image: url(${formatIcons[label]})`)
-    
-    }
-
-
-
-  }
-
-
 
 </script>
 
