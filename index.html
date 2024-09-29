@@ -52,12 +52,6 @@
 
     <!-- default scene -->
     <a-entity id="layers">
-
-
-
-
-
-
     </a-entity>
 
 
@@ -67,8 +61,11 @@
     <section id="my-interface">
       <h3>Upload 360 Images</h3>
       <label for="imgInput" class="uploadImageButton">Select Image Folder</label>
-      <input class="input" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput" webkitdirectory multiple />
-      <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
+      <input class="driveButton" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput" webkitdirectory multiple />
+      <button id="npm install dotenv" onclick="handleAuthClick()">
+        <img src="https://ssl.gstatic.com/docs/doclist/images/drive_icon_32.png" alt="Google Drive Logo">
+         Import from Google Drive
+      </button>
       <div id="scrollingButtonContainer"></div>
       <div class="win-size-grip"></div>
     </section>

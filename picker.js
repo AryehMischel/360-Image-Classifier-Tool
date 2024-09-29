@@ -5,13 +5,12 @@
 
 // Authorization scopes required by the API; multiple scopes can be
 // included, separated by spaces.
+
 const SCOPES = 'https://www.googleapis.com/auth/drive';
 
-// TODO(developer): Set to client ID and API key from the Developer Console
+//These are sent from the brownser to the server, so they can't be kept secret
 const CLIENT_ID = '763421155078-nnpvg9kp0hpqded2e83i7fg669d3f5lj.apps.googleusercontent.com';
 const API_KEY = 'AIzaSyDekhzQ-TUMsLCivTTbMJA8hoAuzpUhOcE';
-
-// TODO(developer): Replace with your own project number from console.developers.google.com.
 const APP_ID = 'winter-origin-386003';
 
 let tokenClient;
@@ -102,24 +101,44 @@ function handleSignoutClick() {
 /**
  *  Create and render a Picker object for searching images.
  */
-function createPicker() {
-    var view = new google.picker.DocsView().setMimeTypes('application/vnd.google-apps.folder').setParent('root').setSelectFolderEnabled(true);
-    //view().setMimeTypes('application/vnd.google-apps.folder')
-    //view.setMimeTypes('image/png,image/jpeg,image/jpg');
+// function createPicker() {
+//     var view = new google.picker.DocsView().setMimeTypes('application/vnd.google-apps.folder').setParent('root').setSelectFolderEnabled(true);
+//     //view().setMimeTypes('application/vnd.google-apps.folder')
+//     //view.setMimeTypes('image/png,image/jpeg,image/jpg');
 
-    //.setMimeTypes('application/vnd.google-apps.folder')
+//     //.setMimeTypes('application/vnd.google-apps.folder')
+
+//     var picker = new google.picker.PickerBuilder()
+//         .setDeveloperKey(API_KEY)
+//         .setAppId(APP_ID)
+//         .setOAuthToken(accessToken)
+
+//         .setSize("650", "470")
+//         //    .setSelectableMimeTypes('application/vnd.google-apps.folder') //not sure about this Mime type
+//         .addView(view)
+//         // .setOrigin(google.script.host.origin)
+//         .setCallback(pickerCallback)
+//         .build()
+//     picker.setVisible(true);
+// }
+
+
+//view all folders and files
+function createPicker() {
+    var view = new google.picker.DocsView(google.picker.ViewId.DOCS)
+        .setParent('root')
+        .setIncludeFolders(true)
+        .setSelectFolderEnabled(true);
 
     var picker = new google.picker.PickerBuilder()
         .setDeveloperKey(API_KEY)
         .setAppId(APP_ID)
         .setOAuthToken(accessToken)
-
         .setSize("650", "470")
-        //    .setSelectableMimeTypes('application/vnd.google-apps.folder') //not sure about this Mime type
         .addView(view)
-        // .setOrigin(google.script.host.origin)
         .setCallback(pickerCallback)
-        .build()
+        .build();
+
     picker.setVisible(true);
 }
 
