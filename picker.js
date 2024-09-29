@@ -212,9 +212,10 @@ async function checkFolder(folder) { //pass in folder name
             console.log(n5)
 
             if (cubemapFileNames.has(n) && cubemapFileNames.has(n1) && cubemapFileNames.has(n2) && cubemapFileNames.has(n3) && cubemapFileNames.has(n4) && cubemapFileNames.has(n5)) {
-
                 addImageUI(folder); 
                 savedImages.add(folder)
+                setUI(folder, "cubeMap")
+
                 makeCubeMap(parent, [files[0].id, files[1].id, files[2].id, files[3].id, files[4].id, files[5].id], [n, n1, n2, n3, n4, n5], folder)
 
             } else {
