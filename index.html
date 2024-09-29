@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-<!-- <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script> -->
 <script src="aframe-master.js"></script>
 <script src="aframe-html.js"></script>
 <script src="https://unpkg.com/aframe-cubemap-component@2.1.1/dist/aframe-cubemap-component.min.js"></script>
@@ -31,8 +30,6 @@
     <a-assets>
 
     </a-assets>
-
-    <!-- <a-box onclick="document.getElementById('imgInput').click()"id="a" position="-1 0.5 -3" rotation="0 45 0" color="red"></a-box> -->
 
     <a-entity id="user">
       <a-camera stereocam="eye:left;">
@@ -65,22 +62,15 @@
 
 
   </a-scene>
-  <!-- style="display: inline-block; background: lavenderblush; color: #333333; border-radius: 1em; padding: 1em; margin:0; accent-color: hotpink;" -->
+
   <div id="dom-overlay">
-
-
     <section id="my-interface">
-
-
-      <h2>Upload 360 Images</h2>
-
+      <h3>Upload 360 Images</h3>
       <label for="imgInput" class="uploadImageButton">Select Image Folder</label>
-      <input class="input" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput"
-        webkitdirectory multiple />
+      <input class="input" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput" webkitdirectory multiple />
       <button id="authorize_button" onclick="handleAuthClick()">Authorize</button>
       <div id="scrollingButtonContainer"></div>
       <div class="win-size-grip"></div>
-
     </section>
   </div>
 
