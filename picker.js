@@ -92,35 +92,9 @@ function handleSignoutClick() {
     if (accessToken) {
         accessToken = null;
         google.accounts.oauth2.revoke(accessToken);
-        // document.getElementById('content').innerText = '';
-        // document.getElementById('authorize_button').innerText = 'Authorize';
-        // document.getElementById('signout_button').style.visibility = 'hidden';
     }
 }
 
-/**
- *  Create and render a Picker object for searching images.
- */
-// function createPicker() {
-//     var view = new google.picker.DocsView().setMimeTypes('application/vnd.google-apps.folder').setParent('root').setSelectFolderEnabled(true);
-//     //view().setMimeTypes('application/vnd.google-apps.folder')
-//     //view.setMimeTypes('image/png,image/jpeg,image/jpg');
-
-//     //.setMimeTypes('application/vnd.google-apps.folder')
-
-//     var picker = new google.picker.PickerBuilder()
-//         .setDeveloperKey(API_KEY)
-//         .setAppId(APP_ID)
-//         .setOAuthToken(accessToken)
-
-//         .setSize("650", "470")
-//         //    .setSelectableMimeTypes('application/vnd.google-apps.folder') //not sure about this Mime type
-//         .addView(view)
-//         // .setOrigin(google.script.host.origin)
-//         .setCallback(pickerCallback)
-//         .build()
-//     picker.setVisible(true);
-// }
 
 
 //view all folders and files
@@ -173,50 +147,7 @@ async function pickerCallback(data) {
 
 
         getSubFolders(obj.docs[0].id)
-        //       checkFolder();
-        //retrieveAllFiles()
-        // const Res = await fetch(`https://www.googleapis.com/drive/v3/files?q=${folderID}parents`, {
-        //   headers: {
-        //       Authorization: `Bearer ${accessToken}`
-
-        //   }}).then( response => response.blob())
-        //   .then(blob =>{
-        //       console.log(performance.now())
-        //       const reader = new FileReader() ;
-        //       reader.onload = function(){
-        //        console.log(this.result)
-        //         addImage(this.result)
-        //       } ; // <--- `this.result` contains a base64 data URI
-        //       return reader.readAsDataURL(blob) ;
-        //   })//%2710oCPwjGlp8ArZGP0nk2jnvztniaCRdH4%27%20in%20
-
-
-        // const document = data[google.picker.Response.DOCUMENTS][0];
-        // const fileId = document[google.picker.Document.ID];
-        // console.log(fileId);
-        // const res = await gapi.client.drive.files.get({
-        //   'fileId': fileId,
-        //   'fields': '*',
-        // });
-        // text += `Drive API response for first document: \n${JSON.stringify(res.result, null, 2)}\n`;
-        // window.document.getElementById('content').innerText = text;
-        // console.log(performance.now())
-        // const Res = await fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
-        //   headers: {
-        //       Authorization: `Bearer ${accessToken}`
-
-        //   }}).then( response => response.blob())
-        //   .then(blob =>{
-        //       console.log(performance.now())
-        //       const reader = new FileReader() ;
-        //       reader.onload = function(){
-        //        console.log(this.result)
-        //         addImage(this.result)
-        //       } ; // <--- `this.result` contains a base64 data URI
-        //       return reader.readAsDataURL(blob) ;
-        //   })
-
-
+ 
 
     }
 
@@ -282,26 +213,12 @@ async function checkFolder(folder) { //pass in folder name
 
             if (cubemapFileNames.has(n) && cubemapFileNames.has(n1) && cubemapFileNames.has(n2) && cubemapFileNames.has(n3) && cubemapFileNames.has(n4) && cubemapFileNames.has(n5)) {
 
-                // let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
-                // parent.setAttribute("id", folder)
-                // layers.appendChild(parent)
-                
-                addImageUI(folder); // buttonsToEnable.push("button" + img.name); //add button to ui
+                addImageUI(folder); 
                 savedImages.add(folder)
-                //setUI(folder, "folderCube")
-                console.log("cubemap!!")
-
                 makeCubeMap(parent, [files[0].id, files[1].id, files[2].id, files[3].id, files[4].id, files[5].id], [n, n1, n2, n3, n4, n5], folder)
 
-                //get blobs of each image
-                //turn into images and onload store in array :: cubeimages process ++ 
-                // after all six images are process in array
-                //createCubeMapFromFolder(images, parent)
-
-
             } else {
-                console.log("boo map")
-                imagesLoading += files.length
+                // imagesLoading += files.length
             }
 
 
@@ -312,7 +229,6 @@ async function checkFolder(folder) { //pass in folder name
             imagesLoading += files.length
 
             for (i = 0; i < files.length; i++) {
-                // console.log(files[i].name, "? name");
                 const name = files[i].name
                 console.log("fetching blob " + i + " " + performance.now())
 
@@ -327,17 +243,17 @@ async function checkFolder(folder) { //pass in folder name
                         console.log("got blob " + i + " " + performance.now())
 
                         const image = document.createElement("img")
-                        image.name =  name//"gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
+                        image.name =  name
                         while (savedImages.has(image.name)) {
                             image.name = image.name + "_"
         
                         }
                         savedImages.add(image.name)
                         
-                        addImageUI(image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+                        addImageUI(image.name); 
                         image.src = URL.createObjectURL(blob)
                         document.body.appendChild(image);
-                        image.onload = findformat // find t
+                        image.onload = findformat 
                     })
             }
         }
@@ -360,18 +276,18 @@ async function getImages(fileId) {
 
             const image = new Image();
 
-            image.name = "gdrive_photo" //values.name  //generate id for parent object, current bug when dealing with duplicate image names
+            image.name = "gdrive_photo" 
 
             while (savedImages.has(image.name)) {
                 image.name = image.name + "_"
 
             }
             savedImages.add(image.name)
-            addImageUI(image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+            addImageUI(image.name); 
           
             image.src = URL.createObjectURL(blob)
             document.body.appendChild(image);
-            image.onload = findformat // find t
+            image.onload = findformat 
         })
 }
 
@@ -392,13 +308,11 @@ async function makeCubeMap(parent, imageIds, imgNames, folderName) {
     for (i = 0; i < imageIds.length; i++) {
 
         const apple = imgNames[i]
-        console.log(apple)
         fetches.push(
             fetch(`https://www.googleapis.com/drive/v3/files/${imageIds[i]}?alt=media`, {
                 headers: { Authorization: `Bearer ${accessToken}` }
             }).then(response => response.blob())
                 .then(blob => {
-                    console.log(apple)
                     const img = new Image(); //  const img = new Image();
                     cubemapFiles.set(apple, img)
 
@@ -406,16 +320,10 @@ async function makeCubeMap(parent, imageIds, imgNames, folderName) {
                     img.src = URL.createObjectURL(blob)
                    // document.body.appendChild(image);
                     img.onload = () => {
-                        console.log('woaw')
 
                         cubemapCounter += 1;
                         if (cubemapCounter == 6) {
-                            console.log("should be working")
-                            console.log(imgNames.at('nz'))
-                            // createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent);
                             createCubeMapTextureFromImages([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], folderName)
-
-
                         }
                     };
 
@@ -427,12 +335,10 @@ async function makeCubeMap(parent, imageIds, imgNames, folderName) {
 
 
     Promise.all(fetches).then(function () {
-        //   console.log ("all done?" + fetches);
 
     });
 
 
-    console.log("all done?")
 
 
 
@@ -443,10 +349,3 @@ async function makeCubeMap(parent, imageIds, imgNames, folderName) {
 
 
 
-
-function addImage(src) { //TO-DO pass in image name
-    //he 360 format that best fits this image 
-    //document.body.appendChild(image); console.log("added phtot")
-    //crop(src);
-    //document.querySelector("a-assets").append(image)
-}
