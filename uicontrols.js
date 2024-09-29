@@ -1,132 +1,71 @@
+function addImageUI(imageName) {
 
-
-let cl = 0
-const activeButtons = new Set();
-
-function addButton(clickFunction, innerHTML){
-	let interface = document.querySelector("#my-interface")
+    let scrollingButtonContainer = document.querySelector("#scrollingButtonContainer")
 
     let newDiv = document.createElement("div")
-    // newDiv.setAttribute("style","display: block;")
-      // newDiv.innerHTML = 'aasdasdasdasdasdasdasdasdasdasdasd'
-     newDiv.setAttribute("class", 'flex-container')
-    // let b = document.createElement("button")
-    
-    let b2 = document.createElement("button")
-    b2.innerHTML = "delete image"
-	b2.onclick = function() { removeLayer(innerHTML)}
-    // newDiv.appendChild(b)
-  
-    
-	let button = document.createElement("button")
-	button.setAttribute("style","display: block;")
-    let label = document.createElement("label")
-    // label.setAttribute("style","display: block;")
-    label.setAttribute("id", "label" + innerHTML)
-	button.innerHTML = innerHTML
-	button.setAttribute("id", "button" + innerHTML)
-	// button.addEventListener("click", ()=>{console.log("asdasdasd")})//innerHTML
-	button.onclick = function() { clickFunction(innerHTML)}
-	// button.addEventListener("click", clickFunction())//innerHTML
-	button.disabled = true;
-	newDiv.appendChild(button)
-    newDiv.appendChild(b2)
+    newDiv.setAttribute("class", 'flex-container')
+    newDiv.setAttribute("id", "div" + imageName)
 
-    newDiv.appendChild(label)
-
-    interface.appendChild(newDiv)
-	//return button
-
-}
+    let deleteImageButton = document.createElement("button")
+    deleteImageButton.setAttribute("id", "delete" + imageName)
+    deleteImageButton.setAttribute("class", "deleteWindowButton");
+    deleteImageButton.innerHTML = '<i class="fas fa-times"></i>'
+    deleteImageButton.disabled = true;
 
 
-function setLayer(layerID){
-    document.getElementById(cl).setAttribute("visible", false)
-    
-    let layer = document.getElementById(layerID)
-     layer.setAttribute("visible", true)
+    let button = document.createElement("button")
+    button.setAttribute("id", "button" + imageName)
+    button.setAttribute("class", "selectImageButton");
+    button.innerHTML = imageName
+    button.disabled = true;
 
-     cl = layerID    
+
+
+    let icon = document.createElement("img");
+    icon.setAttribute("class", "formatIcon")
+    icon.setAttribute("id", "formatIcon" + imageName);
+
+
+    newDiv.appendChild(button)
+    newDiv.appendChild(deleteImageButton)
+    newDiv.appendChild(icon)
+
+    scrollingButtonContainer.appendChild(newDiv)
 
 }
 
-// const layers = document.querySelector("#layers")
-function setupLayers(){
-  imagesLoading = 0
-  imagesLoaded = 0
+//delete image from ui and memory
+function deleteImage(imageName, format) {
+    let div = document.getElementById("div" + imageName)
+    let parent = div.parentNode;
+    if (imageName === activeImage) {
+        let index = Array.prototype.indexOf.call(parent.children, div);
+        if (index === 0) {
+            if (parent.children.length > 1) {
+                parent.children[1].children[0].click()
+            } else {
+                removeTextureFromMaterial(format)
+            }
+        } else {
+            parent.children[index - 1].children[0].click()
 
-    for(i = 0; i < layers.children.length; i++){
-        layers.children[i].setAttribute("visible", false)
-        // console.log(layers.children[i])
-        // cl = layers.children[layers.children.length -1].id   
-        //console.log(cl)
-        // console.log("asdasdsdaas")
-       
+        }
+
     }
+    parent.removeChild(div)
 
-     cl = layers.children[layers.children.length -1].id 
-     document.getElementById(cl).setAttribute("visible", true)
-     document.getElementById('imgInput').value = ''
-    // //console.log("huh " + buttonsToEnable.length)
- enableButtons()
+    // console.log("deleting " + imageName, "from " + format + "Textures")
+    let command = "delete " + format + "Textures[" + "'" + imageName + "'" + "]"
+    console.log(command)
+    eval(command)
+
 
 }
 
 
-function enableButtons(){
-    for(i =0; i < buttonsToEnable.length; i++){
-        let b = document.getElementById(buttonsToEnable[i])
-        b.disabled = false;
-    }
-
-    //buttonsToEnable.forEach(item => activeButtons.add(item))
-
-    buttonsToEnable = []
-    
-}
-
-
-function removeLayer(layerID){
-    let layer = document.getElementById(layerID)
-    let button = document.getElementById("button" + layerID)
-    layer.parentNode.removeChild(layer)
-//    console.log(button.parentNode.parentNode.children.indexOf(button.parentNode));
-
-// for(i = 0; i < button.parentNode.parentNode.children.length; i++){
-//     if(button.parentNode.parentNode.children[i] == button.parentNode){
-//         console.log(i + " is a match")
-//         break;
-//     } else{
-//         console.log("noooo!")
-//     }
-// }
-
-    button.parentNode.parentNode.removeChild(button.parentNode)
-    activeButtons.delete(layerID);
-     if(layers.children.length > 0){
-      if(layerID == cl){
-        
-        
-        cl = layers.children[layers.children.length -1].id //if layerID === cl  //find the button above this one and set that to cl 
-        document.getElementById(cl).setAttribute("visible", true)
-
-
-      }
-
-     } else{
-
-     }
-    
-    
-}
-
-
-function addDiv(){
-    let newDiv = document.createElement("div")
-    let childDiv = document.createElement("div")
-    childDiv.innerHTML = "ajshdlkjashdlkjahsdlksdsdljhsdlkfjhsdlkfjhsdlkfjhsdlkjhsldkjfhslkdjfhssdfsdfajshdlakjsdh"
-    newDiv.appendChild(childDiv)
-	let interface = document.querySelector("#my-interface")
-    interface.appendChild(newDiv)
+//call when image format is discovered
+function addFormatIcon(name, format) {
+    let formatIcon = document.getElementById("formatIcon" + name);
+    formatIcon.setAttribute("style", `background-image: url(${formatIcons[format]})`);
 
 }
