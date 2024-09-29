@@ -64,7 +64,6 @@ function unFlattenDir(flatArray) {
 
                   }
 
-                  globalImageFiles.set(img.name, v.get(img.name))
                   addImageUI(img.name); 
                   savedImages.add(img.name)
                   findformat.call(img)
@@ -195,7 +194,6 @@ async function checkCubeMapViable(values) {
 
     }
 
-    globalImageFiles.set(img.name, values)
     savedImages.add(img.name)
 
 

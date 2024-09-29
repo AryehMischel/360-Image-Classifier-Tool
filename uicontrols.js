@@ -66,6 +66,7 @@ function deleteImage(imageName, format) {
 //call when image format is discovered
 function addFormatIcon(name, format) {
     let formatIcon = document.getElementById("formatIcon" + name);
+    console.log(formatIcon, format)
     formatIcon.setAttribute("style", `background-image: url(${formatIcons[format]})`);
 
 }

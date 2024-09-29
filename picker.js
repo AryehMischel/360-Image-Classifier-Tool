@@ -312,6 +312,7 @@ async function checkFolder(folder) { //pass in folder name
             imagesLoading += files.length
 
             for (i = 0; i < files.length; i++) {
+                console.log(files[i].name, "? name");
            
                 console.log("fetching blob " + i + " " + performance.now())
 

@@ -1,3 +1,4 @@
+function process360Image(){}
 
 function processCubeMap(img, parent) {
 
@@ -35,7 +36,7 @@ function processCubeMap(img, parent) {
         /////////
 
         default: 
-        addFormatIcon(this.name, "noFormatDetectedIcon"); 
+        addFormatIcon(img.name, "noFormatDetectedIcon"); 
         //imagesLoading--; 
     
     }
@@ -493,8 +494,10 @@ function createStereoCubeMapTexture(img){
 
 function createEqrtTexture(img){
     const texture = new THREE.TextureLoader().load(img.src);
+    if(initializeTexturesOnLoad){
     renderer.initTexture(texture)
-    imagesLoaded += 1;
+      
+    }
     eqrtTextures[img.name] = texture
 
 
@@ -530,6 +533,10 @@ function createStereoEqrtTexture(img){
 
     stereoEqrtTextures[img.name] = [textureLeft, textureRight]
 
+    if(initializeTexturesOnLoad){
+        renderer.initTexture(textureLeft)
+        renderer.initTexture(textureRight)
+    }
 
     setUI(img.name, "stereoEqrt");
     // imagesLoaded += 1;
@@ -608,9 +615,12 @@ function createCubeTexture(c, c2, c3, c4, c5, c6) {
     ];
     
     // Initialize each texture
-    canvasTextures.forEach(texture => {
-        renderer.initTexture(texture);
-    });
+    if(initializeTexturesOnLoad){
+        canvasTextures.forEach(texture => {
+            renderer.initTexture(texture);
+        });
+    
+    }
 
 
     return canvasTextures
