@@ -282,16 +282,16 @@ async function checkFolder(folder) { //pass in folder name
 
             if (cubemapFileNames.has(n) && cubemapFileNames.has(n1) && cubemapFileNames.has(n2) && cubemapFileNames.has(n3) && cubemapFileNames.has(n4) && cubemapFileNames.has(n5)) {
 
-                let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
-                parent.setAttribute("id", folder)
-                layers.appendChild(parent)
-                addButton(setLayer, folder); // buttonsToEnable.push("button" + img.name); //add button to ui
+                // let parent = document.createElement("a-entity"); //this object will be the parent of any 3d meshes generated from the current image     
+                // parent.setAttribute("id", folder)
+                // layers.appendChild(parent)
+                
+                addImageUI(folder); // buttonsToEnable.push("button" + img.name); //add button to ui
                 activeButtons.add(folder)
-                watch(folder, "folderCube")
-                imagesLoading += 1
+                //setUI(folder, "folderCube")
                 console.log("cubemap!!")
 
-                makeCubeMap(parent, [files[0].id, files[1].id, files[2].id, files[3].id, files[4].id, files[5].id], [n, n1, n2, n3, n4, n5])
+                makeCubeMap(parent, [files[0].id, files[1].id, files[2].id, files[3].id, files[4].id, files[5].id], [n, n1, n2, n3, n4, n5], folder)
 
                 //get blobs of each image
                 //turn into images and onload store in array :: cubeimages process ++ 
@@ -332,11 +332,12 @@ async function checkFolder(folder) { //pass in folder name
         
                         }
                         activeButtons.add(image.name)
-                        addButton(setLayer, image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+                        
+                        addImageUI(image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
                         image.src = URL.createObjectURL(blob)
                         document.body.appendChild(image);
                         image.onload = findformat // find t
-                         globalImageFiles.set(image.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
+                        globalImageFiles.set(image.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
                     })
             }
         }
@@ -367,7 +368,7 @@ async function getImages(fileId) {
             }
             //  globalImageFiles.set(img.name, values) // I should prob set this with a flag showings its a gdrive file and it's id?
             activeButtons.add(image.name)
-            addButton(setLayer, image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
+            addImageUI(image.name); // buttonsToEnable.push("button" + img.name); //add button to ui
           
             image.src = URL.createObjectURL(blob)
             document.body.appendChild(image);
@@ -377,7 +378,7 @@ async function getImages(fileId) {
 
 
 
-async function makeCubeMap(parent, imageIds, imgNames) {
+async function makeCubeMap(parent, imageIds, imgNames, folderName) {
 
     console.log(imageIds)
     console.log(imgNames)
@@ -412,7 +413,8 @@ async function makeCubeMap(parent, imageIds, imgNames) {
                         if (cubemapCounter == 6) {
                             console.log("should be working")
                             console.log(imgNames.at('nz'))
-                            createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent);
+                            // createCubeMapFromFolder([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], parent);
+                            createCubeMapTextureFromImages([cubemapFiles.get('px'), cubemapFiles.get('nx'), cubemapFiles.get('py'), cubemapFiles.get('ny'), cubemapFiles.get('pz'), cubemapFiles.get('nz')], folderName)
 
 
                         }
