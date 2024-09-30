@@ -22,9 +22,17 @@
     $("#dom-overlay").draggable();
   });
 </script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <link rel="stylesheet" href="styles.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
+<style>
+    .dropzone {
+        border: 2px dashed #0087F7;
+        border-radius: 5px;
+        background: white;
+    }
+</style>
 <body>
   <a-scene webxr="overlayElement:#dom-overlay;">
     <a-assets>
@@ -63,6 +71,7 @@
       <h3>Upload 360 Images</h3>
 
       <div class="flex-container">
+       
         <label for="imgInput" class="uploadImageButton">Select Image Folder</label>
 
         <button id="npm install dotenv" onclick="handleAuthClick()">
@@ -73,7 +82,11 @@
       </div>
       <input class="driveButton" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput" webkitdirectory multiple />
      
-      <div id="scrollingButtonContainer"></div>
+      <div id="scrollingButtonContainer">
+
+        <h1>Dropzone.js Example</h1>
+        <form class="dropzone" id="my-dropzone"></form>
+      </div>
       <div class="win-size-grip"></div>
     </section>
   </div>
@@ -84,6 +97,31 @@
 </html>
 
 <script>
+
+Dropzone.autoDiscover = false;
+
+const myDropzone = new Dropzone("#my-dropzone", {
+    url: "/dummy-url", // Provide a dummy URL to satisfy Dropzone's requirement
+    addRemoveLinks: true,
+    autoProcessQueue: false, // Prevent Dropzone from automatically processing the queue
+    init: function () {
+        this.on("addedfile", function (file) {
+            if (file.fullPath) {
+                console.log(file.fullPath);
+                 imageTree.addImage(file.fullPath, file.name, "unknown", file);
+            } else {
+                console.log(file.name);
+                imageTree.addImage(file.fullPath, file.name, "unknown", file);
+            }
+        });
+
+          // Prevent Dropzone from making any network requests
+          this.on("sending", function (file, xhr, formData) {
+            xhr.abort();
+        });
+    }
+});
+
 
   let activeLayer = "eqrtLayer"
   let activeImage = null
