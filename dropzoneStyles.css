@@ -1,0 +1,42 @@
+
+.dropzone {
+    border: 2px dashed #0087F7;
+    border-radius: 5px;
+    background: white;
+}
+
+
+.dropzone .dz-preview {
+/* position: relative; */
+display: inline-block;
+vertical-align: top;
+margin: 16px;
+min-height: 100px;
+}
+
+.dz-preview {
+position: relative;
+display: inline-block;
+width: 120px;
+height: 120px;
+margin: 10px;
+vertical-align: top;
+}
+
+.dz-preview .dz-image {
+border-radius: 3px;
+overflow: hidden;
+width: 100%;
+height: 100%;
+position: relative;
+background: #ebebeb;
+}
+
+.dz-preview .dz-image img {
+display: block;
+width: 100%;
+}
+
+.dz-preview .dz-details {
+display: none;
+}

@@ -48,6 +48,12 @@ function addImageUI(imageName) {
 
 }
 
+
+
+function addImageUIToDropZone(imageName) {
+    
+}
+
 //delete image from ui and memory
 function deleteImage(imageName, format) {
     let div = document.getElementById("div" + imageName)
