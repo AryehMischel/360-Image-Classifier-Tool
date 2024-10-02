@@ -1,37 +1,50 @@
-
+let maxThumbnailSize = 5;
+let generateThumbnail = false;
 self.onmessage = async function (event) {
     const imageFile = event.data.imageFile;
     const imageID = event.data.imageID;
+
+
 
     var bitmap = null;
 
     const imageFiles = event.data.imageFiles;
 
-    if(imageFiles){
+    if (imageFiles) {
         console.log("handlign a cubemap")
-    }else{
+    } else {
 
 
-    try {
-        // Load the cubemap image as a bitmap
-        bitmap = await createImageBitmap(imageFile, {imageOrientation: "flipY"});
+        try {
+            // Load the cubemap image as a bitmap
+            bitmap = await createImageBitmap(imageFile, { imageOrientation: "flipY" });
+
+
+            // console.log(imageFile.size)
+            if (imageFile.size / 1000000 > maxThumbnailSize) {
+                generateThumbnail = true;
+
+            }
+
+            //create a scaled down version of the image for the thumbnail as a dataurl
+            // Create a canvas element
+            // Create a canvas element
+
+
+            let imageRatio = Math.round((bitmap.width / bitmap.height) * 10) / 10;
+            let format = findFormat(imageRatio);
 
 
 
-        let imageRatio = Math.round((bitmap.width / bitmap.height) * 10) / 10;
-        let format = findFormat(imageRatio);
+            // console.log("image ratio: " + imageRatio);
 
+        } catch (error) {
 
+            console.error("Error loading image: " + error.message);
+            return;
+        }
 
-        // console.log("image ratio: " + imageRatio);
-
-    } catch (error) {
-
-        console.error("Error loading image: " + error.message);
-        return;
     }
-
-}
 
     //find format of image and send it back to main thread
 
@@ -44,7 +57,12 @@ self.onmessage = async function (event) {
             case 12:
                 self.postMessage({ work: "setFormat", format: "stereoCubeMap", imageID });
                 let bitmaps = await processStereoCubeMap(bitmap);
+                if (generateThumbnail) {
+                    await createThumbNail("cubeMap", bitmaps[5], imageID);
+
+                }
                 self.postMessage({ work: "createTexture", format: "stereoCubeMap", bitmaps, imageID }, bitmaps);
+
                 return "stereoCubeMap";
             //   addFormatIcon(this.name, "stereoCubeMap");
             //   createStereoCubeMapTexture(this); break;
@@ -52,6 +70,9 @@ self.onmessage = async function (event) {
             case 6:
                 self.postMessage({ work: "setFormat", format: "stripCubeMap", imageID });
                 let cubeStripBitmaps = await processCubeStrip(bitmap);
+                if (generateThumbnail) {
+                    await createThumbNail("cubeMap", cubeStripBitmaps[5], imageID);
+                }
                 self.postMessage({ work: "createTexture", format: "cubeMap", bitmaps: cubeStripBitmaps, imageID }, cubeStripBitmaps);
                 return "stripCubeMap";
             //   addFormatIcon(this.name, "stripCubeMap");
@@ -59,6 +80,9 @@ self.onmessage = async function (event) {
 
             case 2:
                 self.postMessage({ work: "setFormat", format: "eqrt", imageID });
+                if (generateThumbnail) {
+                    await createThumbNail('eqrt', bitmap, imageID)
+                }
                 self.postMessage({ work: "createTexture", format: "eqrt", bitmap, imageID }, bitmap);
                 return "eqrt";
             //   addFormatIcon(this.name, "eqrt");
@@ -66,16 +90,19 @@ self.onmessage = async function (event) {
 
             case 1.3:
 
+                if (generateThumbnail) {
+                    await createThumbNail('eqrt', bitmap, imageID)
+                }
                 let processedImage = await processPotentialCubeMap(bitmap);
                 console.log("processed image: ", processedImage);
                 self.postMessage({ work: "setFormat", format: processedImage.format, imageID })
-                if(processedImage.bitmaps){
-                    self.postMessage({ work: "createTexture", format: "cubeMap", bitmaps: processedImage.bitmaps, imageID}, processedImage.bitmaps);
+                if (processedImage.bitmaps) {
+                    self.postMessage({ work: "createTexture", format: "cubeMap", bitmaps: processedImage.bitmaps, imageID }, processedImage.bitmaps);
                 }
-                
+
                 return processedImage.format;
 
-                
+
                 // console.log("processed image: ", processedImage);
                 // return processedImage.format;
                 break;
@@ -83,11 +110,16 @@ self.onmessage = async function (event) {
             case 1:
                 self.postMessage({ work: "setFormat", format: "stereoEqrt", imageID });
                 let stereoEqrtBitmaps = await processStereoEqrt(bitmap);
-               
+                if (generateThumbnail) {
+                    createThumbNail('stereoEqrt', bitmap, imageID)
+                }
                 self.postMessage({ work: "createTexture", format: "stereoEqrt", bitmaps: stereoEqrtBitmaps, imageID }, stereoEqrtBitmaps);
                 return "stereoEqrt";
             // addFormatIcon(this.name, "stereoEqrt"); createStereoEqrtTexture(this); break;
             default:
+                if(generateThumbnail){
+                    createThumbNail('eqrt', bitmap, imageID)
+                }
                 self.postMessage({ work: "setFormat", format: "noFormatDetected", imageID });
                 return "noFormatDetected";
             // addFormatIcon(this.name, "noFormatDetectedIcon");
@@ -126,19 +158,20 @@ async function processPotentialCubeMap(img) {
 
     switch (result.simpleGrid) {
 
-        case "010011110100": 
-        console.log("HorizontalCross")
-        return ({format: "HorizontalCross", 
-            bitmaps: [ result.bitmapGrid[6], result.bitmapGrid[4], result.bitmapGrid[9], result.bitmapGrid[1], result.bitmapGrid[5], result.bitmapGrid[7]]
-        });
-        break;  
+        case "010011110100":
+            console.log("HorizontalCross")
+            return ({
+                format: "HorizontalCross",
+                bitmaps: [result.bitmapGrid[6], result.bitmapGrid[4], result.bitmapGrid[9], result.bitmapGrid[1], result.bitmapGrid[5], result.bitmapGrid[7]]
+            });
+            break;
 
 
         case "000111110001":
-        console.log("horizontalT")
-        return ({format: "noFormatDetected"})//, bitmapGrid;
-        // TODO: createCubeMapTextureFromHorizontalT(img, parent);
-        break;  
+            console.log("horizontalT")
+            return ({ format: "noFormatDetected" })//, bitmapGrid;
+            // TODO: createCubeMapTextureFromHorizontalT(img, parent);
+            break;
 
 
         // etc, etc
@@ -150,8 +183,8 @@ async function processPotentialCubeMap(img) {
         //
         /////////
 
-        default: 
-        return ({format: "noFormatDetected"})//, bitmapGrid;
+        default:
+            return ({ format: "noFormatDetected" })//, bitmapGrid;
         // addFormatIcon(img.name, "noFormatDetectedIcon"); 
         //imagesLoading--; 
 
@@ -196,16 +229,16 @@ async function classifyCubeMap(bitmap) {
             simpleGrid.push(zeroOrOne);
 
 
-          }  // Create an ImageBitmap for the current cell
+        }  // Create an ImageBitmap for the current cell
     }
 
     return { simpleGrid: simpleGrid.join(""), bitmapGrid };
-    
+
 }
 
 
 
-async function processStereoCubeMap(bitmap){
+async function processStereoCubeMap(bitmap) {
     let subBitmaps = [];
     let subBitmapWidth = Math.floor(bitmap.width / 12);
 
@@ -218,7 +251,7 @@ async function processStereoCubeMap(bitmap){
 
 }
 
-async function processCubeStrip(bitmap){
+async function processCubeStrip(bitmap) {
     let subBitmaps = [];
     let subBitmapWidth = Math.floor(bitmap.width / 6);
 
@@ -279,6 +312,65 @@ async function processStereoEqrt(bitmap) {
     return subBitmaps;
 }
 
+// add format so we can use it in the switch case
+async function createThumbNail(format, bitmapSource, imageID) {
+    const canvas = new OffscreenCanvas(200, 200);
+    const ctx = canvas.getContext('2d');
+
+
+    if (format == "cubeMap") {
+        // Draw the first image
+        // Save the current state of the canvas
+        ctx.save();
+        // Translate the canvas to the bottom of the image
+        ctx.translate(0, canvas.height);
+        // Scale the canvas vertically by -1 to flip it upside down
+        ctx.scale(1, -1);
+        // Draw the image on the flipped canvas
+        ctx.drawImage(bitmapSource, 0, 0, canvas.width, canvas.height);
+        // Restore the canvas to its original state
+        ctx.restore();
+
+    } else if (format == "eqrt") {
+
+
+        ctx.save();
+        // Translate the canvas to the bottom of the image
+        ctx.translate(0, canvas.height);
+        // Scale the canvas vertically by -1 to flip it upside down
+        ctx.scale(1, -1);
+        // Draw the image on the flipped canvas
+
+        //drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+        ctx.drawImage(bitmapSource, 0, 0, bitmapSource.width / 2, bitmapSource.height, 0, 0, canvas.width, canvas.height);
+        // Restore the canvas to its original state
+        ctx.restore();
+    } else if (format == "stereoEqrt") {
+
+        ctx.save();
+        // Translate the canvas to the bottom of the image
+        ctx.translate(0, canvas.height);
+        // Scale the canvas vertically by -1 to flip it upside down
+        ctx.scale(1, -1);
+        // Draw the image on the flipped canvas
+        ctx.drawImage(bitmapSource, 0, 0, canvas.width, canvas.height);
+        // Restore the canvas to its original state
+        ctx.restore();
+    }
+
+
+    // Convert the offscreen canvas content to a Blob
+    const blob = await canvas.convertToBlob({ type: "image/png" });
+    //post back to main thread
+
+    // Create a data URL from the Blob
+    const reader = new FileReader();
+    reader.onload = function () {
+        const thumbnail = reader.result;
+        self.postMessage({ work: "thumbnail", thumbnail, imageID });
+    };
+    reader.readAsDataURL(blob);
+}
 
 
 

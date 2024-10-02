@@ -189,7 +189,7 @@
 
 
       this.on("addedfile", function (file) {
-
+        // addImagePreview(file)
         if(file.type === "test"){
           console.log("test")
           
@@ -539,6 +539,10 @@
 
         addIcon(e.data.imageID, e.data.format);
 
+        if(e.data.format === "noFormatDetected"){
+          addRemove(e.data.imageID, images[e.data.imageID].file)
+        }
+
 
       } else if (e.data.work === "bitmapGrid") {
         const bitmaps = event.data.bitmapGrid;
@@ -556,10 +560,7 @@
         }
 
 
-
       }
-
-
 
       else if (e.data.work === "createTexture") {
         images[e.data.imageID].format = e.data.format;
@@ -584,7 +585,12 @@
 
           createCubeMapTexture(e.data.imageID, e.data.bitmaps);
         }
-      }
+
+    
+
+      }    else if(e.data.work === "thumbnail"){
+          addImagePreview(e.data.imageID, e.data.thumbnail)
+        }
 
 
 
@@ -701,6 +707,20 @@
 
 
   // }
+
+  function addImagePreview(imageID, dataURL){
+   
+    // const bitmap = await createImageBitmap(img);
+    myDropzone.emit("thumbnail", images[imageID].file, dataURL);
+   
+    // const reader = new FileReader();
+    // reader.onload = async function(event) {
+    //   const imageBitmap = await createImageBitmap(new Blob([event.target.result]));
+    //   myDropzone.emit("thumbnail", file, URL.createObjectURL(imageBitmap));
+    // };
+    // reader.readAsArrayBuffer(file);
+    // myDropzone.emit("thumbnail", file, "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png");
+  }
 
 
 
