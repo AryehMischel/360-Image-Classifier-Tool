@@ -15,6 +15,26 @@
     resize: both
   }
 </style>
+
+<style>
+  .mock-file-preview {
+    display: inline-block;
+    width: 80px;
+    /* Set width for the mock preview */
+    height: 80px;
+    /* Set height for the mock preview */
+    background-color: #f0f0f0;
+    /* Background color for the mock preview */
+    border: 1px solid #ccc;
+    /* Border for the mock preview */
+    margin: 10px;
+    text-align: center;
+    line-height: 80px;
+    /* Center text vertically */
+    font-size: 14px;
+    /* Font size for the file name */
+  }
+</style>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
 <script>
@@ -100,12 +120,31 @@
 <!-- dropzone ui and handling image uploads 2.0-->
 <script>
   //global variables
+  let startedProcessingImageBatch = false;
   var activeImages = new Set();
-
   var imageNodeUI = {};
+  var uploadTrees = [];
+  var currentUploadTree = null;
 
 
+  function test(){
+    var mockCubeMapFile = { name: "mockCubeMap", size: 12345678, type: "test"};
+      myDropzone.emit("addedfile", mockCubeMapFile);
+      myDropzone.emit("thumbnail", mockCubeMapFile, "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png");
+  }
+
+
+  // var images = { imageID: { name: "imageName", format: "cubeMap", node: node, texture: threejsTexture} }
+
+  var images = {}
+
+  var cubeMapImageMap = {}
+
+
+  let cubeMapImageFormat = ["px", "nx", "py", "ny", "pz", "nz"]
+  let cubeMapImagesIDs = []
   incrementingID = 0;
+  let incrementingFolderID = 1000;
   Dropzone.autoDiscover = false;
 
   // Define a custom preview template
@@ -121,29 +160,138 @@
 `;
 
   const myDropzone = new Dropzone("#my-dropzone", {
+
+
     url: "/dummy-url", // Provide a dummy URL to satisfy Dropzone's requirement
     addRemoveLinks: true,
-    autoProcessQueue: false, // Prevent Dropzone from automatically processing the queue
+    autoProcessQueue: true, // Prevent Dropzone from automatically processing the queue
     previewTemplate: previewTemplate, // Use the custom preview template
     addRemoveLinks: false, // Disable the remove links
+    maxThumbnailFilesize: 5, // we will create our own thumbnails in our webworkers and populate them later
+
+
+
     init: function () {
+
+
+
+      this.on('complete', function (file) {
+        console.log("complete")
+      });
+
+      //will handle this manually. this is currently clogging up performance
+      this.on("queuecomplete", function () {
+        console.log("queue complete")
+        createQueue();
+        startedProcessingImageBatch = false;
+      });
+
+
+
       this.on("addedfile", function (file) {
 
-        const uniqueId = `${incrementingID++}`;
-        file.previewElement.id = uniqueId;
-        if (file.fullPath) {
-          console.log(file.fullPath);
-          imageTree.addImage(file.fullPath, file.name, "unknown", file, uniqueId);
-        } else {
-          console.log(file.name);
-          imageTree.addImage(file.fullPath, file.name, "unknown", file, uniqueId);
+        if(file.type === "test"){
+          console.log("test")
+          
+          return;          
+
         }
+
+        if (file.type === "fake") {
+          file.previewElement.id = "ui" + file.folderID;
+          // console.log(file.folderID, "folderID")
+          images[file.folderID] = { "file": file, "format": "cubeMap", "name": "mockCubeMap", "texture": null };
+          
+
+          // console.log(images[cubeMapImageMap[file.folderID].get("px")].file)
+
+          let cubeImageBitmaps = []
+
+          async function processCubeMapImages() {
+            let cubeImageBitmaps = []
+            for (const imageName of cubeMapImageFormat) {
+              let subImageFile = images[cubeMapImageMap[file.folderID].get(imageName)].file;
+              const bitmap = await createImageBitmap(subImageFile, { imageOrientation: "flipY" });
+              cubeImageBitmaps.push(bitmap);
+            }
+            addIcon(file.folderID, "cubeMapFolder");
+            createCubeMapTexture(file.folderID, cubeImageBitmaps);
+            addRemove(file.folderID, file)
+        
+           
+
+          }
+
+          (async () => {
+            await processCubeMapImages();
+
+            for (const imageName of cubeMapImageFormat) {
+              let subImageFile = images[cubeMapImageMap[file.folderID].get(imageName)].file;
+              this.removeFile(subImageFile);
+            }
+
+          })();
+
+          return;
+        }
+
+        const uniqueId = `${incrementingID++}`;
+
+      
+
+        if (!startedProcessingImageBatch) {
+          startedProcessingImageBatch = true;
+          createUploadTree();
+        }
+        console.log("added file")
+
+
+
+
+        //make all interactions work off this images object and stop using objects for each format 
+
+        //to-do: remove button when image texture is loaded
+        //to-do: add functions to handle removing texture from material
+
+        images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
+        console.log(images[uniqueId])
+
+
+        file.previewElement.id = "ui" + uniqueId;
+
+        if (file.fullPath) {
+          // console.log(file.fullPath);
+          currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
+
+        } else {
+          // console.log(file.name);
+          currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
+        }
+
+
+
+
+        // let acceptedFiles = this.getAcceptedFiles();
+        // let rejectedFiles = this.getRejectedFiles();
+        // let queuedFiles = this.getQueuedFiles();
+        // let uploadingFiles = this.getUploadingFiles();
+
+        // console.log("accepted files ", acceptedFiles.length)
+        // console.log("rejected files ", rejectedFiles.length)
+        // console.log("queued files ", queuedFiles.length)
+        // console.log("uploading files ", uploadingFiles.length)
+
+
+
+
       });
 
       // Prevent Dropzone from making any network requests
       this.on("sending", function (file, xhr, formData) {
         xhr.abort();
+
       });
+
     }
   });
 
@@ -151,12 +299,12 @@
 
 
   class ImageNode {
-    constructor(name, type = null, file = null, uiElementID = null) {
+    constructor(name = null, ID = null) {
       this.name = name;
-      this.type = type;
+      // this.type = type;
       this.isImage = true;
-      this.file = file;
-      this.uiElementID = uiElementID;
+      // this.file = file;
+      this.ID = ID;
 
     }
   }
@@ -182,14 +330,10 @@
       this.root = new FolderNode("root");
     }
 
-    addImage(relativePath, imageName, type, file, uiElementID) {
-      console.log("adding image ", relativePath, imageName, type, uiElementID);
-
-      //make sure to give the imageNode a unique id if it is not a cubemap sub image aka (px, posx, postivex, etc)
+    addImage(relativePath, imageName, imageID) {
 
       if (relativePath === undefined) {
-        console.log("root level")
-        const imageNode = new ImageNode(imageName, type, file, uiElementID);
+        const imageNode = new ImageNode(imageName, imageID);
         this.root.addChild(imageNode);
         return;
       }
@@ -209,41 +353,152 @@
         currentNode = folder;
       }
 
-      const imageNode = new ImageNode(imageName, type, file, uiElementID);
+      const imageNode = new ImageNode(imageName, imageID);
       currentNode.addChild(imageNode);
     }
   }
 
 
-  const imageTree = new ImageTree();
+  function createUploadTree() {
+    console.log("creating new tree")
+    let tree = new ImageTree();
+    uploadTrees.push(tree);
+    currentUploadTree = tree;
+    // myDropzone.processQueue();
+  }
 
+
+  // const imageTree = new ImageTree();
+
+  // Function to load an image as a bitmap
+  async function loadImageAsBitmap(imageFile) {
+
+    // Create the ImageBitmap
+
+    return bitmap;
+  }
 
 
   //1. traverse tree and test for cubemap folders / create a queue from the tree
   let imageQueue = [];
+  requiredNamesMap = new Map();
+  requiredNamesMap.set("posx", "px");
+  requiredNamesMap.set("negx", "nx");
+  requiredNamesMap.set("posy", "py");
+  requiredNamesMap.set("negy", "ny");
+  requiredNamesMap.set("posz", "pz");
+  requiredNamesMap.set("negz", "nz");
+
+  console.log(requiredNamesMap.get("px"))
 
   function createQueue() {
-    createQueFromTree(imageTree.root, imageQueue);
+    createQueFromTree(currentUploadTree.root, imageQueue);
   }
 
 
   function createQueFromTree(node, queue) {
+    console.log('creawting')
 
 
     if (node.imageCount === 6) {
       console.log("must check for cubemap")
+      let folderID = `${incrementingFolderID++}`;
+      console.log(folderID, "folderID")
 
-    } else {
+      var imageMap = new Map();
+
+      // imageMap.clear();
+
+
+      const altRequiredNames = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];
+      const requiredNames = ['px', 'nx', 'py', 'ny', 'pz', 'nz'];
+
+      let cubeMapImages = []
+      cubeMapImagesIDs = []
+
+
 
       for (const child of node.children.values()) {
         if (child.isImage) {
-          while (activeImages.has(child.name)) {
-            child.name = child.name + "_"
 
+          const baseName = child.name.toLowerCase().split('.')[0];
+
+          if (requiredNames.includes(baseName) & !imageMap.has(baseName)) {
+            //valid cubemap image
+            imageMap.set(baseName, child.ID);
+
+          } else if (altRequiredNames.includes(baseName) & !imageMap.has(requiredNamesMap.get(baseName))) {
+            //valid cubemap image
+            console.log(requiredNamesMap.get(baseName))
+            imageMap.set(requiredNamesMap.get(baseName), child.ID);
+
+          } else {
+            console.log("invalid cubemap image")
           }
 
-          activeImages.add(child.name);
-          imageNodeUI[child.name] = child.uiElementID;
+          // cubeMapImages.push(child.name)
+          // cubeMapImagesIDs.push(child.ID)
+
+
+        } else {
+          createQueFromTree(child, queue);
+        }
+      }
+
+      cubeMapImageMap[folderID] = imageMap;
+
+
+      var mockCubeMapFile = { name: "mockCubeMap", size: 12345678, type: "fake", folderID: folderID };
+      myDropzone.emit("addedfile", mockCubeMapFile);
+      myDropzone.emit("thumbnail", mockCubeMapFile, "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png");
+      // const filenames = cubeMapImages.map(image => image.toLowerCase().split('.')[0]);
+
+
+
+      // let twoLetterFormat = requiredNames.every(name => filenames.some(filename => filename.includes(name)))
+      // let abreviatedFormat = altRequiredNames.every(name => filenames.some(filename => filename.includes(name)))
+
+      //Add existing files into dropzone
+      //cubeMapImagesURLs = cubeMapImagesIDs.map(imageID => images[imageID].file)
+
+
+
+
+
+      //for the sake of simplicity we are going to generate the cubemaps inside the main thread.
+
+      // let worker = new Worker('worker.js');
+      // worker.postMessage({ work: "processCubeMap", imageID: newCubeFolderID, imageFiles: cubeMapImagesURLs });
+      // console.log(cubeMapImagesURLs)
+      //processCubeMap
+      // for(let i = 0; i < cubeMapImagesIDs.length; i++){
+      //   queue.push(cubeMapImagesIDs[i]);
+      //   processQueue();
+      // }
+
+
+      //example of how to swap out cubemap subimage previews for one cubemapfolder preview. Will be handled further down the pipeline
+
+
+      // for (const child of node.children.values()) {
+      //   myDropzone.removeFile(images[child.ID].file)
+
+      // }
+
+
+    }
+    else {
+
+      for (const child of node.children.values()) {
+        if (child.isImage) {
+          console.log("hasn't broken yet? image id is... ", child.ID)
+          // while (activeImages.has(child.name)) {
+          //   child.name = child.name + "_"
+          // }
+          // activeImages.add(child.name);
+          // imageNodeUI[child.name] = child.uiElementID;
+
+          // addRemove(child.name, child.file)
           queue.push(child);
           processQueue();
         } else {
@@ -251,7 +506,12 @@
         }
       }
 
+
+
     }
+
+
+
 
   }
 
@@ -261,8 +521,8 @@
   const workerStatus = new Array(workerCount).fill(false); // Track worker availability
 
 
-const messageQueue = [];
-let isProcessingQueue = false;
+  const messageQueue = [];
+  let isProcessingQueue = false;
 
 
   // Initialize the worker pool
@@ -276,16 +536,14 @@ let isProcessingQueue = false;
 
       if (e.data.work === "setFormat") {
         console.log("setting format")
-        let uiElementID = imageNodeUI[e.data.imageName];
-        console.log("ui element id ", uiElementID)
-        addIcon(uiElementID, e.data.format);
-      
-      
-      
+
+        addIcon(e.data.imageID, e.data.format);
+
+
       } else if (e.data.work === "bitmapGrid") {
         const bitmaps = event.data.bitmapGrid;
-     
-        for(const bitmap of bitmaps){
+
+        for (const bitmap of bitmaps) {
           console.log("adding")
           const canvas = document.createElement('canvas');
           canvas.width = bitmap.width;
@@ -297,40 +555,39 @@ let isProcessingQueue = false;
           ctx.drawImage(bitmap, 0, 0);
         }
 
-     
-       
-      } 
-      
-      
-      
-      else if(e.data.work === "createTexture"){
-        if(e.data.format === "stereoCubeMap"){
+
+
+      }
+
+
+
+      else if (e.data.work === "createTexture") {
+        images[e.data.imageID].format = e.data.format;
+        addRemove(e.data.imageID, images[e.data.imageID].file)
+
+        if (e.data.format === "stereoCubeMap") {
           console.log("workin on eh")
-          let uiElementID = imageNodeUI[e.data.imageName];
-          createStereoCubeMapTexture(uiElementID, e.data.bitmaps);
-        }
-        
-        
-        else if(e.data.format === "eqrt"){
-          let uiElementID = imageNodeUI[e.data.imageName];
-          createEqrtTexture(uiElementID, e.data.bitmap);
-        }
-        
-        else if (e.data.format === "stereoEqrt"){
-          let uiElementID = imageNodeUI[e.data.imageName];
-          createStereoEqrtTexture(uiElementID, e.data.bitmaps);
+          createStereoCubeMapTexture(e.data.imageID, e.data.bitmaps);
         }
 
 
-        else if(e.data.format === "cubeMap"){
-          console.log("here")
-          let uiElementID = imageNodeUI[e.data.imageName];
-          createCubeMapTexture(uiElementID, e.data.bitmaps);
+        else if (e.data.format === "eqrt") {
+          createEqrtTexture(e.data.imageID, e.data.bitmap);
+        }
+
+        else if (e.data.format === "stereoEqrt") {
+          createStereoEqrtTexture(e.data.imageID, e.data.bitmaps);
+        }
+
+
+        else if (e.data.format === "cubeMap") {
+
+          createCubeMapTexture(e.data.imageID, e.data.bitmaps);
         }
       }
 
 
-      
+
       // Mark the worker as available
       workerStatus[i] = false;
 
@@ -349,8 +606,9 @@ let isProcessingQueue = false;
       const availableWorkerIndex = workerStatus.findIndex(status => !status);
       if (availableWorkerIndex !== -1) {
         const imageNode = imageQueue.shift();
+        let imageObject = images[imageNode.ID];
         workerStatus[availableWorkerIndex] = true; // Mark the worker as busy
-        workers[availableWorkerIndex].postMessage({ imageFile: imageNode.file, imageName: imageNode.name });
+        workers[availableWorkerIndex].postMessage({ imageFile: imageObject.file, imageID: imageNode.ID });
       }
     }
   }
@@ -358,8 +616,8 @@ let isProcessingQueue = false;
 
 
 
-  function addIcon(uiElementID, format) {
-    let uiElement = document.getElementById(uiElementID).children[0];
+  function addIcon(imageID, format) {
+    let uiElement = document.getElementById("ui" + imageID).children[0];
     let icon = document.createElement("img");
     icon.src = formatIcons[format];
     icon.style.position = "absolute"; // Ensure the icon is positioned absolutely
@@ -374,13 +632,75 @@ let isProcessingQueue = false;
   }
 
 
-  function makeUIClickable(uiElementID) {
-    let uiElement = document.getElementById(uiElementID).children[0];
+  function makeUIClickable(imageID) {
+    let uiElement = document.getElementById("ui" + uiElementID).children[0];
     uiElement.addEventListener("click", function () {
       console.log("clicked")
     })
 
   }
+
+  function addRemove(imageID, file) {
+    let uiElement = document.getElementById("ui" + imageID);
+    let removeButton = document.createElement("button");
+    removeButton.onclick = function () {
+      event.preventDefault();
+      event.stopPropagation();
+      console.log("removing")
+
+      //remove texture from material if image texture is on visible material
+      if (activeImage === imageID) {
+        removeTextureFromMaterial(images[imageID].format)
+      }
+
+      // removeFile(file)
+      myDropzone.removeFile(file);
+      // clear image from images object
+      images[imageID] = null;
+
+
+    }
+
+    removeButton.innerHTML = "remove";
+    removeButton.style.position = "absolute"; // Ensure the icon is positioned absolutely
+    removeButton.style.zIndex = "1000"; // Ensure the icon is on top
+    removeButton.style.width = "50px";
+    removeButton.style.height = "50px";
+    removeButton.style.top = "0"; // Position the icon at the top
+    removeButton.style.right = "0"; // Position the icon at the left
+    uiElement.style.position = "relative"; // Ensure the parent has a positioning context
+    uiElement.appendChild(removeButton);
+
+  }
+
+
+  // Add this functionality later when add remove is added at the correct time
+
+  //   function deleteImage2(imageName, format) {
+  //     let div = document.getElementById("div" + imageName)
+  //     let parent = div.parentNode;
+  //     if (imageName === activeImage) {
+  //         let index = Array.prototype.indexOf.call(parent.children, div);
+  //         if (index === 0) {
+  //             if (parent.children.length > 1) {
+  //                 parent.children[1].children[0].click()
+  //             } else {
+  //                 removeTextureFromMaterial(format)
+  //             }
+  //         } else {
+  //             parent.children[index - 1].children[0].click()
+
+  //         }
+
+  //     }
+  //     parent.removeChild(div)
+
+  //     // console.log("deleting " + imageName, "from " + format + "Textures")
+  //     let command = "delete " + format + "Textures[" + "'" + imageName + "'" + "]"
+  //     eval(command)
+
+
+  // }
 
 
 
@@ -493,15 +813,17 @@ let isProcessingQueue = false;
 
 
 
-  function setLayerTexture(texture, format) {
+  function setLayerTexture(imageID) {
 
-    console.log("setting texture ", texture, format)
-    activeImage = texture
+    let format = images[imageID].format;
+    let texture = images[imageID].texture;
+
+    activeImage = imageID;
 
     if (format === "cubeMap") {
 
       for (let i = 0; i < cubeMapLayer.object3D.children[0].material.length; i++) {
-        cubeMapLayer.object3D.children[0].material[i].map = cubeMapTextures[texture][i];
+        cubeMapLayer.object3D.children[0].material[i].map = texture[i];
         cubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
       }
 
@@ -517,12 +839,12 @@ let isProcessingQueue = false;
       console.log("setting stereoCubeMap texture")
 
       for (let i = 0; i < stereoCubeMapLayer.object3D.children[0].material.length; i++) {
-        stereoCubeMapLayer.object3D.children[0].material[i].map = stereoCubeMapTextures[texture][0][i];
+        stereoCubeMapLayer.object3D.children[0].material[i].map = texture[0][i];
         stereoCubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
       }
 
       for (let i = 0; i < stereoCubeMapLayer.object3D.children[1].material.length; i++) {
-        stereoCubeMapLayer.object3D.children[1].material[i].map = stereoCubeMapTextures[texture][1][i];
+        stereoCubeMapLayer.object3D.children[1].material[i].map = texture[1][i];
         stereoCubeMapLayer.object3D.children[1].material[i].needsUpdate = true;
       }
 
@@ -534,7 +856,7 @@ let isProcessingQueue = false;
 
     } else if (format === "eqrt") {
 
-      eqrtLayer.object3D.children[0].material.map = eqrtTextures[texture];
+      eqrtLayer.object3D.children[0].material.map = texture;
       eqrtLayer.object3D.children[0].material.needsUpdate = true;
 
       if (activeLayer !== "eqrtLayer") {
@@ -544,9 +866,9 @@ let isProcessingQueue = false;
       }
 
     } else if (format === "stereoEqrt") {
-      stereoEqrtLayer.object3D.children[0].material.map = stereoEqrtTextures[texture][0];
+      stereoEqrtLayer.object3D.children[0].material.map = texture[0];
       stereoEqrtLayer.object3D.children[0].material.needsUpdate = true;
-      stereoEqrtLayer.object3D.children[1].material.map = stereoEqrtTextures[texture][1];
+      stereoEqrtLayer.object3D.children[1].material.map = texture[1];
       stereoEqrtLayer.object3D.children[1].material.needsUpdate = true;
 
       if (activeLayer !== "stereoEqrtLayer") {
@@ -653,7 +975,7 @@ let isProcessingQueue = false;
   var buttonsToEnable = []
   let imagesLoading = 0
   let imagesLoaded = 0
-  const initializeTexturesOnLoad = false
+  const initializeTexturesOnLoad = true
 
   var savedImages = new Set();
   var dir = new Map();

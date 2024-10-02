@@ -1,9 +1,16 @@
 
 self.onmessage = async function (event) {
     const imageFile = event.data.imageFile;
-    const imageName = event.data.imageName;
+    const imageID = event.data.imageID;
+
     var bitmap = null;
-    console.log("image link received: " + imageFile);
+
+    const imageFiles = event.data.imageFiles;
+
+    if(imageFiles){
+        console.log("handlign a cubemap")
+    }else{
+
 
     try {
         // Load the cubemap image as a bitmap
@@ -24,6 +31,7 @@ self.onmessage = async function (event) {
         return;
     }
 
+}
 
     //find format of image and send it back to main thread
 
@@ -34,24 +42,24 @@ self.onmessage = async function (event) {
     async function findFormat(imageRatio) {
         switch (imageRatio) { // width/height
             case 12:
-                self.postMessage({ work: "setFormat", format: "stereoCubeMap", imageName });
+                self.postMessage({ work: "setFormat", format: "stereoCubeMap", imageID });
                 let bitmaps = await processStereoCubeMap(bitmap);
-                self.postMessage({ work: "createTexture", format: "stereoCubeMap", bitmaps, imageName }, bitmaps);
+                self.postMessage({ work: "createTexture", format: "stereoCubeMap", bitmaps, imageID }, bitmaps);
                 return "stereoCubeMap";
             //   addFormatIcon(this.name, "stereoCubeMap");
             //   createStereoCubeMapTexture(this); break;
 
             case 6:
-                self.postMessage({ work: "setFormat", format: "stripCubeMap", imageName });
+                self.postMessage({ work: "setFormat", format: "stripCubeMap", imageID });
                 let cubeStripBitmaps = await processCubeStrip(bitmap);
-                self.postMessage({ work: "createTexture", format: "cubeMap", bitmaps: cubeStripBitmaps, imageName }, cubeStripBitmaps);
+                self.postMessage({ work: "createTexture", format: "cubeMap", bitmaps: cubeStripBitmaps, imageID }, cubeStripBitmaps);
                 return "stripCubeMap";
             //   addFormatIcon(this.name, "stripCubeMap");
             //   createCubeStripTexture(this); break;
 
             case 2:
-                self.postMessage({ work: "setFormat", format: "eqrt", imageName });
-                self.postMessage({ work: "createTexture", format: "eqrt", bitmap, imageName }, bitmap);
+                self.postMessage({ work: "setFormat", format: "eqrt", imageID });
+                self.postMessage({ work: "createTexture", format: "eqrt", bitmap, imageID }, bitmap);
                 return "eqrt";
             //   addFormatIcon(this.name, "eqrt");
             //   createEqrtTexture(this); break;
@@ -60,9 +68,9 @@ self.onmessage = async function (event) {
 
                 let processedImage = await processPotentialCubeMap(bitmap);
                 console.log("processed image: ", processedImage);
-                self.postMessage({ work: "setFormat", format: processedImage.format, imageName })
+                self.postMessage({ work: "setFormat", format: processedImage.format, imageID })
                 if(processedImage.bitmaps){
-                    self.postMessage({ work: "createTexture", format: "cubeMap", bitmaps: processedImage.bitmaps, imageName}, processedImage.bitmaps);
+                    self.postMessage({ work: "createTexture", format: "cubeMap", bitmaps: processedImage.bitmaps, imageID}, processedImage.bitmaps);
                 }
                 
                 return processedImage.format;
@@ -73,14 +81,14 @@ self.onmessage = async function (event) {
                 break;
 
             case 1:
-                self.postMessage({ work: "setFormat", format: "stereoEqrt", imageName });
+                self.postMessage({ work: "setFormat", format: "stereoEqrt", imageID });
                 let stereoEqrtBitmaps = await processStereoEqrt(bitmap);
                
-                self.postMessage({ work: "createTexture", format: "stereoEqrt", bitmaps: stereoEqrtBitmaps, imageName }, stereoEqrtBitmaps);
+                self.postMessage({ work: "createTexture", format: "stereoEqrt", bitmaps: stereoEqrtBitmaps, imageID }, stereoEqrtBitmaps);
                 return "stereoEqrt";
             // addFormatIcon(this.name, "stereoEqrt"); createStereoEqrtTexture(this); break;
             default:
-                self.postMessage({ work: "setFormat", format: "noFormatDetected", imageName });
+                self.postMessage({ work: "setFormat", format: "noFormatDetected", imageID });
                 return "noFormatDetected";
             // addFormatIcon(this.name, "noFormatDetectedIcon");
             //   break;
