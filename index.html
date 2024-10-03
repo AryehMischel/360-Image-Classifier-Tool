@@ -175,7 +175,7 @@
 
     init: function () {
 
-    
+
       //will handle this manually. this is currently clogging up performance
       this.on("queuecomplete", function () {
         // console.log("queue complete")
@@ -253,9 +253,9 @@
           startedProcessingImageBatch = true;
           createUploadTree();
         }
-        
-        
-        
+
+
+
         // Clear previous timeout
         clearTimeout(timeout);
 
@@ -271,7 +271,7 @@
 
 
 
-      //make all interactions work off this images object and stop using objects for each format 
+      //make all interactions work off this images object and stop using objects for each format
 
       //to-do: remove button when image texture is loaded
       //to-do: add functions to handle removing texture from material
@@ -397,12 +397,10 @@
   console.log(requiredNamesMap.get("px"))
 
   function createQueue() {
-    // console.log(currentUploadTree.root.children.size)
-    // console.log(currentUploadTree.root.children)
-    // if(currentUploadTree.root.children.size == 0){
-    //   console.log("empty tree")
-    //   return;
-    // }
+    if(currentUploadTree.root.children.size == 0){
+      console.log("empty tree")
+      return;
+    }
     createQueFromTree(currentUploadTree.root, imageQueue);
   }
 
