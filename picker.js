@@ -141,7 +141,7 @@ async function pickerCallback(data) {
         //let json = JSON.stringify(data)
         console.log(text)
         console.log(obj)
-        console.log(obj.docs)
+        console.log(obj.docs.length)
 
         console.log(obj.docs[0].id)
 
@@ -228,6 +228,12 @@ async function checkFolder(folder) { //pass in folder name
 
 
             imagesLoading += files.length
+
+            // imagesLoading = imagesLoading === 0 ? 1 : imagesLoading
+            if(imagesLoading === 0){
+
+
+            }
 
             for (i = 0; i < files.length; i++) {
                 const name = files[i].name
