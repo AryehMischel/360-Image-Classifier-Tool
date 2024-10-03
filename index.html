@@ -232,11 +232,12 @@
      
        
         const uniqueId = `${incrementingID++}`;
+      
         if(file.originPoint === "gdrive"){
           if (!startedProcessingImageBatch) {
           startedProcessingImageBatch = true;
           createUploadTree();
-        }
+          }
           console.log("gdrive file")
         //bypass the file type check
         images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
