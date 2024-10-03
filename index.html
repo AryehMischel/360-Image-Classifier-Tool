@@ -384,8 +384,9 @@
   console.log(requiredNamesMap.get("px"))
 
   function createQueue() {
-    
-    if(currentUploadTree.root.children.size === 0){
+    console.log(currentUploadTree.root.children.size)
+    console.log(currentUploadTree.root.children)
+    if(currentUploadTree.root.children.size == undefined){
       console.log("empty tree")
       return;
     }
