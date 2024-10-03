@@ -91,7 +91,7 @@ self.onmessage = async function (event) {
             case 1.3:
 
                 if (generateThumbnail) {
-                    await createThumbNail('eqrt', bitmap, imageID)
+                    await createThumbNail('stereoEqrt', bitmap, imageID)
                 }
                 let processedImage = await processPotentialCubeMap(bitmap);
                 console.log("processed image: ", processedImage);
@@ -117,7 +117,7 @@ self.onmessage = async function (event) {
                 return "stereoEqrt";
             // addFormatIcon(this.name, "stereoEqrt"); createStereoEqrtTexture(this); break;
             default:
-                if(generateThumbnail){
+                if (generateThumbnail) {
                     createThumbNail('eqrt', bitmap, imageID)
                 }
                 self.postMessage({ work: "setFormat", format: "noFormatDetected", imageID });
@@ -357,7 +357,6 @@ async function createThumbNail(format, bitmapSource, imageID) {
         // Restore the canvas to its original state
         ctx.restore();
     }
-
 
     // Convert the offscreen canvas content to a Blob
     const blob = await canvas.convertToBlob({ type: "image/png" });

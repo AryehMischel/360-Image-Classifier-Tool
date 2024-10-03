@@ -10,10 +10,7 @@ function createStereoCubeMapTexture(imageID, bitmaps){
     images[imageID].texture = [leftEye, rightEye]
 
 
-    let uiElement = document.getElementById("ui" + imageID)
-    uiElement.addEventListener("click", () => {
-        setLayerTexture(imageID, 'stereoCubeMap');
-    });
+    makeUIClickable(imageID)
     // myDropzone.emit("success", images[imageID].file)
 }
 
@@ -28,10 +25,7 @@ function createCubeMapTexture(imageID, bitmaps) {
     let cubeMapTexture = createCubeTexture(bitmaps[0], bitmaps[1], bitmaps[2], bitmaps[3], bitmaps[4], bitmaps[5]);
     images[imageID].texture = cubeMapTexture
 
-    let uiElement = document.getElementById("ui" + imageID)
-    uiElement.addEventListener("click", () => {
-        setLayerTexture(imageID);
-    });
+    makeUIClickable(imageID)
 
     // myDropzone.emit("success", images[imageID].file)
 }
@@ -71,10 +65,7 @@ function createEqrtTexture(imageID, bitmap){
 
     images[imageID].texture = texture;
 
-    let uiElement = document.getElementById("ui" + imageID)
-    uiElement.addEventListener("click", () => {
-        setLayerTexture(imageID);
-    });
+    makeUIClickable(imageID)
     // myDropzone.emit("success", images[imageID].file)
 }
 
@@ -92,12 +83,7 @@ function createStereoEqrtTexture(imageID, bitmaps){
     }
 
     images[imageID].texture = [textureLeft, textureRight];
-    
 
-    let uiElement = document.getElementById("ui" + imageID)
-    uiElement.addEventListener("click", () => {
-        setLayerTexture(imageID);
-    });
-
+    makeUIClickable(imageID)
     // myDropzone.emit("success", images[imageID].file)
 }
