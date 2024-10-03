@@ -146,7 +146,12 @@ async function pickerCallback(data) {
         console.log(obj.docs[0].id)
 
 
-        getSubFolders(obj.docs[0].id)
+        if(obj.docs.length == 1 && obj.docs[0].mimeType === "image/jpeg" || obj.docs.length == 1 && obj.docs[0].mimeType === "image/png"){
+            console.log("getting individual image")
+            getImages(obj.docs[0].id, obj.docs[0].name)
+        }else{
+            getSubFolders(obj.docs[0].id)
+        }
  
 
     }
@@ -230,6 +235,7 @@ async function checkFolder(folder) { //pass in folder name
             imagesLoading += files.length
 
             for (i = 0; i < files.length; i++) {
+                console.log("fetching images")
                 const name = files[i].name
                 console.log("fetching blob " + i + " " + performance.now())
 
@@ -242,8 +248,8 @@ async function checkFolder(folder) { //pass in folder name
                     .then(blob => {
                        
                         console.log("got blob " + i + " " + performance.now())
-                        blob.name = 'myfilename.png'
-                        myDropzone.addFile(blob);
+                        // blob.name = 'myfilename.png'
+                        // myDropzone.addFile(blob);
 
                         // const image = document.createElement("img")
                         // image.name =  name
@@ -267,7 +273,7 @@ async function checkFolder(folder) { //pass in folder name
 }
 
 
-async function getImages(fileId) {
+async function getImages(fileId, name) {
 
     fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
         headers: {
@@ -277,20 +283,23 @@ async function getImages(fileId) {
     }).then(response => response.blob())
         .then(blob => {
 
-            const image = new Image();
+            blob.name = 'myfilename.png'
+            myDropzone.addFile(blob);
 
-            image.name = "gdrive_photo" 
+            // const image = new Image();
 
-            while (savedImages.has(image.name)) {
-                image.name = image.name + "_"
+            // image.name = "gdrive_photo" 
 
-            }
-            savedImages.add(image.name)
-            addImageUI(image.name); 
+            // while (savedImages.has(image.name)) {
+            //     image.name = image.name + "_"
+
+            // }
+            // savedImages.add(image.name)
+            // addImageUI(image.name); 
           
-            image.src = URL.createObjectURL(blob)
-            document.body.appendChild(image);
-            image.onload = findformat 
+            // image.src = URL.createObjectURL(blob)
+            // document.body.appendChild(image);
+            // image.onload = findformat 
         })
 }
 
