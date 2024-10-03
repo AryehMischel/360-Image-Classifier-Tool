@@ -189,13 +189,6 @@
 
 
       this.on("addedfile", function (file) {
-        // addImagePreview(file)
-        if(file.type === "test"){
-          console.log("test")
-          
-          return;          
-
-        }
 
         if (file.type === "fake") {
           file.previewElement.id = "ui" + file.folderID;
@@ -260,29 +253,11 @@
         file.previewElement.id = "ui" + uniqueId;
 
         if (file.fullPath) {
-          // console.log(file.fullPath);
           currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
 
         } else {
-          // console.log(file.name);
           currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
         }
-
-
-
-
-        // let acceptedFiles = this.getAcceptedFiles();
-        // let rejectedFiles = this.getRejectedFiles();
-        // let queuedFiles = this.getQueuedFiles();
-        // let uploadingFiles = this.getUploadingFiles();
-
-        // console.log("accepted files ", acceptedFiles.length)
-        // console.log("rejected files ", rejectedFiles.length)
-        // console.log("queued files ", queuedFiles.length)
-        // console.log("uploading files ", uploadingFiles.length)
-
-
-
 
       });
 
@@ -455,35 +430,6 @@
 
 
 
-      // let twoLetterFormat = requiredNames.every(name => filenames.some(filename => filename.includes(name)))
-      // let abreviatedFormat = altRequiredNames.every(name => filenames.some(filename => filename.includes(name)))
-
-      //Add existing files into dropzone
-      //cubeMapImagesURLs = cubeMapImagesIDs.map(imageID => images[imageID].file)
-
-
-
-
-
-      //for the sake of simplicity we are going to generate the cubemaps inside the main thread.
-
-      // let worker = new Worker('worker.js');
-      // worker.postMessage({ work: "processCubeMap", imageID: newCubeFolderID, imageFiles: cubeMapImagesURLs });
-      // console.log(cubeMapImagesURLs)
-      //processCubeMap
-      // for(let i = 0; i < cubeMapImagesIDs.length; i++){
-      //   queue.push(cubeMapImagesIDs[i]);
-      //   processQueue();
-      // }
-
-
-      //example of how to swap out cubemap subimage previews for one cubemapfolder preview. Will be handled further down the pipeline
-
-
-      // for (const child of node.children.values()) {
-      //   myDropzone.removeFile(images[child.ID].file)
-
-      // }
 
 
     }

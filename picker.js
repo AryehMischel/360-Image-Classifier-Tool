@@ -242,19 +242,21 @@ async function checkFolder(folder) { //pass in folder name
                     .then(blob => {
                        
                         console.log("got blob " + i + " " + performance.now())
+                        blob.name = 'myfilename.png'
+                        myDropzone.addFile(blob);
 
-                        const image = document.createElement("img")
-                        image.name =  name
-                        while (savedImages.has(image.name)) {
-                            image.name = image.name + "_"
+                        // const image = document.createElement("img")
+                        // image.name =  name
+                        // while (savedImages.has(image.name)) {
+                        //     image.name = image.name + "_"
         
-                        }
-                        savedImages.add(image.name)
+                        // }
+                        // savedImages.add(image.name)
                         
-                        addImageUI(image.name); 
-                        image.src = URL.createObjectURL(blob)
-                        document.body.appendChild(image);
-                        image.onload = findformat 
+                        // addImageUI(image.name); 
+                        // image.src = URL.createObjectURL(blob)
+                        // document.body.appendChild(image);
+                        // image.onload = findformat 
                     })
             }
         }
