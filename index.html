@@ -237,7 +237,7 @@
           console.log("gdrive file")
         //bypass the file type check
         images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
-          
+        file.previewElement.id = "ui" + uniqueId;
           imageQueue.push({ID: uniqueId});
           processQueue();
           return;
