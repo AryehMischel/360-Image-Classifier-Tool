@@ -47,7 +47,14 @@
 <link rel="stylesheet" href="styles.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
 <link rel="stylesheet" href="dropzoneStyles.css">
+<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
 <style>
+          body {
+            font-family: 'Exo 2', sans-serif;
+        }
+        h1{
+          font-family: 'Exo 2', sans-serif;
+        }
 </style>
 
 <body>
@@ -85,26 +92,19 @@
   <div id="dom-overlay">
 
     <section id="my-interface">
-      <h3>Upload 360 Images</h3>
+   
 
       <div class="flex-container">
-
-        <button onclick="createQueue()">create queue</button>
-
-        <label for="imgInput" class="uploadImageButton">Select Image Folder</label>
-        <!---->
-        <button id="npm install dotenv" onclick='handleAuthClick()'>
-          <img src="https://ssl.gstatic.com/docs/doclist/images/drive_icon_32.png" alt="Google Drive Logo">
-          Import from Google Drive
+        <h1>Upload 360 Images</h1>
+        <button id="googleDriveButton" onclick='handleAuthClick()'>
+          <img id="googleDriveIcon" src="assets/icons/drive.png" alt="Google Drive Logo"> 
+          <!-- https://ssl.gstatic.com/docs/doclist/images/drive_icon_32.png -->
+   
         </button>
-
       </div>
-      <input class="driveButton" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput"
-        webkitdirectory multiple />
+      <!-- <input class="driveButton" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput"webkitdirectory multiple /> -->
 
       <div id="scrollingButtonContainer">
-
-        <h1>Dropzone.js Example</h1>
         <form class="dropzone" id="my-dropzone"></form>
       </div>
       <div class="win-size-grip"></div>

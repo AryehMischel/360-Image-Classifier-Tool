@@ -26,7 +26,7 @@ section {
     /* Orange */
     width: 25vw;
     /* Use full width of the parent container */
-    max-width: 1250px;
+    max-width: 544px;
     /* Set a maximum width */
     min-width: 200px;
     box-sizing: border-box;
@@ -40,6 +40,8 @@ section {
 
 .flex-container {
     width: 100%;
+    justify-content: space-around;
+
     /* Use full width of the parent container */
     max-width: 1200px;
     /* Optional: Set a maximum width */
@@ -85,7 +87,38 @@ section {
     box-sizing: border-box;
 }
 
+#googleDriveButton {
+    display: flex;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    background-color: #ffffff00;
+    min-width: 50px;
+    min-height: 50px;
+    width: 4vh;
+    height: 4vh;
+    margin-top: 10px;
+    padding: 0px;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    box-sizing: border-box;
+    
+    /* Enhancements */
+    border: 2px solid #ccc; /* Light gray border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
 
+#googleDriveIcon {
+    background-color: #ffffff00;
+    width: 80%; /*2.5vh*/
+    height: 80%;
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    box-sizing: border-box;
+}
 
 .deleteWindowButton {
     background-color: #dc3545;
