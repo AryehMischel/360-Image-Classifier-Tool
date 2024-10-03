@@ -146,7 +146,7 @@ async function pickerCallback(data) {
         console.log(obj.docs[0].mimeType)
 
 
-        if(obj.docs.length == 0 && obj.docs[0].mimeType === "image/jpeg" || obj.docs.length == 0 && obj.docs[0].mimeType === "image/png"){
+        if(obj.docs.length == 1 && obj.docs[0].mimeType === "image/jpeg" || obj.docs.length == 1 && obj.docs[0].mimeType === "image/png"){
             console.log("getting individual image")
             getImages(obj.docs.id, obj.docs.name)
         }else{
