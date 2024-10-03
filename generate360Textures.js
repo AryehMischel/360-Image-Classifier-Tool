@@ -21,7 +21,7 @@ function createStereoCubeMapTexture(imageID, bitmaps){
         console.log("clicked, setting texture ", imageID)
         setLayerTexture(imageID, 'stereoCubeMap');
     });
-    myDropzone.emit("complete", images[imageID].file)
+    // myDropzone.emit("success", images[imageID].file)
 }
 
 
@@ -45,7 +45,7 @@ function createCubeMapTexture(imageID, bitmaps) {
         setLayerTexture(imageID);
     });
 
-    myDropzone.emit("complete", images[imageID].file)
+    // myDropzone.emit("success", images[imageID].file)
 }
 
 
@@ -87,7 +87,7 @@ function createEqrtTexture(imageID, bitmap){
     uiElement.addEventListener("click", () => {
         setLayerTexture(imageID);
     });
-    myDropzone.emit("complete", images[imageID].file)
+    // myDropzone.emit("success", images[imageID].file)
 }
 
 
@@ -111,5 +111,5 @@ function createStereoEqrtTexture(imageID, bitmaps){
         setLayerTexture(imageID);
     });
 
-    myDropzone.emit("complete", images[imageID].file)
+    // myDropzone.emit("success", images[imageID].file)
 }
