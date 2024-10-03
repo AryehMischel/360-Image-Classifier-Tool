@@ -145,6 +145,7 @@ async function pickerCallback(data) {
         console.log(obj.docs[0].id)
 
         if(obj.docs.mimeType === "image/jpeg" || obj.docs.mimeType === "image/png"){
+            console.log("getting individual image")
             getImages(obj.docs.id, obj.docs.name)
         }else{
             getSubFolders(obj.docs[0].id)
@@ -277,7 +278,7 @@ async function checkFolder(folder) { //pass in folder name
 
 async function getImages(fileId, name) {
     // const name = files[i].name
-    console.log("fetching blob " + i + " " + performance.now())
+    // console.log("fetching blob " ++ " " + performance.now())
     fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
         headers: {
             Authorization: `Bearer ${accessToken}`
@@ -285,11 +286,9 @@ async function getImages(fileId, name) {
         }
     }).then(response => response.blob())
         .then(blob => {
-            console.log("got blob " + i + " " + performance.now())
             const image = new Image();
 
             image.name =  name
-
             while (savedImages.has(image.name)) {
                 image.name = image.name + "_"
 
