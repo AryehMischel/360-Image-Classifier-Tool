@@ -126,11 +126,13 @@
   var uploadTrees = [];
   var currentUploadTree = null;
   let imageQueue = [];
+  let imagesLoaded = 0;
+  let imagesLoading = 0;
 
-  function test(){
-    var mockCubeMapFile = { name: "mockCubeMap", size: 12345678, type: "test"};
-      myDropzone.emit("addedfile", mockCubeMapFile);
-      myDropzone.emit("thumbnail", mockCubeMapFile, "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png");
+  function test() {
+    var mockCubeMapFile = { name: "mockCubeMap", size: 12345678, type: "test" };
+    myDropzone.emit("addedfile", mockCubeMapFile);
+    myDropzone.emit("thumbnail", mockCubeMapFile, "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png");
   }
 
 
@@ -146,7 +148,7 @@
   incrementingID = 0;
   let incrementingFolderID = 1000;
   Dropzone.autoDiscover = false;
-
+  let timeout = null;
   // Define a custom preview template
   const previewTemplate = `
    <div class="dz-preview dz-file-preview">
@@ -163,7 +165,6 @@
 
 
     url: "/dummy-url", // Provide a dummy URL to satisfy Dropzone's requirement
-    autoQueue: false, // Make sure the files aren't queued until manually added
     addRemoveLinks: true,
     autoProcessQueue: true, // Prevent Dropzone from automatically processing the queue
     previewTemplate: previewTemplate, // Use the custom preview template
@@ -174,28 +175,25 @@
 
     init: function () {
 
-
-
-      this.on('complete', function (file) {
-        console.log("complete")
-      });
-
+    
       //will handle this manually. this is currently clogging up performance
       this.on("queuecomplete", function () {
-        console.log("queue complete")
-        createQueue();
-        startedProcessingImageBatch = false;
+        // console.log("queue complete")
+        // createQueue();
+        // startedProcessingImageBatch = false;
       });
 
 
 
       this.on("addedfile", function (file) {
 
+        //if there is no dragover event, then the file is being added by the file input
+        // console.log("added file")
         if (file.type === "fake") {
           file.previewElement.id = "ui" + file.folderID;
           // console.log(file.folderID, "folderID")
           images[file.folderID] = { "file": file, "format": "cubeMap", "name": "mockCubeMap", "texture": null };
-          
+
 
           // console.log(images[cubeMapImageMap[file.folderID].get("px")].file)
 
@@ -211,8 +209,8 @@
             addIcon(file.folderID, "cubeMapFolder");
             createCubeMapTexture(file.folderID, cubeImageBitmaps);
             addRemove(file.folderID, file)
-        
-           
+
+
 
           }
 
@@ -229,62 +227,75 @@
           return;
         }
 
-       
-     
-       
+
+
+
         const uniqueId = `${incrementingID++}`;
-      
-        if(file.originPoint === "gdrive"){
+
+        if (file.originPoint === "gdrive") {
           // if (!startedProcessingImageBatch) {
           // startedProcessingImageBatch = true;
           // createUploadTree();
           // }
           console.log("gdrive file")
-        //bypass the file type check
-        images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
-        file.previewElement.id = "ui" + uniqueId;
-          imageQueue.push({ID: uniqueId});
+          //bypass the file type check
+          images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
+          file.previewElement.id = "ui" + uniqueId;
+          imageQueue.push({ ID: uniqueId });
           processQueue();
           return;
-       
+
         }
-        console.log(file.originPoint)
-      
+
+
 
         if (!startedProcessingImageBatch) {
           startedProcessingImageBatch = true;
           createUploadTree();
         }
-        console.log("added file")
+        
+        
+        
+        // Clear previous timeout
+        clearTimeout(timeout);
+
+        // Set a new timeout to detect the end of a batch
+        timeout = setTimeout(() => {
+          console.log("Batch of files added. Processing...");
+          startedProcessingImageBatch = false;
+          createQueue();
+          // Handle your logic here (e.g., update UI, process files)
+          // Reset everything
+        }, 500); // Adjust timeout duration as needed
 
 
 
 
-        //make all interactions work off this images object and stop using objects for each format 
+      //make all interactions work off this images object and stop using objects for each format 
 
-        //to-do: remove button when image texture is loaded
-        //to-do: add functions to handle removing texture from material
-        enqueueFile(file)
-        images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
-        console.log(images[uniqueId])
+      //to-do: remove button when image texture is loaded
+      //to-do: add functions to handle removing texture from material
+
+      images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
+      console.log(images[uniqueId])
 
 
-        file.previewElement.id = "ui" + uniqueId;
+      file.previewElement.id = "ui" + uniqueId;
 
-        if (file.fullPath) {
-          currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
+      if (file.fullPath) {
+        currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
 
-        } else {
-          currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
-        }
+      } else {
+        currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
+      }
 
-      });
+    });
 
-      // Prevent Dropzone from making any network requests
-      this.on("sending", function (file, xhr, formData) {
-        xhr.abort();
+  // Prevent Dropzone from making any network requests
+  this.on("sending", function (file, xhr, formData) {
+    xhr.abort();
 
-      });
+  });
 
     }
   });
@@ -509,7 +520,7 @@
 
         addIcon(e.data.imageID, e.data.format);
 
-        if(e.data.format === "noFormatDetected"){
+        if (e.data.format === "noFormatDetected") {
           addRemove(e.data.imageID, images[e.data.imageID].file)
         }
 
@@ -556,11 +567,11 @@
           createCubeMapTexture(e.data.imageID, e.data.bitmaps);
         }
 
-    
 
-      }    else if(e.data.work === "thumbnail"){
-          addImagePreview(e.data.imageID, e.data.thumbnail)
-        }
+
+      } else if (e.data.work === "thumbnail") {
+        addImagePreview(e.data.imageID, e.data.thumbnail)
+      }
 
 
 
@@ -678,11 +689,11 @@
 
   // }
 
-  function addImagePreview(imageID, dataURL){
-   
+  function addImagePreview(imageID, dataURL) {
+
     // const bitmap = await createImageBitmap(img);
     myDropzone.emit("thumbnail", images[imageID].file, dataURL);
-   
+
     // const reader = new FileReader();
     // reader.onload = async function(event) {
     //   const imageBitmap = await createImageBitmap(new Blob([event.target.result]));
@@ -963,8 +974,7 @@
   const renderer = scene.renderer
   var globalImageFiles = new Map()
   var buttonsToEnable = []
-  let imagesLoading = 0
-  let imagesLoaded = 0
+
   const initializeTexturesOnLoad = true
 
   var savedImages = new Set();
