@@ -115,6 +115,40 @@
 </body>
 
 </html>
+<script>
+  //global variables
+  const formatIcons = {
+    "cubeMap": "./assets/icons/thickBorderCubeMapLogo.png",
+    "stripCubeMap": "./assets/icons/cubeStripThickBorderLogo.png",
+    "stereoCubeMap": "./assets/icons/thickBorderStereroCubeMapLogo.png",
+    "eqrt": "./assets/icons/globe.png",
+    "stereoEqrt": "./assets/icons/stereoGlobe.png",
+    "HorizontalCross": "./assets/icons/thickBorderCubeMapLogo.png",
+    "HorizontalT": "./assets/icons/thickBorderCubeMapLogo.png",
+    "folderCube": "./assets/icons/folder.png",
+    "folderCubeMap": "./assets/icons/folder.png",
+    "cubeMapFolder": "./assets/icons/folder.png",
+
+    "noFormatDetectedIcon": "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png",
+    "noFormatDetected": "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png",
+
+  }
+
+
+  const scene = document.querySelector("a-scene")
+  const renderer = scene.renderer
+  var globalImageFiles = new Map()
+  var buttonsToEnable = []
+
+  const initializeTexturesOnLoad = true
+
+  var savedImages = new Set();
+  var dir = new Map();
+
+</script>
+<script type="module">
+  console.log(scene)
+</script>
 
 
 <!-- dropzone ui and handling image uploads 2.0-->
@@ -128,21 +162,8 @@
   let imageQueue = [];
   let imagesLoaded = 0;
   let imagesLoading = 0;
-
-  function test() {
-    var mockCubeMapFile = { name: "mockCubeMap", size: 12345678, type: "test" };
-    myDropzone.emit("addedfile", mockCubeMapFile);
-    myDropzone.emit("thumbnail", mockCubeMapFile, "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png");
-  }
-
-
-  // var images = { imageID: { name: "imageName", format: "cubeMap", node: node, texture: threejsTexture} }
-
   var images = {}
-
   var cubeMapImageMap = {}
-
-
   let cubeMapImageFormat = ["px", "nx", "py", "ny", "pz", "nz"]
   let cubeMapImagesIDs = []
   incrementingID = 0;
@@ -175,30 +196,14 @@
 
     init: function () {
 
-
-      //will handle this manually. this is currently clogging up performance
-      this.on("queuecomplete", function () {
-        // console.log("queue complete")
-        // createQueue();
-        // startedProcessingImageBatch = false;
-      });
-
-
-
       this.on("addedfile", function (file) {
-
-        //if there is no dragover event, then the file is being added by the file input
-        // console.log("added file")
+        //manually creating a cubemap from 6 uploaded images
         if (file.type === "fake") {
           file.previewElement.id = "ui" + file.folderID;
-          // console.log(file.folderID, "folderID")
           images[file.folderID] = { "file": file, "format": "cubeMap", "name": "mockCubeMap", "texture": null };
 
 
-          // console.log(images[cubeMapImageMap[file.folderID].get("px")].file)
-
           let cubeImageBitmaps = []
-
           async function processCubeMapImages() {
             let cubeImageBitmaps = []
             for (const imageName of cubeMapImageFormat) {
@@ -232,13 +237,8 @@
 
         const uniqueId = `${incrementingID++}`;
 
+        //handle image files from google drive
         if (file.originPoint === "gdrive") {
-          // if (!startedProcessingImageBatch) {
-          // startedProcessingImageBatch = true;
-          // createUploadTree();
-          // }
-          console.log("gdrive file")
-          //bypass the file type check
           images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
           file.previewElement.id = "ui" + uniqueId;
           imageQueue.push({ ID: uniqueId });
@@ -248,7 +248,7 @@
         }
 
 
-
+        // Handle the start of a new batch of files
         if (!startedProcessingImageBatch) {
           startedProcessingImageBatch = true;
           createUploadTree();
@@ -264,22 +264,14 @@
           console.log("Batch of files added. Processing...");
           startedProcessingImageBatch = false;
           createQueue();
-          // Handle your logic here (e.g., update UI, process files)
-          // Reset everything
-        }, 500); // Adjust timeout duration as needed
+        }, 500); 
 
 
-
-
-      //make all interactions work off this images object and stop using objects for each format
-
-      //to-do: remove button when image texture is loaded
-      //to-do: add functions to handle removing texture from material
-
+      //all important image data is stored in the images object
       images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
       console.log(images[uniqueId])
 
-
+      //preview element in dropzone
       file.previewElement.id = "ui" + uniqueId;
 
       if (file.fullPath) {
@@ -291,7 +283,7 @@
 
     });
 
-  // Prevent Dropzone from making any network requests
+  // Prevent Dropzone from making any network requests ? doesn't seem to
   this.on("sending", function (file, xhr, formData) {
     xhr.abort();
 
@@ -306,9 +298,7 @@
   class ImageNode {
     constructor(name = null, ID = null) {
       this.name = name;
-      // this.type = type;
       this.isImage = true;
-      // this.file = file;
       this.ID = ID;
 
     }
@@ -318,8 +308,8 @@
     constructor(name) {
       this.name = name;
       this.isImage = false;
-      this.children = new Map(); // Use Map for efficient lookups
-      this.imageCount = 0; // Initialize imageCount
+      this.children = new Map(); 
+      this.imageCount = 0; 
     }
 
     addChild(childNode) {
@@ -365,23 +355,20 @@
 
 
   function createUploadTree() {
-    console.log("creating new tree")
     let tree = new ImageTree();
     uploadTrees.push(tree);
     currentUploadTree = tree;
-    // myDropzone.processQueue();
   }
 
 
-  // const imageTree = new ImageTree();
 
   // Function to load an image as a bitmap
-  async function loadImageAsBitmap(imageFile) {
+  // async function loadImageAsBitmap(imageFile) {
 
-    // Create the ImageBitmap
+  //   // Create the ImageBitmap
 
-    return bitmap;
-  }
+  //   return bitmap;
+  // }
 
 
   //1. traverse tree and test for cubemap folders / create a queue from the tree
@@ -470,14 +457,6 @@
 
       for (const child of node.children.values()) {
         if (child.isImage) {
-          console.log("hasn't broken yet? image id is... ", child.ID)
-          // while (activeImages.has(child.name)) {
-          //   child.name = child.name + "_"
-          // }
-          // activeImages.add(child.name);
-          // imageNodeUI[child.name] = child.uiElementID;
-
-          // addRemove(child.name, child.file)
           queue.push(child);
           processQueue();
         } else {
@@ -495,7 +474,7 @@
   }
 
 
-  const workerCount = 4; // Number of workers in the pool
+  const workerCount = 4; 
   const workers = [];
   const workerStatus = new Array(workerCount).fill(false); // Track worker availability
 
@@ -523,25 +502,7 @@
         }
 
 
-      } else if (e.data.work === "bitmapGrid") {
-        const bitmaps = event.data.bitmapGrid;
-
-        for (const bitmap of bitmaps) {
-          console.log("adding")
-          const canvas = document.createElement('canvas');
-          canvas.width = bitmap.width;
-          canvas.height = bitmap.height;
-          let myInterface = document.getElementById("my-interface");
-          myInterface.appendChild(canvas);
-
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(bitmap, 0, 0);
-        }
-
-
-      }
-
-      else if (e.data.work === "createTexture") {
+      } else if (e.data.work === "createTexture") {
         images[e.data.imageID].format = e.data.format;
         addRemove(e.data.imageID, images[e.data.imageID].file)
 
@@ -689,16 +650,8 @@
 
   function addImagePreview(imageID, dataURL) {
 
-    // const bitmap = await createImageBitmap(img);
     myDropzone.emit("thumbnail", images[imageID].file, dataURL);
 
-    // const reader = new FileReader();
-    // reader.onload = async function(event) {
-    //   const imageBitmap = await createImageBitmap(new Blob([event.target.result]));
-    //   myDropzone.emit("thumbnail", file, URL.createObjectURL(imageBitmap));
-    // };
-    // reader.readAsArrayBuffer(file);
-    // myDropzone.emit("thumbnail", file, "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png");
   }
 
 
@@ -931,9 +884,6 @@
 
 <script src="./generate360Textures.js"></script>
 <script src="./uicontrols.js"></script>
-
-<script src="./imageHandling.js"></script>
-
 <script>
 
 </script>
@@ -948,82 +898,6 @@
 <!-- -->
 <!-- -->
 
-<script>
-  //global variables
-  const formatIcons = {
-    "cubeMap": "./assets/icons/thickBorderCubeMapLogo.png",
-    "stripCubeMap": "./assets/icons/cubeStripThickBorderLogo.png",
-    "stereoCubeMap": "./assets/icons/thickBorderStereroCubeMapLogo.png",
-    "eqrt": "./assets/icons/globe.png",
-    "stereoEqrt": "./assets/icons/stereoGlobe.png",
-    "HorizontalCross": "./assets/icons/thickBorderCubeMapLogo.png",
-    "HorizontalT": "./assets/icons/thickBorderCubeMapLogo.png",
-    "folderCube": "./assets/icons/folder.png",
-    "folderCubeMap": "./assets/icons/folder.png",
-    "cubeMapFolder": "./assets/icons/folder.png",
-
-    "noFormatDetectedIcon": "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png",
-    "noFormatDetected": "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png",
-
-  }
-
-
-  const scene = document.querySelector("a-scene")
-  const renderer = scene.renderer
-  var globalImageFiles = new Map()
-  var buttonsToEnable = []
-
-  const initializeTexturesOnLoad = true
-
-  var savedImages = new Set();
-  var dir = new Map();
-
-
-
-
-  // upload images
-  document.getElementById('imgInput').onchange = async function (e) {
-    console.log("loading images")
-    var inputDir = $.grep(this.files, function (file) { return file.type.indexOf("image/") === 0; }); // returns flattened array of images in root folder and all folders under root folder
-    imagesLoading = inputDir.length   //a counter representing all the images currently loading...
-    let dir = unFlattenDir(inputDir) //returns map of directories - each with a nested map of filenames and filedata. example ->  {dir1: {'file1': './assets/images/dir1/file1.png', 'file2': './assets/images/dir1/file2.png'},
-    processDir(dir) //process all the images in directories
-    e.target.value = '';  //empty input field
-  }
-
-
-  //get image dimensions & and match to image format -> then transform image into 3d object
-  function findformat() {
-
-    let imageRatio = Math.round((this.width / this.height) * 10) / 10 // the ratio of the image will indicate the 360 format of the image
-
-
-    switch (imageRatio) { // width/height
-      case 12:
-        addFormatIcon(this.name, "stereoCubeMap");
-        createStereoCubeMapTexture(this); break;
-
-      case 6:
-        addFormatIcon(this.name, "stripCubeMap");
-        createCubeStripTexture(this); break;
-
-      case 2:
-        addFormatIcon(this.name, "eqrt");
-        createEqrtTexture(this); break;
-
-      case 1.3:
-        // addFormatIcon(this.name, "cubeMap");
-        processCubeMap(this); break;
-
-      case 1: addFormatIcon(this.name, "stereoEqrt"); createStereoEqrtTexture(this); break;
-      default:
-        //imagesLoading--;
-        addFormatIcon(this.name, "noFormatDetectedIcon");
-        break;
-    }
-  }
-
-</script>
 
 
 <script>
