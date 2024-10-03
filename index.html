@@ -233,7 +233,10 @@
        
         const uniqueId = `${incrementingID++}`;
         if(file.originPoint === "gdrive"){
-
+          if (!startedProcessingImageBatch) {
+          startedProcessingImageBatch = true;
+          createUploadTree();
+        }
           console.log("gdrive file")
         //bypass the file type check
         images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
@@ -241,6 +244,7 @@
           imageQueue.push({ID: uniqueId});
           processQueue();
           return;
+       
         }
         console.log(file.originPoint)
       
@@ -380,13 +384,16 @@
   console.log(requiredNamesMap.get("px"))
 
   function createQueue() {
+    if(currentUploadTree.children.size === 0){
+      console.log("empty tree")
+      return;
+    }
     createQueFromTree(currentUploadTree.root, imageQueue);
   }
 
 
   function createQueFromTree(node, queue) {
     console.log('creawting')
-
 
     if (node.imageCount === 6) {
       console.log("must check for cubemap")
