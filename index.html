@@ -228,8 +228,18 @@
           return;
         }
 
+       
+     
+       
         const uniqueId = `${incrementingID++}`;
-
+        if(file.type === "gdrive"){
+        //bypass the file type check
+        images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
+          
+          queue.push({ID: uniqueId});
+          processQueue();
+          return;
+        }
       
 
         if (!startedProcessingImageBatch) {

@@ -249,6 +249,7 @@ async function checkFolder(folder) { //pass in folder name
                        
                         console.log("got blob " + i + " " + performance.now())
                         blob.name = name
+                        blob.type = "gdrive"
                         myDropzone.addFile(blob);
 
                         // const image = document.createElement("img")
@@ -284,6 +285,7 @@ async function getImages(fileId, name) {
         .then(blob => {
 
             blob.name = name
+            blob.type = "gdrive"
             myDropzone.addFile(blob);
 
             // const image = new Image();
