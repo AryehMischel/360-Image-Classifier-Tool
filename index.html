@@ -125,7 +125,7 @@
   var imageNodeUI = {};
   var uploadTrees = [];
   var currentUploadTree = null;
-
+  let imageQueue = [];
 
   function test(){
     var mockCubeMapFile = { name: "mockCubeMap", size: 12345678, type: "test"};
@@ -238,7 +238,7 @@
         //bypass the file type check
         images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
           
-          queue.push({ID: uniqueId});
+          imageQueue.push({ID: uniqueId});
           processQueue();
           return;
         }
@@ -368,7 +368,7 @@
 
 
   //1. traverse tree and test for cubemap folders / create a queue from the tree
-  let imageQueue = [];
+
   requiredNamesMap = new Map();
   requiredNamesMap.set("posx", "px");
   requiredNamesMap.set("negx", "nx");
