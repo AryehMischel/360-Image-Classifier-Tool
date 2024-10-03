@@ -232,7 +232,7 @@
      
        
         const uniqueId = `${incrementingID++}`;
-        if(file.type === "gdrive"){
+        if(file.originPoint === "gdrive"){
 
           console.log("gdrive file")
         //bypass the file type check
@@ -242,7 +242,7 @@
           processQueue();
           return;
         }
-        console.log(file.type)
+        console.log(file.originPoint)
       
 
         if (!startedProcessingImageBatch) {
