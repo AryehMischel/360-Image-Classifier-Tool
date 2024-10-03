@@ -1,9 +1,4 @@
 function createStereoCubeMapTexture(imageID, bitmaps){
-
-    let myInterface = document.getElementById("my-interface")
-    console.log(myInterface)
-
-
     if (bitmaps.length !== 12) {
         console.error("Expected 12 bitmaps, but got " + bitmaps.length);
         return;
@@ -14,11 +9,9 @@ function createStereoCubeMapTexture(imageID, bitmaps){
 
     images[imageID].texture = [leftEye, rightEye]
 
-    // setLayerTexture(id, "stereoCubeMap");
 
     let uiElement = document.getElementById("ui" + imageID)
     uiElement.addEventListener("click", () => {
-        console.log("clicked, setting texture ", imageID)
         setLayerTexture(imageID, 'stereoCubeMap');
     });
     // myDropzone.emit("success", images[imageID].file)
@@ -32,16 +25,11 @@ function createCubeMapTexture(imageID, bitmaps) {
         console.error("Expected 6 bitmaps, but got " + bitmaps.length);
         return;
     }
-
-    // console.log(imageID, "this is the imageID")
-    // console.log(bitmaps, "tjos everhajngsfd")
     let cubeMapTexture = createCubeTexture(bitmaps[0], bitmaps[1], bitmaps[2], bitmaps[3], bitmaps[4], bitmaps[5]);
-    
     images[imageID].texture = cubeMapTexture
 
     let uiElement = document.getElementById("ui" + imageID)
     uiElement.addEventListener("click", () => {
-        console.log("clicked, setting texture ", imageID)
         setLayerTexture(imageID);
     });
 

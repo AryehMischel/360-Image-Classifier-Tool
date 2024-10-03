@@ -1,69 +1,27 @@
 <!DOCTYPE html>
 <html>
-<script src="aframe-master.js"></script>
-<script src="aframe-html.js"></script>
+<script src="./scripts/aframe-scripts/aframe-master.js"></script>
+<script src="./scripts/aframe-scripts/aframe-html.js"></script>
 <script src="https://unpkg.com/aframe-cubemap-component@2.1.1/dist/aframe-cubemap-component.min.js"></script>
-<script src="./aframe-stereocam-component.js"></script>
+<script src="./scripts/aframe-scripts/aframe-stereocam-component.js"></script>
 <script src="https://unpkg.com/super-hands@^3.0.3/dist/super-hands.min.js"></script>
 <script src="https://unpkg.com/aframe-event-set-component@^4.1.1/dist/aframe-event-set-component.min.js"></script>
-
-<style>
-  #draggable {
-    width: 150px;
-    height: 150px;
-    padding: 0.5em;
-    resize: both
-  }
-</style>
-
-<style>
-  .mock-file-preview {
-    display: inline-block;
-    width: 80px;
-    /* Set width for the mock preview */
-    height: 80px;
-    /* Set height for the mock preview */
-    background-color: #f0f0f0;
-    /* Background color for the mock preview */
-    border: 1px solid #ccc;
-    /* Border for the mock preview */
-    margin: 10px;
-    text-align: center;
-    line-height: 80px;
-    /* Center text vertically */
-    font-size: 14px;
-    /* Font size for the file name */
-  }
-</style>
 <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
 <script src="https://code.jquery.com/ui/1.14.0/jquery-ui.js"></script>
-<script>
-  $(function () {
-    $("#dom-overlay").draggable();
-  });
-</script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/min/dropzone.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="./styles/styles.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/5.9.3/dropzone.min.css">
-<link rel="stylesheet" href="dropzoneStyles.css">
+<link rel="stylesheet" href="./styles/dropzoneStyles.css">
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
-<style>
-  body {
-    font-family: 'Exo 2', sans-serif;
-  }
 
-  h1 {
-    font-family: 'Exo 2', sans-serif;
-  }
-</style>
+
+
 
 <body>
   <a-scene webxr="overlayElement:#dom-overlay;">
-    <a-assets>
 
-    </a-assets>
-
+    <!-- vr user rig -->
     <a-entity id="user">
       <a-camera stereocam="eye:left;">
         <a-entity id="cursor" class="raycasting" cursor="rayOrigin:mouse" raycaster=""></a-entity>
@@ -72,9 +30,11 @@
       <a-entity raycaster="objects: .ui" super-hands laser-controls hand-controls="hand: right"></a-entity>
     </a-entity>
 
+    <!-- vr panel for showing ui overlay in xrSession. Not implented in this project-->
     <a-entity id="htmlPanel" shadow position="0.25 1.5 -0.5"></a-entity>
 
 
+    <!-- layers for different 360 image formats -->
     <a-entity id="cubeMapLayer"></a-entity>
 
     <a-entity id="stereoCubeMapLayer"></a-entity>
@@ -83,31 +43,26 @@
 
     <a-entity id="stereoEqrtLayer"></a-entity>
 
-    <!-- default scene -->
-    <a-entity id="layers">
-    </a-entity>
+
 
 
   </a-scene>
 
+
+  <!-- html embeded ui . -->
   <div id="dom-overlay">
-
     <section id="my-interface">
-
-
       <div class="flex-container">
         <h1>Upload 360 Images</h1>
         <button id="googleDriveButton" onclick='handleAuthClick()'>
           <img id="googleDriveIcon" src="assets/icons/drive.png" alt="Google Drive Logo">
-          <!-- https://ssl.gstatic.com/docs/doclist/images/drive_icon_32.png -->
-
         </button>
       </div>
-      <!-- <input class="driveButton" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput"webkitdirectory multiple /> -->
 
       <div id="scrollingButtonContainer">
         <form class="dropzone" id="my-dropzone"></form>
       </div>
+      <!-- for manually resizing embed. not currently working-->
       <div class="win-size-grip"></div>
     </section>
   </div>
@@ -117,7 +72,10 @@
 
 </html>
 <script>
+  
   //global variables
+
+  //URL'S for icon images representing all accepted 360 image formats
   const formatIcons = {
     "cubeMap": "./assets/icons/thickBorderCubeMapLogo.png",
     "stripCubeMap": "./assets/icons/cubeStripThickBorderLogo.png",
@@ -138,13 +96,7 @@
 
   const scene = document.querySelector("a-scene")
   const renderer = scene.renderer
-  var globalImageFiles = new Map()
-  var buttonsToEnable = []
-
   const initializeTexturesOnLoad = true
-
-  var savedImages = new Set();
-  var dir = new Map();
 
 </script>
 <script type="module">
@@ -154,6 +106,7 @@
 <script>
   //setting up geometry for our scene
 
+  // these are used when switching between different 360 images and formats. also when deleting images/ removing textures
   let activeLayer = "eqrtLayer"
   let activeImage = null
 
@@ -232,6 +185,7 @@
 
 
 <script>
+
   function setLayerTexture(imageID) {
     let format = images[imageID].format;
     let texture = images[imageID].texture;
@@ -300,151 +254,13 @@
   }
 </script>
 
-
-<!-- dropzone ui and handling image uploads 2.0-->
 <script>
+
+  //classes for our tree structure of uploaded images
+
   //global variables
-  let startedProcessingImageBatch = false;
-  // var activeImages = new Set();
-  var imageNodeUI = {};
   var uploadTrees = [];
   var currentUploadTree = null;
-  let imageQueue = [];
-  let imagesLoaded = 0;
-  let imagesLoading = 0;
-  var images = {}
-  var cubeMapImageStore = {}
-  let cubeMapImageFormat = ["px", "nx", "py", "ny", "pz", "nz"]
-  
-  let incrementingID = 0;
-  let incrementingFolderID = 1000;
- 
-  // Dropzone.autoDiscover = false;
- 
-  let timeout = null;
-  // Define a custom preview template
-  const previewTemplate = `
-   <div class="dz-preview dz-file-preview">
-       <div class="dz-image"><img data-dz-thumbnail /></div>
-       <div class="dz-details">
-           <div class="dz-size"><span data-dz-size></span></div>
-           <div class="dz-filename"><span data-dz-name></span></div>
-       </div>
-       <!-- Remove the progress bar and other unnecessary elements -->
-   </div>
-`;
-
-  const myDropzone = new Dropzone("#my-dropzone", {
-
-
-    url: "/dummy-url", // Provide a dummy URL to satisfy Dropzone's requirement
-    addRemoveLinks: true,
-    autoProcessQueue: true, // Prevent Dropzone from automatically processing the queue
-    previewTemplate: previewTemplate, // Use the custom preview template
-    addRemoveLinks: false, // Disable the remove links
-    maxThumbnailFilesize: 5, // we will create our own thumbnails in our webworkers and populate them later
-
-
-
-    init: function () {
-
-      this.on("addedfile", function (file) {
-        //manually creating a cubemap from 6 uploaded images
-        if (file.type === "fake") {
-          file.previewElement.id = "ui" + file.folderID;
-          images[file.folderID] = { "file": file, "format": "cubeMap", "name": "mockCubeMap", "texture": null };
-
-
-          let cubeImageBitmaps = []
-          async function processCubeMapImages() {
-            let cubeImageBitmaps = []
-            for (const imageName of cubeMapImageFormat) {
-              let subImageFile = images[cubeMapImageStore[file.folderID].get(imageName)].file;
-              const bitmap = await createImageBitmap(subImageFile, { imageOrientation: "flipY" });
-              cubeImageBitmaps.push(bitmap);
-            }
-            addIcon(file.folderID, "cubeMapFolder");
-            createCubeMapTexture(file.folderID, cubeImageBitmaps);
-            addRemove(file.folderID, file)
-
-
-
-          }
-
-          (async () => {
-            await processCubeMapImages();
-
-            for (const imageName of cubeMapImageFormat) {
-              let subImageFile = images[cubeMapImageStore[file.folderID].get(imageName)].file;
-              this.removeFile(subImageFile);
-            }
-
-          })();
-
-          return;
-        }
-
-
-
-
-        const uniqueId = `${incrementingID++}`;
-
-        //handle image files from google drive
-        if (file.originPoint === "gdrive") {
-          images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
-          file.previewElement.id = "ui" + uniqueId;
-          imageQueue.push({ ID: uniqueId });
-          processQueue();
-          return;
-
-        }
-
-
-        // Handle the start of a new batch of files
-        if (!startedProcessingImageBatch) {
-          startedProcessingImageBatch = true;
-          createUploadTree();
-        }
-
-
-
-        // Clear previous timeout
-        clearTimeout(timeout);
-
-        // Set a new timeout to detect the end of a batch
-        timeout = setTimeout(() => {
-          console.log("Batch of files added. Processing...");
-          startedProcessingImageBatch = false;
-          createQueue();
-        }, 500);
-
-
-        //all important image data is stored in the images object
-        images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
-        console.log(images[uniqueId])
-
-        //preview element in dropzone
-        file.previewElement.id = "ui" + uniqueId;
-
-        if (file.fullPath) {
-          currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
-
-        } else {
-          currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
-        }
-
-      });
-
-      // Prevent Dropzone from making any network requests ? doesn't seem to
-      this.on("sending", function (file, xhr, formData) {
-        xhr.abort();
-
-      });
-
-    }
-  });
-
-
 
 
   class ImageNode {
@@ -512,74 +328,197 @@
     currentUploadTree = tree;
   }
 
+</script>
 
 
-  // Function to load an image as a bitmap
-  // async function loadImageAsBitmap(imageFile) {
-
-  //   // Create the ImageBitmap
-
-  //   return bitmap;
-  // }
 
 
-  //1. traverse tree and test for cubemap folders / create a queue from the tree
 
-  requiredNamesMap = new Map();
-  requiredNamesMap.set("posx", "px");
-  requiredNamesMap.set("negx", "nx");
-  requiredNamesMap.set("posy", "py");
-  requiredNamesMap.set("negy", "ny");
-  requiredNamesMap.set("posz", "pz");
-  requiredNamesMap.set("negz", "nz");
+<!-- dropzone ui and handling image uploads-->
+<script>
+  //global variables
+  let startedProcessingImageBatch = false;
+  // var activeImages = new Set();
+  var imageNodeUI = {};
 
-  console.log(requiredNamesMap.get("px"))
+  let imageQueue = [];
+  var images = {}
+  var cubeMapImageStore = {}
+  let cubeMapImageFormat = ["px", "nx", "py", "ny", "pz", "nz"]
+  let alternativeCubeMapImageFormat = ["posx", "negx", "posy", "negy", "posz", "negz"]
 
-  function createQueue() {
-    if (currentUploadTree.root.children.size == 0) {
-      console.log("empty tree")
-      return;
+  let incrementingID = 0;
+  let incrementingFolderID = 1000;
+
+  //needed because dropzone is already in our html
+  Dropzone.autoDiscover = false;
+
+  let timeout = null;
+
+  // custom dropzone preview template
+  const previewTemplate = `
+   <div class="dz-preview dz-file-preview">
+       <div class="dz-image"><img data-dz-thumbnail /></div>
+       <div class="dz-details">
+           <div class="dz-size"><span data-dz-size></span></div>
+           <div class="dz-filename"><span data-dz-name></span></div>
+       </div>
+       <!-- Removed the progress bar and other unnecessary elements -->
+   </div>
+`;
+
+
+
+  const myDropzone = new Dropzone("#my-dropzone", {
+    url: "/dummy-url", // Provide a dummy URL to satisfy Dropzone's requirement
+    addRemoveLinks: true,
+    autoProcessQueue: true, // Prevent Dropzone from automatically processing the queue
+    previewTemplate: previewTemplate, // Use the custom preview template
+    addRemoveLinks: false, // Disable the remove links
+    maxThumbnailFilesize: 5, // we will create our own thumbnails in our webworkers and populate them later
+
+
+
+    init: function () {
+
+      this.on("addedfile", function (file) {
+
+        //manually create a cubemap from 6 uploaded images
+        if (file.type === "fake") {
+          file.previewElement.id = "ui" + file.folderID;
+          images[file.folderID] = { "file": file, "format": "cubeMap", "name": "mockCubeMap", "texture": null };
+
+
+          let cubeImageBitmaps = []
+          async function processCubeMapImages() {
+            let cubeImageBitmaps = []
+            for (const imageName of cubeMapImageFormat) {
+              let subImageFile = images[cubeMapImageStore[file.folderID].get(imageName)].file;
+              const bitmap = await createImageBitmap(subImageFile, { imageOrientation: "flipY" });
+              cubeImageBitmaps.push(bitmap);
+            }
+            addIcon(file.folderID, "cubeMapFolder");
+            createCubeMapTexture(file.folderID, cubeImageBitmaps);
+            addRemove(file.folderID, file)
+          }
+
+          (async () => {
+            await processCubeMapImages();
+
+            for (const imageName of cubeMapImageFormat) {
+              let subImageFile = images[cubeMapImageStore[file.folderID].get(imageName)].file;
+              this.removeFile(subImageFile);
+            }
+
+          })();
+
+          return;
+        }
+
+
+
+        //create unique id for image
+        const uniqueId = `${incrementingID++}`;
+
+        //handle image files from google drive
+        if (file.originPoint === "gdrive") {
+          images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
+          file.previewElement.id = "ui" + uniqueId;
+          imageQueue.push({ ID: uniqueId });
+          processQueue();
+          return;
+
+        }
+
+
+        // Handle the start of a new batch of files
+        if (!startedProcessingImageBatch) {
+          startedProcessingImageBatch = true;
+          createUploadTree();
+        }
+
+
+
+        // Clear previous timeout
+        clearTimeout(timeout);
+
+        // Set a new timeout to detect the end of a batch
+        timeout = setTimeout(() => {
+          console.log("Batch of files added. Processing...");
+          startedProcessingImageBatch = false;
+
+          if (currentUploadTree.root.children.size == 0) {
+             console.log("empty tree")
+            return;
+          }
+          createQueFromTree(currentUploadTree.root, imageQueue);
+        }, 500);
+
+
+        //all relevant image data is stored in the images[imageID] object
+        images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
+        console.log(images[uniqueId])
+
+        //preview element in dropzone
+        file.previewElement.id = "ui" + uniqueId;
+
+        if (file.fullPath) {
+          currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
+
+        } else {
+          currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
+        }
+
+      });
+
+      // Prevent Dropzone from making any network requests ? doesn't seem to
+      this.on("sending", function (file, xhr, formData) {
+        xhr.abort();
+
+      });
+
     }
-    createQueFromTree(currentUploadTree.root, imageQueue);
-  }
+  });
 
+
+
+
+
+
+
+  //1. traverse tree and test for cubemap folders (a folder with 6 images representing a cubemap) / create a queue from all other images 
+  const requiredNamesMap = new Map([
+    ["posx", "px"],
+    ["negx", "nx"],
+    ["posy", "py"],
+    ["negy", "ny"],
+    ["posz", "pz"],
+    ["negz", "nz"]
+  ]);
 
   function createQueFromTree(node, queue) {
-    console.log('creawting')
-
     if (node.imageCount === 6) {
       console.log("must check for cubemap")
       let folderID = `${incrementingFolderID++}`;
-      console.log(folderID, "folderID")
 
       var imageMap = new Map();
-
-      // imageMap.clear();
-
-
-      const altRequiredNames = ['posx', 'negx', 'posy', 'negy', 'posz', 'negz'];
-      const requiredNames = ['px', 'nx', 'py', 'ny', 'pz', 'nz'];
-
-      let cubeMapImages = []
-
-
 
       for (const child of node.children.values()) {
         if (child.isImage) {
 
           const baseName = child.name.toLowerCase().split('.')[0];
 
-          if (requiredNames.includes(baseName) & !imageMap.has(baseName)) {
+          if (cubeMapImageFormat.includes(baseName) & !imageMap.has(baseName)) {
             //valid cubemap image
             imageMap.set(baseName, child.ID);
 
-          } else if (altRequiredNames.includes(baseName) & !imageMap.has(requiredNamesMap.get(baseName))) {
+          } else if (alternativeCubeMapImageFormat.includes(baseName) & !imageMap.has(requiredNamesMap.get(baseName))) {
             //valid cubemap image
-            console.log(requiredNamesMap.get(baseName))
             imageMap.set(requiredNamesMap.get(baseName), child.ID);
 
           } else {
             console.log("invalid cubemap image")
+            //proccess as normal images
           }
 
 
@@ -588,20 +527,14 @@
         }
       }
 
-     cubeMapImageStore[folderID] = imageMap;
+      cubeMapImageStore[folderID] = imageMap;
 
 
       var mockCubeMapFile = { name: "mockCubeMap", size: 12345678, type: "fake", folderID: folderID };
       myDropzone.emit("addedfile", mockCubeMapFile);
       myDropzone.emit("thumbnail", mockCubeMapFile, "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png");
-      // const filenames = cubeMapImages.map(image => image.toLowerCase().split('.')[0]);
 
-
-
-
-
-    }
-    else {
+    } else {
 
       for (const child of node.children.values()) {
         if (child.isImage) {
@@ -611,13 +544,7 @@
           createQueFromTree(child, queue);
         }
       }
-
-
-
     }
-
-
-
 
   }
 
@@ -633,16 +560,12 @@
 
   // Initialize the worker pool
   for (let i = 0; i < workerCount; i++) {
-    const worker = new Worker('worker.js');
+    const worker = new Worker('./scripts/worker.js');
     worker.onmessage = async function (e) {
 
       // Handle the worker response
-      console.log(`Worker ${i} has received format`);
-
 
       if (e.data.work === "setFormat") {
-        console.log("setting format")
-
         addIcon(e.data.imageID, e.data.format);
 
         if (e.data.format === "noFormatDetected") {
@@ -655,7 +578,6 @@
         addRemove(e.data.imageID, images[e.data.imageID].file)
 
         if (e.data.format === "stereoCubeMap") {
-          console.log("workin on eh")
           createStereoCubeMapTexture(e.data.imageID, e.data.bitmaps);
         }
 
@@ -673,8 +595,6 @@
 
           createCubeMapTexture(e.data.imageID, e.data.bitmaps);
         }
-
-
 
       } else if (e.data.work === "thumbnail") {
         addImagePreview(e.data.imageID, e.data.thumbnail)
@@ -707,94 +627,6 @@
     }
   }
 
-
-
-
-  function addIcon(imageID, format) {
-    let uiElement = document.getElementById("ui" + imageID).children[0];
-    let icon = document.createElement("img");
-    icon.src = formatIcons[format];
-    icon.style.position = "absolute"; // Ensure the icon is positioned absolutely
-    icon.style.zIndex = "1000"; // Ensure the icon is on top
-    icon.style.width = "50px";
-    icon.style.height = "50px";
-    icon.style.top = "0"; // Position the icon at the top
-    icon.style.left = "0"; // Position the icon at the left
-    uiElement.style.position = "relative"; // Ensure the parent has a positioning context
-    uiElement.appendChild(icon);
-
-  }
-
-
-  function makeUIClickable(imageID) {
-    let uiElement = document.getElementById("ui" + uiElementID).children[0];
-    uiElement.addEventListener("click", function () {
-      console.log("clicked")
-    })
-
-  }
-
-  function addRemove(imageID, file) {
-    let uiElement = document.getElementById("ui" + imageID);
-    let removeButton = document.createElement("button");
-    removeButton.onclick = function () {
-      event.preventDefault();
-      event.stopPropagation();
-      console.log("removing")
-
-      //remove texture from material if image texture is on visible material
-      if (activeImage === imageID) {
-        removeTextureFromMaterial(images[imageID].format)
-      }
-
-      // removeFile(file)
-      myDropzone.removeFile(file);
-      // clear image from images object
-      images[imageID] = null;
-
-
-    }
-
-    removeButton.innerHTML = "remove";
-    removeButton.style.position = "absolute"; // Ensure the icon is positioned absolutely
-    removeButton.style.zIndex = "1000"; // Ensure the icon is on top
-    removeButton.style.width = "50px";
-    removeButton.style.height = "50px";
-    removeButton.style.top = "0"; // Position the icon at the top
-    removeButton.style.right = "0"; // Position the icon at the left
-    uiElement.style.position = "relative"; // Ensure the parent has a positioning context
-    uiElement.appendChild(removeButton);
-
-  }
-
-
-  // Add this functionality later when add remove is added at the correct time
-
-  //   function deleteImage2(imageName, format) {
-  //     let div = document.getElementById("div" + imageName)
-  //     let parent = div.parentNode;
-  //     if (imageName === activeImage) {
-  //         let index = Array.prototype.indexOf.call(parent.children, div);
-  //         if (index === 0) {
-  //             if (parent.children.length > 1) {
-  //                 parent.children[1].children[0].click()
-  //             } else {
-  //                 removeTextureFromMaterial(format)
-  //             }
-  //         } else {
-  //             parent.children[index - 1].children[0].click()
-
-  //         }
-
-  //     }
-  //     parent.removeChild(div)
-
-  //     // console.log("deleting " + imageName, "from " + format + "Textures")
-  //     let command = "delete " + format + "Textures[" + "'" + imageName + "'" + "]"
-  //     eval(command)
-
-
-  // }
 
   function addImagePreview(imageID, dataURL) {
 
@@ -839,46 +671,15 @@
 
 </script>
 
+<script src="./scripts/generate360Textures.js"></script>
+<script src="./scripts/uicontrols.js"></script>
+<script src="./scripts/picker.js"></script>
 
-
-
-
-
-
-
-
-
-
-
-
-<script>
-
-
-
-
-
-
-
-</script>
-
-<script src="./generate360Textures.js"></script>
-<script src="./uicontrols.js"></script>
-<script>
-
-</script>
+<script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+<script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>
 
 <script>
   $(function () {
     $("#dom-overlay").draggable().resizable();
   });
 </script>
-
-<script>
-
-
-</script>
-
-<script src="./picker.js"></script>
-
-<script async defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
-<script async defer src="https://accounts.google.com/gsi/client" onload="gisLoaded()"></script>

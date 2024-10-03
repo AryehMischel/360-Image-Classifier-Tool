@@ -231,9 +231,6 @@ async function checkFolder(folder) { //pass in folder name
         } else {
 
 
-
-            imagesLoading += files.length
-
             for (i = 0; i < files.length; i++) {
                 console.log("fetching images")
                 const name = files[i].name

@@ -1,5 +1,5 @@
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Exo 2', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -8,10 +8,17 @@ body {
     background-color: #f0f0f0;
 }
 
-/* h1   {color: blue;} */
+
+h1 {
+    font-family: 'Exo 2', sans-serif;
+}
+
+
 p {
     color: red;
 }
+
+
 
 section {
     display: inline-block;
@@ -89,8 +96,10 @@ section {
 
 #googleDriveButton {
     display: flex;
-    justify-content: center; /* Center horizontally */
-    align-items: center; /* Center vertically */
+    justify-content: center;
+    /* Center horizontally */
+    align-items: center;
+    /* Center vertically */
     background-color: #ffffff00;
     min-width: 50px;
     min-height: 50px;
@@ -103,16 +112,20 @@ section {
     background-repeat: no-repeat;
     overflow: hidden;
     box-sizing: border-box;
-    
+
     /* Enhancements */
-    border: 2px solid #ccc; /* Light gray border */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    border: 2px solid #ccc;
+    /* Light gray border */
+    border-radius: 8px;
+    /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Subtle shadow */
 }
 
 #googleDriveIcon {
     background-color: #ffffff00;
-    width: 80%; /*2.5vh*/
+    width: 80%;
+    /*2.5vh*/
     height: 80%;
     background-size: contain;
     background-position: center;
@@ -368,13 +381,16 @@ label {
     /* Adjust the size as needed */
 }
 
+#draggable {
+    width: 150px;
+    height: 150px;
+    padding: 0.5em;
+    resize: both
+}
+
 .tooltip:hover .tooltiptext {
     visibility: visible;
 }
-
-
-.iconParent {}
-
 
 @keyframes spin {
     0% {

@@ -40,3 +40,21 @@ width: 100%;
 .dz-preview .dz-details {
 display: none;
 }
+
+.mock-file-preview {
+    display: inline-block;
+    width: 80px;
+    /* Set width for the mock preview */
+    height: 80px;
+    /* Set height for the mock preview */
+    background-color: #f0f0f0;
+    /* Background color for the mock preview */
+    border: 1px solid #ccc;
+    /* Border for the mock preview */
+    margin: 10px;
+    text-align: center;
+    line-height: 80px;
+    /* Center text vertically */
+    font-size: 14px;
+    /* Font size for the file name */
+  }
