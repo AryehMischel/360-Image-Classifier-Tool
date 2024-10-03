@@ -49,12 +49,13 @@
 <link rel="stylesheet" href="dropzoneStyles.css">
 <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
 <style>
-          body {
-            font-family: 'Exo 2', sans-serif;
-        }
-        h1{
-          font-family: 'Exo 2', sans-serif;
-        }
+  body {
+    font-family: 'Exo 2', sans-serif;
+  }
+
+  h1 {
+    font-family: 'Exo 2', sans-serif;
+  }
 </style>
 
 <body>
@@ -92,14 +93,14 @@
   <div id="dom-overlay">
 
     <section id="my-interface">
-   
+
 
       <div class="flex-container">
         <h1>Upload 360 Images</h1>
         <button id="googleDriveButton" onclick='handleAuthClick()'>
-          <img id="googleDriveIcon" src="assets/icons/drive.png" alt="Google Drive Logo"> 
+          <img id="googleDriveIcon" src="assets/icons/drive.png" alt="Google Drive Logo">
           <!-- https://ssl.gstatic.com/docs/doclist/images/drive_icon_32.png -->
-   
+
         </button>
       </div>
       <!-- <input class="driveButton" accept="image/png, image/jpeg" style="visibility:hidden;" type="file" id="imgInput"webkitdirectory multiple /> -->
@@ -150,12 +151,161 @@
   console.log(scene)
 </script>
 
+<script>
+  //setting up geometry for our scene
+
+  let activeLayer = "eqrtLayer"
+  let activeImage = null
+
+  //Each layer is the parent to 3d geometry representing different formats of 360 image. 
+  const cubeMapLayer = document.getElementById("cubeMapLayer")
+  const stereoCubeMapLayer = document.getElementById("stereoCubeMapLayer")
+  const eqrtLayer = document.getElementById("eqrtLayer")
+  const stereoEqrtLayer = document.getElementById("stereoEqrtLayer")
+
+  const layers = {
+    "cubeMapLayer": cubeMapLayer,
+    "stereoCubeMapLayer": stereoCubeMapLayer,
+    "eqrtLayer": eqrtLayer,
+    "stereoEqrtLayer": stereoEqrtLayer
+  }
+
+  cubeMapLayer.setAttribute("visible", false)
+  stereoCubeMapLayer.setAttribute("visible", false)
+  stereoEqrtLayer.setAttribute("visible", false)
+  eqrtLayer.setAttribute("visible", true)
+
+
+  // creating materials for each layers geometry
+  const material = new THREE.MeshPhongMaterial();
+  material.side = THREE.BackSide
+
+  const skyBoxGeometry = new THREE.BoxGeometry(5000, 5000, 5000);
+  const skySphericalGeometry = new THREE.SphereGeometry(30, 64, 32);
+
+  const cubeMaterials = [
+
+    new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
+    new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
+    new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
+    new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
+    new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
+    new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
+
+
+  ];
+
+
+  // Function to clone materials
+  function cloneMaterials(materials) {
+    return materials.map(material => material.clone());
+  }
+
+  const cubeMaterialsLeftEye = cloneMaterials(cubeMaterials);
+  const cubeMaterialsRightEye = cloneMaterials(cubeMaterials);
+
+
+  // Clone materials for each cubeMesh
+  let cubeMesh = new THREE.Mesh(skyBoxGeometry, cubeMaterials);
+
+  let cubeMeshLeftEye = new THREE.Mesh(skyBoxGeometry, cubeMaterialsLeftEye);
+  let cubeMeshRightEye = new THREE.Mesh(skyBoxGeometry, cubeMaterialsRightEye);
+
+
+  let eqrtMesh = new THREE.Mesh(skySphericalGeometry, material);
+
+  let eqrtMeshLeftEye = new THREE.Mesh(skySphericalGeometry, material.clone());
+  let eqrtMeshRightEye = new THREE.Mesh(skySphericalGeometry, material.clone());
+
+  //setting layers for stereoscopic rendering
+  cubeMeshLeftEye.layers.set(1)
+  cubeMeshRightEye.layers.set(2)
+
+  eqrtMeshLeftEye.layers.set(1)
+  eqrtMeshRightEye.layers.set(2)
+
+  cubeMapLayer.object3D.add(cubeMesh)
+  stereoCubeMapLayer.object3D.add(cubeMeshLeftEye, cubeMeshRightEye)
+  eqrtLayer.object3D.add(eqrtMesh)
+  stereoEqrtLayer.object3D.add(eqrtMeshLeftEye, eqrtMeshRightEye)
+</script>
+
+
+<script>
+  function setLayerTexture(imageID) {
+    let format = images[imageID].format;
+    let texture = images[imageID].texture;
+
+    activeImage = imageID;
+
+    if (format === "cubeMap") {
+
+      for (let i = 0; i < cubeMapLayer.object3D.children[0].material.length; i++) {
+        cubeMapLayer.object3D.children[0].material[i].map = texture[i];
+        cubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
+      }
+
+      if (activeLayer !== "cubeMapLayer") {
+        layers[activeLayer].setAttribute("visible", false);
+        cubeMapLayer.setAttribute("visible", true);
+        activeLayer = "cubeMapLayer";
+      }
+
+
+    } else if (format === "stereoCubeMap") {
+
+      console.log("setting stereoCubeMap texture")
+
+      for (let i = 0; i < stereoCubeMapLayer.object3D.children[0].material.length; i++) {
+        stereoCubeMapLayer.object3D.children[0].material[i].map = texture[0][i];
+        stereoCubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
+      }
+
+      for (let i = 0; i < stereoCubeMapLayer.object3D.children[1].material.length; i++) {
+        stereoCubeMapLayer.object3D.children[1].material[i].map = texture[1][i];
+        stereoCubeMapLayer.object3D.children[1].material[i].needsUpdate = true;
+      }
+
+      if (activeLayer !== "stereoCubeMapLayer") {
+        layers[activeLayer].setAttribute("visible", false);
+        stereoCubeMapLayer.setAttribute("visible", true);
+        activeLayer = "stereoCubeMapLayer";
+      }
+
+    } else if (format === "eqrt") {
+
+      eqrtLayer.object3D.children[0].material.map = texture;
+      eqrtLayer.object3D.children[0].material.needsUpdate = true;
+
+      if (activeLayer !== "eqrtLayer") {
+        layers[activeLayer].setAttribute("visible", false);
+        eqrtLayer.setAttribute("visible", true);
+        activeLayer = "eqrtLayer";
+      }
+
+    } else if (format === "stereoEqrt") {
+      stereoEqrtLayer.object3D.children[0].material.map = texture[0];
+      stereoEqrtLayer.object3D.children[0].material.needsUpdate = true;
+      stereoEqrtLayer.object3D.children[1].material.map = texture[1];
+      stereoEqrtLayer.object3D.children[1].material.needsUpdate = true;
+
+      if (activeLayer !== "stereoEqrtLayer") {
+        layers[activeLayer].setAttribute("visible", false);
+        stereoEqrtLayer.setAttribute("visible", true);
+        activeLayer = "stereoEqrtLayer";
+      }
+
+    }
+
+  }
+</script>
+
 
 <!-- dropzone ui and handling image uploads 2.0-->
 <script>
   //global variables
   let startedProcessingImageBatch = false;
-  var activeImages = new Set();
+  // var activeImages = new Set();
   var imageNodeUI = {};
   var uploadTrees = [];
   var currentUploadTree = null;
@@ -163,12 +313,14 @@
   let imagesLoaded = 0;
   let imagesLoading = 0;
   var images = {}
-  var cubeMapImageMap = {}
+  var cubeMapImageStore = {}
   let cubeMapImageFormat = ["px", "nx", "py", "ny", "pz", "nz"]
-  let cubeMapImagesIDs = []
-  incrementingID = 0;
+  
+  let incrementingID = 0;
   let incrementingFolderID = 1000;
-  Dropzone.autoDiscover = false;
+ 
+  // Dropzone.autoDiscover = false;
+ 
   let timeout = null;
   // Define a custom preview template
   const previewTemplate = `
@@ -207,7 +359,7 @@
           async function processCubeMapImages() {
             let cubeImageBitmaps = []
             for (const imageName of cubeMapImageFormat) {
-              let subImageFile = images[cubeMapImageMap[file.folderID].get(imageName)].file;
+              let subImageFile = images[cubeMapImageStore[file.folderID].get(imageName)].file;
               const bitmap = await createImageBitmap(subImageFile, { imageOrientation: "flipY" });
               cubeImageBitmaps.push(bitmap);
             }
@@ -223,7 +375,7 @@
             await processCubeMapImages();
 
             for (const imageName of cubeMapImageFormat) {
-              let subImageFile = images[cubeMapImageMap[file.folderID].get(imageName)].file;
+              let subImageFile = images[cubeMapImageStore[file.folderID].get(imageName)].file;
               this.removeFile(subImageFile);
             }
 
@@ -264,30 +416,30 @@
           console.log("Batch of files added. Processing...");
           startedProcessingImageBatch = false;
           createQueue();
-        }, 500); 
+        }, 500);
 
 
-      //all important image data is stored in the images object
-      images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
-      console.log(images[uniqueId])
+        //all important image data is stored in the images object
+        images[uniqueId] = { "file": file, "format": "unknown", "name": file.name, "texture": null };
+        console.log(images[uniqueId])
 
-      //preview element in dropzone
-      file.previewElement.id = "ui" + uniqueId;
+        //preview element in dropzone
+        file.previewElement.id = "ui" + uniqueId;
 
-      if (file.fullPath) {
-        currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
+        if (file.fullPath) {
+          currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
 
-      } else {
-        currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
-      }
+        } else {
+          currentUploadTree.addImage(file.fullPath, file.name, uniqueId);
+        }
 
-    });
+      });
 
-  // Prevent Dropzone from making any network requests ? doesn't seem to
-  this.on("sending", function (file, xhr, formData) {
-    xhr.abort();
+      // Prevent Dropzone from making any network requests ? doesn't seem to
+      this.on("sending", function (file, xhr, formData) {
+        xhr.abort();
 
-  });
+      });
 
     }
   });
@@ -308,8 +460,8 @@
     constructor(name) {
       this.name = name;
       this.isImage = false;
-      this.children = new Map(); 
-      this.imageCount = 0; 
+      this.children = new Map();
+      this.imageCount = 0;
     }
 
     addChild(childNode) {
@@ -384,7 +536,7 @@
   console.log(requiredNamesMap.get("px"))
 
   function createQueue() {
-    if(currentUploadTree.root.children.size == 0){
+    if (currentUploadTree.root.children.size == 0) {
       console.log("empty tree")
       return;
     }
@@ -409,7 +561,6 @@
       const requiredNames = ['px', 'nx', 'py', 'ny', 'pz', 'nz'];
 
       let cubeMapImages = []
-      cubeMapImagesIDs = []
 
 
 
@@ -431,16 +582,13 @@
             console.log("invalid cubemap image")
           }
 
-          // cubeMapImages.push(child.name)
-          // cubeMapImagesIDs.push(child.ID)
-
 
         } else {
           createQueFromTree(child, queue);
         }
       }
 
-      cubeMapImageMap[folderID] = imageMap;
+     cubeMapImageStore[folderID] = imageMap;
 
 
       var mockCubeMapFile = { name: "mockCubeMap", size: 12345678, type: "fake", folderID: folderID };
@@ -474,7 +622,7 @@
   }
 
 
-  const workerCount = 4; 
+  const workerCount = 4;
   const workers = [];
   const workerStatus = new Array(workerCount).fill(false); // Track worker availability
 
@@ -656,36 +804,36 @@
 
   function removeTextureFromMaterial(format) {
 
-switch (format) {
-  case "cubeMap":
-    for (let i = 0; i < cubeMapLayer.object3D.children[0].material.length; i++) {
-      cubeMapLayer.object3D.children[0].material[i].map = null;
-      cubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
+    switch (format) {
+      case "cubeMap":
+        for (let i = 0; i < cubeMapLayer.object3D.children[0].material.length; i++) {
+          cubeMapLayer.object3D.children[0].material[i].map = null;
+          cubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
+        }
+        break;
+      case "stereoCubeMap":
+        for (let i = 0; i < stereoCubeMapLayer.object3D.children[0].material.length; i++) {
+          stereoCubeMapLayer.object3D.children[0].material[i].map = null;
+          stereoCubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
+        }
+        for (let i = 0; i < stereoCubeMapLayer.object3D.children[1].material.length; i++) {
+          stereoCubeMapLayer.object3D.children[1].material[i].map = null;
+          stereoCubeMapLayer.object3D.children[1].material[i].needsUpdate = true;
+        }
+        break;
+      case "eqrt":
+        eqrtLayer.object3D.children[0].material.map = null;
+        eqrtLayer.object3D.children[0].material.needsUpdate = true;
+        break;
+      case "stereoEqrt":
+        stereoEqrtLayer.object3D.children[0].material.map = null;
+        stereoEqrtLayer.object3D.children[0].material.needsUpdate = true;
+        stereoEqrtLayer.object3D.children[1].material.map = null;
+        stereoEqrtLayer.object3D.children[1].material.needsUpdate = true;
+        break;
     }
-    break;
-  case "stereoCubeMap":
-    for (let i = 0; i < stereoCubeMapLayer.object3D.children[0].material.length; i++) {
-      stereoCubeMapLayer.object3D.children[0].material[i].map = null;
-      stereoCubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
-    }
-    for (let i = 0; i < stereoCubeMapLayer.object3D.children[1].material.length; i++) {
-      stereoCubeMapLayer.object3D.children[1].material[i].map = null;
-      stereoCubeMapLayer.object3D.children[1].material[i].needsUpdate = true;
-    }
-    break;
-  case "eqrt":
-    eqrtLayer.object3D.children[0].material.map = null;
-    eqrtLayer.object3D.children[0].material.needsUpdate = true;
-    break;
-  case "stereoEqrt":
-    stereoEqrtLayer.object3D.children[0].material.map = null;
-    stereoEqrtLayer.object3D.children[0].material.needsUpdate = true;
-    stereoEqrtLayer.object3D.children[1].material.map = null;
-    stereoEqrtLayer.object3D.children[1].material.needsUpdate = true;
-    break;
-}
 
-}
+  }
 
 
 
@@ -704,154 +852,6 @@ switch (format) {
 
 
 <script>
-  //global variables
-  let activeLayer = "eqrtLayer"
-  let activeImage = null
-
-  let cubeMapLayer = document.getElementById("cubeMapLayer")
-  let stereoCubeMapLayer = document.getElementById("stereoCubeMapLayer")
-  let eqrtLayer = document.getElementById("eqrtLayer")
-  let stereoEqrtLayer = document.getElementById("stereoEqrtLayer")
-
-  let layers = {
-    "cubeMapLayer": cubeMapLayer,
-    "stereoCubeMapLayer": stereoCubeMapLayer,
-    "eqrtLayer": eqrtLayer,
-    "stereoEqrtLayer": stereoEqrtLayer
-  }
-
-  cubeMapLayer.setAttribute("visible", false)
-  stereoCubeMapLayer.setAttribute("visible", false)
-  stereoEqrtLayer.setAttribute("visible", false)
-  eqrtLayer.setAttribute("visible", true)
-
-
-  const material = new THREE.MeshPhongMaterial();
-  material.side = THREE.BackSide
-
-  const skyBoxGeometry = new THREE.BoxGeometry(5000, 5000, 5000);
-  const skySphericalGeometry = new THREE.SphereGeometry(30, 64, 32);
-
-  const cubeMaterials = [
-
-    new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
-    new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
-    new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
-    new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
-    new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
-    new THREE.MeshBasicMaterial({ side: THREE.BackSide }),
-
-
-  ];
-
-
-  // Function to clone materials
-  function cloneMaterials(materials) {
-    return materials.map(material => material.clone());
-  }
-
-  const cubeMaterialsLeftEye = cloneMaterials(cubeMaterials);
-  const cubeMaterialsRightEye = cloneMaterials(cubeMaterials);
-
-
-  // Clone materials for each cubeMesh
-  let cubeMesh = new THREE.Mesh(skyBoxGeometry, cubeMaterials);
-
-  let cubeMeshLeftEye = new THREE.Mesh(skyBoxGeometry, cubeMaterialsLeftEye);
-  let cubeMeshRightEye = new THREE.Mesh(skyBoxGeometry, cubeMaterialsRightEye);
-
-
-  let eqrtMesh = new THREE.Mesh(skySphericalGeometry, material);
-
-  let eqrtMeshLeftEye = new THREE.Mesh(skySphericalGeometry, material.clone());
-  let eqrtMeshRightEye = new THREE.Mesh(skySphericalGeometry, material.clone());
-
-  cubeMeshLeftEye.layers.set(1)
-  cubeMeshRightEye.layers.set(2)
-
-  eqrtMeshLeftEye.layers.set(1)
-  eqrtMeshRightEye.layers.set(2)
-
-  cubeMapLayer.object3D.add(cubeMesh)
-  stereoCubeMapLayer.object3D.add(cubeMeshLeftEye, cubeMeshRightEye)
-  eqrtLayer.object3D.add(eqrtMesh)
-  stereoEqrtLayer.object3D.add(eqrtMeshLeftEye, eqrtMeshRightEye)
-
-
-
-  function setLayerTexture(imageID) {
-
-    let format = images[imageID].format;
-    let texture = images[imageID].texture;
-
-    activeImage = imageID;
-
-    if (format === "cubeMap") {
-
-      for (let i = 0; i < cubeMapLayer.object3D.children[0].material.length; i++) {
-        cubeMapLayer.object3D.children[0].material[i].map = texture[i];
-        cubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
-      }
-
-      if (activeLayer !== "cubeMapLayer") {
-        layers[activeLayer].setAttribute("visible", false);
-        cubeMapLayer.setAttribute("visible", true);
-        activeLayer = "cubeMapLayer";
-      }
-
-
-    } else if (format === "stereoCubeMap") {
-
-      console.log("setting stereoCubeMap texture")
-
-      for (let i = 0; i < stereoCubeMapLayer.object3D.children[0].material.length; i++) {
-        stereoCubeMapLayer.object3D.children[0].material[i].map = texture[0][i];
-        stereoCubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
-      }
-
-      for (let i = 0; i < stereoCubeMapLayer.object3D.children[1].material.length; i++) {
-        stereoCubeMapLayer.object3D.children[1].material[i].map = texture[1][i];
-        stereoCubeMapLayer.object3D.children[1].material[i].needsUpdate = true;
-      }
-
-      if (activeLayer !== "stereoCubeMapLayer") {
-        layers[activeLayer].setAttribute("visible", false);
-        stereoCubeMapLayer.setAttribute("visible", true);
-        activeLayer = "stereoCubeMapLayer";
-      }
-
-    } else if (format === "eqrt") {
-
-      eqrtLayer.object3D.children[0].material.map = texture;
-      eqrtLayer.object3D.children[0].material.needsUpdate = true;
-
-      if (activeLayer !== "eqrtLayer") {
-        layers[activeLayer].setAttribute("visible", false);
-        eqrtLayer.setAttribute("visible", true);
-        activeLayer = "eqrtLayer";
-      }
-
-    } else if (format === "stereoEqrt") {
-      stereoEqrtLayer.object3D.children[0].material.map = texture[0];
-      stereoEqrtLayer.object3D.children[0].material.needsUpdate = true;
-      stereoEqrtLayer.object3D.children[1].material.map = texture[1];
-      stereoEqrtLayer.object3D.children[1].material.needsUpdate = true;
-
-      if (activeLayer !== "stereoEqrtLayer") {
-        layers[activeLayer].setAttribute("visible", false);
-        stereoEqrtLayer.setAttribute("visible", true);
-        activeLayer = "stereoEqrtLayer";
-      }
-
-    }
-
-
-
-
-
-
-
-  }
 
 
 
