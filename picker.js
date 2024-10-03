@@ -148,7 +148,7 @@ async function pickerCallback(data) {
 
         if(obj.docs.length == 1 && obj.docs[0].mimeType === "image/jpeg" || obj.docs.length == 1 && obj.docs[0].mimeType === "image/png"){
             console.log("getting individual image")
-            getImages(obj.docs.id, obj.docs.name)
+            getImages(obj.docs[0].id, obj.docs[0].name)
         }else{
             getSubFolders(obj.docs[0].id)
         }
