@@ -248,8 +248,8 @@ async function checkFolder(folder) { //pass in folder name
                     .then(blob => {
                        
                         console.log("got blob " + i + " " + performance.now())
-                        // blob.name = 'myfilename.png'
-                        // myDropzone.addFile(blob);
+                        blob.name = name
+                        myDropzone.addFile(blob);
 
                         // const image = document.createElement("img")
                         // image.name =  name
@@ -283,7 +283,7 @@ async function getImages(fileId, name) {
     }).then(response => response.blob())
         .then(blob => {
 
-            blob.name = 'myfilename.png'
+            blob.name = name
             myDropzone.addFile(blob);
 
             // const image = new Image();
