@@ -654,20 +654,42 @@
 
   }
 
+  function removeTextureFromMaterial(format) {
+
+switch (format) {
+  case "cubeMap":
+    for (let i = 0; i < cubeMapLayer.object3D.children[0].material.length; i++) {
+      cubeMapLayer.object3D.children[0].material[i].map = null;
+      cubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
+    }
+    break;
+  case "stereoCubeMap":
+    for (let i = 0; i < stereoCubeMapLayer.object3D.children[0].material.length; i++) {
+      stereoCubeMapLayer.object3D.children[0].material[i].map = null;
+      stereoCubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
+    }
+    for (let i = 0; i < stereoCubeMapLayer.object3D.children[1].material.length; i++) {
+      stereoCubeMapLayer.object3D.children[1].material[i].map = null;
+      stereoCubeMapLayer.object3D.children[1].material[i].needsUpdate = true;
+    }
+    break;
+  case "eqrt":
+    eqrtLayer.object3D.children[0].material.map = null;
+    eqrtLayer.object3D.children[0].material.needsUpdate = true;
+    break;
+  case "stereoEqrt":
+    stereoEqrtLayer.object3D.children[0].material.map = null;
+    stereoEqrtLayer.object3D.children[0].material.needsUpdate = true;
+    stereoEqrtLayer.object3D.children[1].material.map = null;
+    stereoEqrtLayer.object3D.children[1].material.needsUpdate = true;
+    break;
+}
+
+}
+
 
 
 </script>
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -685,21 +707,13 @@
   //global variables
   let activeLayer = "eqrtLayer"
   let activeImage = null
-  //store all of the 360 images as threejs textures
-  var cubeMapTextures = new Object();
-  var stereoCubeMapTextures = new Object();
-  var eqrtTextures = new Object();
-  var stereoEqrtTextures = new Object();
-
-  //each layer represents a different image format type and will have it's own geometry for rendering images.
-  // This uses extra geometry for sake of simplicity, but could easily be optimized if performance was a concern.
 
   let cubeMapLayer = document.getElementById("cubeMapLayer")
   let stereoCubeMapLayer = document.getElementById("stereoCubeMapLayer")
   let eqrtLayer = document.getElementById("eqrtLayer")
   let stereoEqrtLayer = document.getElementById("stereoEqrtLayer")
 
-  let layers_ = {
+  let layers = {
     "cubeMapLayer": cubeMapLayer,
     "stereoCubeMapLayer": stereoCubeMapLayer,
     "eqrtLayer": eqrtLayer,
@@ -780,7 +794,7 @@
       }
 
       if (activeLayer !== "cubeMapLayer") {
-        layers_[activeLayer].setAttribute("visible", false);
+        layers[activeLayer].setAttribute("visible", false);
         cubeMapLayer.setAttribute("visible", true);
         activeLayer = "cubeMapLayer";
       }
@@ -801,7 +815,7 @@
       }
 
       if (activeLayer !== "stereoCubeMapLayer") {
-        layers_[activeLayer].setAttribute("visible", false);
+        layers[activeLayer].setAttribute("visible", false);
         stereoCubeMapLayer.setAttribute("visible", true);
         activeLayer = "stereoCubeMapLayer";
       }
@@ -812,7 +826,7 @@
       eqrtLayer.object3D.children[0].material.needsUpdate = true;
 
       if (activeLayer !== "eqrtLayer") {
-        layers_[activeLayer].setAttribute("visible", false);
+        layers[activeLayer].setAttribute("visible", false);
         eqrtLayer.setAttribute("visible", true);
         activeLayer = "eqrtLayer";
       }
@@ -824,7 +838,7 @@
       stereoEqrtLayer.object3D.children[1].material.needsUpdate = true;
 
       if (activeLayer !== "stereoEqrtLayer") {
-        layers_[activeLayer].setAttribute("visible", false);
+        layers[activeLayer].setAttribute("visible", false);
         stereoEqrtLayer.setAttribute("visible", true);
         activeLayer = "stereoEqrtLayer";
       }
@@ -839,43 +853,8 @@
 
   }
 
-  function removeTextureFromMaterial(format) {
-
-    switch (format) {
-      case "cubeMap":
-        for (let i = 0; i < cubeMapLayer.object3D.children[0].material.length; i++) {
-          cubeMapLayer.object3D.children[0].material[i].map = null;
-          cubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
-        }
-        break;
-      case "stereoCubeMap":
-        for (let i = 0; i < stereoCubeMapLayer.object3D.children[0].material.length; i++) {
-          stereoCubeMapLayer.object3D.children[0].material[i].map = null;
-          stereoCubeMapLayer.object3D.children[0].material[i].needsUpdate = true;
-        }
-        for (let i = 0; i < stereoCubeMapLayer.object3D.children[1].material.length; i++) {
-          stereoCubeMapLayer.object3D.children[1].material[i].map = null;
-          stereoCubeMapLayer.object3D.children[1].material[i].needsUpdate = true;
-        }
-        break;
-      case "eqrt":
-        eqrtLayer.object3D.children[0].material.map = null;
-        eqrtLayer.object3D.children[0].material.needsUpdate = true;
-        break;
-      case "stereoEqrt":
-        stereoEqrtLayer.object3D.children[0].material.map = null;
-        stereoEqrtLayer.object3D.children[0].material.needsUpdate = true;
-        stereoEqrtLayer.object3D.children[1].material.map = null;
-        stereoEqrtLayer.object3D.children[1].material.needsUpdate = true;
-        break;
-    }
-
-  }
 
 
-
-
-  //generate meshes for each 360 format and add to layer
 
 
 
@@ -888,26 +867,10 @@
 
 </script>
 
-
-
-
-<!-- the point is to accurately classify images as the following 360 formats-->
-<!-- cubemaps (6:1, Horizontal Cross, Reverse Horizontal Cross, Vertical Cross, Horizontal Capital T)-->
-<!-- stereocubemaps (12:1, ?)-->
-<!-- stereoSpherical (Left:Right,Top:Bottom, ?)-->
-<!-- -->
-<!-- -->
-
-
-
 <script>
   $(function () {
     $("#dom-overlay").draggable().resizable();
-    $("#draggable-iframe").draggable().resizable();
   });
-
-
-  const allEqual = arr => arr.every(val => val === arr[0]);
 </script>
 
 <script>
