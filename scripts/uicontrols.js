@@ -16,6 +16,20 @@ function addFormatIcon(name, format) {
 
 function addIcon(imageID, format) {
   let uiElement = document.getElementById("ui" + imageID); //.children[0]
+
+  let greenRectangle = document.createElement("div");
+  greenRectangle.style.position = "absolute";
+  greenRectangle.style.top = "0";
+  greenRectangle.style.left = "0";
+  greenRectangle.style.width = "100%";
+  greenRectangle.style.height = "25px"; // Adjust the height as needed
+  greenRectangle.style.backgroundColor = "white"; 
+  greenRectangle.style.opacity = "0.5"; // Adjust the opacity as needed
+  greenRectangle.style.zIndex = "1000"; // Ensure the rectangle is on top
+  
+  // uiElement.appendChild(greenRectangle);
+  
+  
   let icon = document.createElement("img");
   icon.src = formatIcons[format];
   // icon.style.display = "flex"; // Use flexbox for centering
@@ -25,7 +39,7 @@ function addIcon(imageID, format) {
   icon.style.zIndex = "1000"; // Ensure the icon is on top
   icon.style.width = "50px"; // Set the width
   icon.style.height = "auto"; // Maintain aspect ratio by setting height to auto
-  icon.style.top = "5px"; // Position the icon at the top
+  icon.style.top = "7px"; // Position the icon at the top
   icon.style.left = "8px"; // Position the icon at the left
   icon.style.objectFit = "contain"; // Ensure the image fits within the specified dimensions without stretching
   uiElement.style.position = "relative"; // Ensure the parent has a positioning context
@@ -57,6 +71,7 @@ function addIcon(imageID, format) {
 
   // Append the tooltip to the uiElement
   uiElement.appendChild(tooltip);
+  uiElement.children[0].removeChild(uiElement.children[0].children[1])
 }
 
 
@@ -88,14 +103,15 @@ function addRemoveButtonToUIElement(imageID, file) {
         if (index === 1) {
           removeTextureFromMaterial(images[imageID].format)
         } else {
-          parent.children[index - 1].children[0].click()
+          // parent.children[index - 1].children[0].click()
+          removeTextureFromMaterial(images[imageID].format)
         }
 
       } else {
         if (parent.children[index + 1].disabled) {
           removeTextureFromMaterial(images[imageID].format)
-     
-          activeImage = (parseInt(imageID) + 1).toString()
+          console.log("id is ", parent.children[index+1].id.substring(2))
+          activeImage = parent.children[index+1].id.substring(2)
         } else {
           parent.children[index + 1].children[0].click()
         }

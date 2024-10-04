@@ -78,12 +78,12 @@
   //URL'S for icon images representing all accepted 360 image formats
   const formatIcons = {
     "cubeMap": "./assets/icons/thickBorderCubeMapLogo.png",
-    "stripCubeMap": "./assets/icons/cubeStripThickBorderLogo.png",
-    "stereoCubeMap": "./assets/icons/thickBorderStereroCubeMapLogo.png",
+    "stripCubeMap": "./assets/icons/cubeStripLogoGrey.png",
+    "stereoCubeMap": "./assets/icons/stereoCubeGrey.png",
     "eqrt": "./assets/icons/globe.png",
-    "stereoEqrt": "./assets/icons/stereoGlobe.png",
-    "HorizontalCross": "./assets/icons/HorizontalTIcon.png",
-    "HorizontalT": "./assets/icons/HorizontalTIcon.png",
+    "stereoEqrt": "./assets/icons/stereoGlobeGrey.png",
+    "HorizontalCross": "./assets/icons/HorizontalTIconGrey.png",
+    "HorizontalT": "./assets/icons/HorizontalTIconGrey.png",
     "folderCube": "./assets/icons/folder.png",
     "folderCubeMap": "./assets/icons/folder.png",
     "cubeMapFolder": "./assets/icons/folder.png",
@@ -358,7 +358,10 @@
   // custom dropzone preview template
   const previewTemplate = `
    <div class="dz-preview dz-file-preview">
-       <div class="dz-image"><img data-dz-thumbnail /></div>
+       <div class="dz-image">
+        <img data-dz-thumbnail />
+        <div class="loading-icon"></div> 
+        </div>
        <div class="dz-details">
            <div class="dz-size"><span data-dz-size></span></div>
            <div class="dz-filename"><span data-dz-name></span></div>
@@ -399,12 +402,15 @@
             }
             addIcon(file.folderID, "cubeMapFolder");
             createCubeMapTexture(file.folderID, cubeImageBitmaps);
+
             addRemoveButtonToUIElement(file.folderID, file)
           }
 
           (async () => {
             await processCubeMapImages();
-
+           console.log()
+            
+           this.emit("thumbnail", file, images[cubeMapImageStore[file.folderID].get("px")].file.dataURL);
             for (const imageName of cubeMapImageFormat) {
               let subImageFile = images[cubeMapImageStore[file.folderID].get(imageName)].file;
               this.removeFile(subImageFile);
@@ -529,10 +535,11 @@
 
       cubeMapImageStore[folderID] = imageMap;
 
-
+      console.log(imageMap.get("px"), "posx?")
       var mockCubeMapFile = { name: "mockCubeMap", size: 12345678, type: "fake", folderID: folderID };
       myDropzone.emit("addedfile", mockCubeMapFile);
-      myDropzone.emit("thumbnail", mockCubeMapFile, "./assets/icons/png-transparent-pink-cross-stroke-ink-brush-pen-red-ink-brush-ink-leave-the-material-text.png");
+
+
 
     } else {
 
