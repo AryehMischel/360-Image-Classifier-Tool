@@ -153,9 +153,6 @@ async function pickerCallback(data) {
             getSubFolders(obj.docs[0].id)
         }
 
-
- 
-
     }
 
 
@@ -219,11 +216,11 @@ async function checkFolder(folder) { //pass in folder name
             console.log(n5)
 
             if (cubemapFileNames.has(n) && cubemapFileNames.has(n1) && cubemapFileNames.has(n2) && cubemapFileNames.has(n3) && cubemapFileNames.has(n4) && cubemapFileNames.has(n5)) {
-                addImageUI(folder); 
-                savedImages.add(folder)
-                setUI(folder, "cubeMap")
+                // addImageUI(folder); 
+                // savedImages.add(folder)
+                // setUI(folder, "cubeMap")
 
-                makeCubeMap(parent, [files[0].id, files[1].id, files[2].id, files[3].id, files[4].id, files[5].id], [n, n1, n2, n3, n4, n5], folder)
+                // makeCubeMap(parent, [files[0].id, files[1].id, files[2].id, files[3].id, files[4].id, files[5].id], [n, n1, n2, n3, n4, n5], folder)
 
             } else {
                 // imagesLoading += files.length
@@ -232,17 +229,8 @@ async function checkFolder(folder) { //pass in folder name
 
         } else {
 
-
-
-            imagesLoading += files.length
-
-            // imagesLoading = imagesLoading === 0 ? 1 : imagesLoading
-            if(imagesLoading === 0){
-
-
-            }
-
             for (i = 0; i < files.length; i++) {
+                console.log("fetching images")
                 const name = files[i].name
                 console.log("fetching blob " + i + " " + performance.now())
 
@@ -255,19 +243,22 @@ async function checkFolder(folder) { //pass in folder name
                     .then(blob => {
                        
                         console.log("got blob " + i + " " + performance.now())
+                        blob.name = name
+                        blob.originPoint = "gdrive"
+                        myDropzone.addFile(blob);
 
-                        const image = document.createElement("img")
-                        image.name =  name
-                        while (savedImages.has(image.name)) {
-                            image.name = image.name + "_"
+                        // const image = document.createElement("img")
+                        // image.name =  name
+                        // while (savedImages.has(image.name)) {
+                        //     image.name = image.name + "_"
         
-                        }
-                        savedImages.add(image.name)
+                        // }
+                        // savedImages.add(image.name)
                         
-                        addImageUI(image.name); 
-                        image.src = URL.createObjectURL(blob)
-                        document.body.appendChild(image);
-                        image.onload = findformat 
+                        // addImageUI(image.name); 
+                        // image.src = URL.createObjectURL(blob)
+                        // document.body.appendChild(image);
+                        // image.onload = findformat 
                     })
             }
         }
@@ -279,8 +270,6 @@ async function checkFolder(folder) { //pass in folder name
 
 
 async function getImages(fileId, name) {
-    // const name = files[i].name
-    // console.log("fetching blob " ++ " " + performance.now())
     fetch(`https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`, {
         headers: {
             Authorization: `Bearer ${accessToken}`
@@ -288,19 +277,25 @@ async function getImages(fileId, name) {
         }
     }).then(response => response.blob())
         .then(blob => {
-            const image = new Image();
 
-            image.name =  name
-            while (savedImages.has(image.name)) {
-                image.name = image.name + "_"
+            blob.name = name
+            blob.originPoint = "gdrive"
+            myDropzone.addFile(blob);
 
-            }
-            savedImages.add(image.name)
-            addImageUI(image.name); 
+            // const image = new Image();
+
+            // image.name = "gdrive_photo" 
+
+            // while (savedImages.has(image.name)) {
+            //     image.name = image.name + "_"
+
+            // }
+            // savedImages.add(image.name)
+            // addImageUI(image.name); 
           
-            image.src = URL.createObjectURL(blob)
-            document.body.appendChild(image);
-            image.onload = findformat 
+            // image.src = URL.createObjectURL(blob)
+            // document.body.appendChild(image);
+            // image.onload = findformat 
         })
 }
 
