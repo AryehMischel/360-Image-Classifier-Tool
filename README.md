@@ -59,7 +59,7 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 This project is licensed under the MIT License. See the LICENSE file for details.
 
 ## Acknowledgements
-- Icons used in this project are sourced from various free icon libraries.
+- All Icons were created by me, except for the google drive icon and the noFormatDetected Icon were sourced from a free icon library.
 
 ## Contact
 For any questions or inquiries, please contact [aryehmischel@gmail.com](mailto:aryehmischel@gmail.com).
