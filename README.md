@@ -1,7 +1,7 @@
 # 360 Image Classifier + Viewer
 
 ## Overview
-This project is a web-based tool designed to detect the format of 360-degree images, process them, and display the images along with their detected formats. The tool supports various 360 image formats and provides a user-friendly interface for uploading and viewing images.
+This is a web-based tool designed to detect the format of 360-degree images, process them, and display the images along with their detected formats. The tool supports various 360 image formats and provides a user-friendly interface for uploading and viewing images.
 **[Live Demo](https://universal-360-image-classifier.onrender.com/)**
 ## Features
 - **Format Detection**: Automatically detects the format of uploaded 360-degree images.
