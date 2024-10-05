@@ -2,7 +2,7 @@
 
 ## Overview
 This project is a web-based tool designed to detect the format of 360-degree images, process them, and display the images along with their detected formats. The tool supports various 360 image formats and provides a user-friendly interface for uploading and viewing images.
-
+**[Live Demo](https://universal-360-image-classifier.onrender.com/)**
 ## Features
 - **Format Detection**: Automatically detects the format of uploaded 360-degree images.
 - **Image Processing**: Processes the images to ensure they are displayed correctly.
@@ -24,11 +24,11 @@ This project is a web-based tool designed to detect the format of 360-degree ima
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/360-image-format-detector.git
+   git clone https://github.com/AryehMischel/360-Image-Classifier-Tool.git
    ```
 2. Navigate to the project directory:
    ```bash
-   cd 360-image-format-detector
+   cd 360-Image-Classifier-Tool
    ```
 3. Open 
 
