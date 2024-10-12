@@ -12,14 +12,49 @@ This is a web-based tool designed to detect the format of 360 images, process th
 - **Limited VR Support**: This does technically support VR, but it was not put together with VR in mind. The broader project that this code was frankensteined from is much better suited for VR and it should be finished by early 2025.
 
 ## Supported Formats
-- CubeMap
-- StripCubeMap
-- StereoCubeMap
-- Equirectangular (Eqrt)
-- StereoEquirectangular (StereoEqrt)
-- HorizontalCross
-- HorizontalT
-- CubeMapFolder (6 seperate images representing sides of a cubemap in the same directory)
+  <div width="100%">
+   • CubeMap's
+    <img align="center" src="https://d1ty73zrqoktft.cloudfront.net/360-Image-Classifier-Tool/assets/icons/cubemapIconColored.png"  height="50px"/>
+     <img width="220vw"/>
+   • Stripe CubeMap's
+    <img align="center" src="https://d1ty73zrqoktft.cloudfront.net/360-Image-Classifier-Tool/assets/icons/stripeCubeMap.png" alt="Item 2" height="25px"/>
+    </span>
+  </div>
+   <br /><br /><br />
+<div width="100%">
+    <span style="margin-right: 10px;">• Stereoscopic CubeMap's</span>
+    <img align="center" src="https://d1ty73zrqoktft.cloudfront.net/360-Image-Classifier-Tool/assets/icons/stereoCubeMapColored.png" alt="Item 3" height="25"/>
+    <img width="50vw"/>
+  </div>
+  <br /><br /><br />
+  <div style="display: flex; align-items: center; margin: 10px;">
+     <span>• Equirectangular(Eqrt) / 360 image's</span>
+     <img src="https://d1ty73zrqoktft.cloudfront.net/360-Image-Classifier-Tool/assets/icons/eqrtLogoColored.png" alt="Item 4" height="25"/>
+     <img width="50vw"/>
+     <span>• Stereoscopic Equirectangular (StereoEqrt)</span>
+     <img src="https://d1ty73zrqoktft.cloudfront.net/360-Image-Classifier-Tool/assets/icons/stereoEqrtLogoColored.png" alt="Item 5" height="25"/>
+  </div>
+  <br /><br /><br />
+  
+  <div width="100%" >
+     <span>• VerticalCross CubeMap's</span>
+     <img src="https://d1ty73zrqoktft.cloudfront.net/360-Image-Classifier-Tool/assets/icons/verticalCubeMap.png" alt="Item 5" height="50"/>
+     <img width="160vw"/>
+    <span>• Horizontal T CubeMap's </span>
+    <img src="https://d1ty73zrqoktft.cloudfront.net/360-Image-Classifier-Tool/assets/icons/capitalTCubeMap.png" alt="Item 5" height="50"/>
+    </div><br />
+  <br /><br />
+ 
+  
+  <div style="display: flex; align-items: center; margin: 10px;">
+    <span style="margin-right: 10px;">• CubeMapFolder </span>
+    <img src="https://d1ty73zrqoktft.cloudfront.net/360-Image-Classifier-Tool/assets/icons/folderIcon.png" alt="Item 5" width="50"/>
+  </div>
+^ A directory containing a cubemap as 6 seperate images (cube faces).
+<br />
+->Images must be named as follows "px, nx, py, ny, pz, nz" or "posx, negx, posy, negy, posz, negz"
+  
+  
 
 ## Installation
 1. Clone the repository:
