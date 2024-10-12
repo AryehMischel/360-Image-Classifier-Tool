@@ -72,7 +72,7 @@
 
 </html>
 <script>
-  
+
   //global variables
 
   //URL'S for icon images representing all accepted 360 image formats
@@ -381,10 +381,10 @@
     maxThumbnailFilesize: 5, // we will create our own thumbnails in our webworkers and populate them later
 
 
-
     init: function () {
 
       this.on("addedfile", function (file) {
+
 
         //manually create a cubemap from 6 uploaded images
         if (file.type === "fake") {
@@ -408,9 +408,9 @@
 
           (async () => {
             await processCubeMapImages();
-           console.log()
-            
-           this.emit("thumbnail", file, images[cubeMapImageStore[file.folderID].get("px")].file.dataURL);
+            console.log()
+
+            this.emit("thumbnail", file, images[cubeMapImageStore[file.folderID].get("px")].file.dataURL);
             for (const imageName of cubeMapImageFormat) {
               let subImageFile = images[cubeMapImageStore[file.folderID].get(imageName)].file;
               this.removeFile(subImageFile);
@@ -420,6 +420,14 @@
 
           return;
         }
+
+
+        if (!file.type.startsWith("image/")) {
+          // Remove the file if it's not an image
+          this.removeFile(file);
+          return;
+        }
+
 
 
 
@@ -435,6 +443,10 @@
           return;
 
         }
+
+
+
+
 
 
         // Handle the start of a new batch of files
@@ -454,7 +466,7 @@
           startedProcessingImageBatch = false;
 
           if (currentUploadTree.root.children.size == 0) {
-             console.log("empty tree")
+            console.log("empty tree")
             return;
           }
           createQueFromTree(currentUploadTree.root, imageQueue);
@@ -488,7 +500,9 @@
 
 
 
-
+  Dropzone.options.myDropzone = {
+    acceptedFiles: "image/jpeg,image/png,image/gif"
+  }
 
 
 
