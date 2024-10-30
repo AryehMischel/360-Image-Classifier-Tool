@@ -9,7 +9,7 @@ This is a web-based tool designed to detect the format of 360 images, process th
 - **Image Display**: Displays the processed images along with their detected formats.
 - **Drag and Drop Interface**: Easy-to-use drag and drop interface for uploading images.
 - **Support for Multiple Formats**: Supports various 360 image formats including CubeMap, Equirectangular, and more.
-- **Limited VR Support**: This does technically support VR, but it was not put together with VR in mind. The broader project that this code was frankensteined from is much better suited for VR and it should be finished by early 2025.
+- **Limited VR Support**: This does technically support VR, but it is not optimized or designed for VR. 
 
 ## Supported Formats
   <div width="100%">
