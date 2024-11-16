@@ -1,0 +1,16 @@
+{
+  "name": "360-image-classifier-tool",
+  "version": "1.0.0",
+  "description": "This is a web-based tool designed to detect the format of 360 images, process them, and display them along with their detected formats. The tool supports various 360 image formats and provides a user-friendly interface for uploading and viewing images.\r **[Live Demo](https://universal-360-image-classifier.onrender.com/)**\r ## Features\r - **Format Detection**: Automatically detects the format of uploaded 360-degree images.\r - **Image Processing**: Processes the images to ensure they are displayed correctly.\r - **Image Display**: Displays the processed images along with their detected formats.\r - **Drag and Drop Interface**: Easy-to-use drag and drop interface for uploading images.\r - **Support for Multiple Formats**: Supports various 360 image formats including CubeMap, Equirectangular, and more.\r - **Limited VR Support**: This does technically support VR, but it is not optimized or designed for VR.",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1"
+  }
+}

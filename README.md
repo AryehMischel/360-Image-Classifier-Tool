@@ -64,11 +64,13 @@ This is a web-based tool designed to detect the format of 360 images, process th
    ```bash
    cd 360-Image-Classifier-Tool
    ```
-3. Open 
-
-index.html
-
- in your preferred web browser.
+3. Install the dependencies:
+ ```npm install
+ ```
+4. Start the server:
+ ```npm start
+ ```
+ in your preferred web browser and navigate to http://localhost:3000
 
 ## Usage
 1. Open the website in your web browser.
@@ -81,10 +83,13 @@ index.html
 - **styles**: Directory containing CSS files for styling the web page.
 - **scripts**: Directory containing JavaScript files for handling image uploads, format detection, and image processing.
 - **assets**: Directory containing icons and other assets used in the project.
+- **server.js**:  Node.js server file to serve the application.
+
 
 ## Dependencies
 - [Dropzone.js](https://www.dropzone.dev/): Used for drag and drop file uploads.
 - [A-Frame](https://aframe.io/): Used for rendering 360-degree images.
+- [Express](https://expressjs.com/): Used for serving the web application.
 
 ## Contributing
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
