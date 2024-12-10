@@ -1,4 +1,4 @@
-# 360 Image Classifier + Viewer
+# 360 Viewer
 
 ## Overview
 This is a web-based tool designed to detect the format of 360 images, process them, and display them along with their detected formats. The tool supports various 360 image formats and provides a user-friendly interface for uploading and viewing images.
